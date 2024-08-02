@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.car.CarMapper">
+
+<!-- 	<sql id="where"> -->
+<!-- 		<if test="keyword!=null and keyword!='' "> -->
+<!-- 			AND (car_no LIKE '%'|| #{keyword} ||'%' -->
+<!-- 			OR car_model LIKE '%'||	#{keyword} ||'%' -->
+<!-- 			OR mem_id LIKE '%'|| #{keyword} ||'%') -->
+<!-- 		</if> -->
+<!-- 	</sql> -->
+  
+	<!-- 차량등록 리스트 -->
+	<select id="getCarList" parameterType="String" resultType="com.homecat.sweethome.vo.car.CarVO" >
+	SELECT CAR_NO
+		 , MEM_ID
+		 , CAR_MODEL
+		 , TO_CHAR(REG_DT, 'YYYY/MM/DD HH24:MI:SS') REG_DT
+		 , STATUS
+	FROM CAR
+	WHERE MEM_ID = #{memId}
+	ORDER BY REG_DT
+	
+	
+<!--        SELECT T.* -->
+<!-- 		FROM -->
+<!-- 		( -->
+<!-- 		SELECT ROW_NUMBER() OVER(ORDER BY reg_dt ) RNUM , car_no, mem_id, car_model, reg_dt -->
+<!-- 		FROM car -->
+<!-- 		WHERE 1 = 1 -->
+<!-- 		<include refid="where"></include> -->
+<!-- 		) T -->
+<!-- 		WHERE T.RNUM BETWEEN ((#{currentPage}*10) - (10-1)) AND (#{currentPage} *10) -->
+	</select>
+
+<!-- 	<select id="getTotal" parameterType="hashMap" resultType="int"> -->
+<!-- 		select count(*) -->
+<!-- 		from car -->
+<!-- 		where 1=1 -->
+<!-- 		<include refid="where"></include> -->
+<!-- 	</select> -->
+	
+	<!-- 차량등록 -->
+	<insert id="createPost" parameterType="com.homecat.sweethome.vo.car.CarVO">
+	INSERT 
+	INTO CAR(CAR_NO, MEM_ID, CAR_MODEL) 
+	VALUES (#{carNo} , #{memId}, #{carModel})
+	</insert>
+	
+	<!-- 차량리스트 디테일 -->
+<!-- 	<select id="getCarDetail" parameterType="String" resultType="com.homecat.sweethome.vo.car.CarVO"> -->
+<!-- 	select CAR_NO, MEM_ID, CAR_MODEL, REG_DT -->
+<!-- 	from car -->
+<!-- 	where car_no = #{carNo} -->
+<!-- 	</select> -->
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

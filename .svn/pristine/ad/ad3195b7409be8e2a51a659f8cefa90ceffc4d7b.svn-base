@@ -1,0 +1,275 @@
+package com.homecat.sweethome.controller.publicFacilities;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.security.PermitAll;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.publicFacilities.FacilityService;
+import com.homecat.sweethome.vo.publicFacilities.FacilityVO;
+import com.homecat.sweethome.vo.publicFacilities.ReserveVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+public class FacilityContoller {
+
+	
+	@Autowired
+	FacilityService facilityService;
+	
+	@GetMapping("/public/tennis/reservation")
+	public String tennisMain(Model model ,  @RequestParam String facCode) {
+		log.info("tennisMain 옴");
+		
+		log.info("tennisMain -> facCode : {}" , facCode);
+		
+		
+		List<FacilityVO> facilityVOList = this.facilityService.tennisMain(facCode);
+		log.info("tennisMain facilityVOList-> " + facilityVOList);
+		
+		//파라미터로 facCode넣어줄것
+		List<ReserveVO> reserveVOList = this.facilityService.reserveList(facCode);
+		log.info("tennisMain reserveVOList-> " + reserveVOList);
+		
+		model.addAttribute("facilityVOList", facilityVOList);
+		model.addAttribute("reserveVOList", reserveVOList);
+		
+		return "resident/publicFacilities/reTennis";
+	}
+	
+	@ResponseBody
+	@PostMapping("/public/tennis/reserveListAjax")
+	public List<ReserveVO> reserveListAjax(@RequestBody Map<String, String> requestData) {
+	    String facCode = requestData.get("facCode");
+
+	    log.info("reserveListAjax 옴");
+	    log.info("reserveListAjax -> facCode : {}", facCode);
+
+	    List<ReserveVO> reserveVOList = this.facilityService.reserveList(facCode);
+	    log.info("reserveListAjax reserveVOList-> {}", reserveVOList);
+
+	    return reserveVOList;
+	}
+
+	
+	
+	@ResponseBody
+	@PostMapping("/public/tennis/reservationAjax")
+	public ReserveVO reservation(@RequestBody ReserveVO reserveVO) {
+		log.info("reservation 왔다");
+		
+		log.info("reservation -> reserveVO : {}", reserveVO);
+		
+		int result = this.facilityService.reservation(reserveVO);
+		log.info("reservation -> result : " + result);
+		
+		
+		return reserveVO;
+	}
+	
+	
+	@ResponseBody
+	@PostMapping("/public/tennis/cancleReAjax")
+	public int cancleRe(@RequestBody ReserveVO reserveVO) {
+		log.info("cancleRe 왔다");
+		
+		log.info("취소 reserveVO : {}" , reserveVO );
+		
+		int result = this.facilityService.cancleRe(reserveVO);
+		log.info("cancleRe -> result : " + result);
+		
+		return result;
+	}
+	
+	
+	@ResponseBody
+	@PostMapping("/public/tennis/blockReAjax")
+	public List<ReserveVO> blockRe(@RequestBody ReserveVO reserveVO) {
+		log.info("blockRe 왔다");
+		
+		List<ReserveVO> blockRe = this.facilityService.blockRe(reserveVO);
+		log.info("blockRe -> blockRe : " + blockRe);
+		
+		
+		return blockRe;
+	}
+	
+	
+	@ResponseBody
+	@PostMapping("/public/tennis/liveReAjax")
+	public List<ReserveVO> liveRe(@RequestBody ReserveVO reserveVO) {
+		
+		
+		log.info("liveRe 왔다");
+		log.info("liveRe facCode : {}",reserveVO);
+		
+		List<ReserveVO> liveRe = this.facilityService.liveRe(reserveVO);
+		log.info("liveRe -> liveRe : " + liveRe);
+		
+		return liveRe;
+	}
+	
+//	===================golf=============================
+	
+	@GetMapping("/public/golf/reservation")
+	public String golfMain(Model model , @RequestParam String facCode) {
+		log.info("golfMain 옴");
+		
+		log.info("golfMain -> facCode : {}" , facCode);
+		
+		
+		List<FacilityVO> facilityVOList = this.facilityService.tennisMain(facCode);
+		log.info("golfMain facilityVOList-> " + facilityVOList);
+		
+		//파라미터로 facCode넣어줄것
+		List<ReserveVO> reserveVOList = this.facilityService.reserveList(facCode);
+		log.info("golfMain reserveVOList-> " + reserveVOList);
+		
+		model.addAttribute("facilityVOList", facilityVOList);
+		model.addAttribute("reserveVOList", reserveVOList);
+		
+		return "resident/publicFacilities/reGolf";
+	}
+	
+	
+//	===================studyRoom=============================
+	
+	@GetMapping("/public/studyRoom/reservation")
+	public String studyRoomMain(Model model, @RequestParam String facCode) {
+		log.info("studyRoomMain 옴");
+		
+		log.info("studyRoomMain -> facCode : {}" , facCode);
+	
+		
+		List<FacilityVO> facilityVOList = this.facilityService.tennisMain(facCode);
+		log.info("studyRoomMain facilityVOList-> " + facilityVOList);
+		
+		//파라미터로 facCode넣어줄것
+		List<ReserveVO> reserveVOList = this.facilityService.reserveList(facCode);
+		log.info("studyRoomMain reserveVOList-> " + reserveVOList);
+		
+		model.addAttribute("facilityVOList", facilityVOList);
+		model.addAttribute("reserveVOList", reserveVOList);
+		
+		return "resident/publicFacilities/reStudyRoom";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//	===================admin=============================
+	
+	//메인화면 
+	@GetMapping("/public/admin/liveStatus")
+	public String adminTap(Model model, @RequestParam(value="facCode", required = false, defaultValue = "facility01") String facCode) {
+		log.info("facCode: " + facCode);
+		
+		List<FacilityVO> facilityVOList = this.facilityService.tennisMain(facCode);
+		log.info("tennisMain facilityVOList-> " + facilityVOList);
+		
+//		ReserveVO reserveVO = new ReserveVO();
+//		reserveVO.setFacCode(facCode);
+//		
+//		List<ReserveVO> liveRe = this.facilityService.liveRe(reserveVO);
+//		log.info("liveRe -> 뜨너요요 : " + liveRe);
+//		
+//		model.addAttribute("liveRe", liveRe);
+		model.addAttribute("facilityVOList", facilityVOList);
+		
+		return "admin/publicFacilities/adFacilities";
+	}
+	
+	//시설정보와 각 오늘의 예약 내역게시판
+	@ResponseBody
+    @PostMapping("/public/admin/getInfo")
+    public FacilityVO getInfo(@RequestBody Map<String, String> requestData) {
+        String facCode = requestData.get("facCode");
+        log.info("facCode: " + facCode);
+
+        // 시설 정보 가져오기
+        List<FacilityVO> facilityVOList = facilityService.tennisMain(facCode);
+        log.info("getInfo facilityVOList-> " + facilityVOList);
+
+        // 예약 정보 가져오기
+        List<ReserveVO> reserveVOList = facilityService.adReserveList(facCode);
+        log.info("tennisMain adReserveList-> " + reserveVOList);
+
+        if (facilityVOList.isEmpty()) {
+            return null;
+        }
+
+        FacilityVO facilityVO = facilityVOList.get(0);
+        facilityVO.setReserveVOList(reserveVOList); // FacilityVO 객체에 예약 정보 포함
+
+        return facilityVO;
+    }
+	 
+	 
+	 //전체 예약 게시팡
+	 @GetMapping("public/admin/allReList")
+	 public String allReList(Model model) {
+		
+		 List<ReserveVO> reserveVOList = this.facilityService.allReList();
+		 log.info("reserveVOList : " + reserveVOList);
+		 
+		 model.addAttribute("reserveVOList" , reserveVOList);
+		 
+		 return "admin/publicFacilities/allReList";
+	}
+	 
+	// 카테고리 검색
+    @ResponseBody
+    @PostMapping("/selectCa")
+    public List<ReserveVO> selectCa(@RequestBody Map<String, String> requestData) {
+        String facCode = requestData.get("facCode");
+        log.info("selectCa facCode : " + facCode);
+
+        List<ReserveVO> reserveVOList = this.facilityService.selectCa(facCode);
+        log.info("selectCa => reserveVOList : " + reserveVOList);
+
+        return reserveVOList;
+    }
+
+    
+    //상세
+    @ResponseBody
+    @PostMapping("/reDetail")
+    public ReserveVO reDetail(@RequestBody ReserveVO reserveVO) {
+		log.info("reDetail 이달");
+		
+		reserveVO = facilityService.reDetail(reserveVO);
+		log.info("reDetail ->  reserveVO : " + reserveVO);
+    	
+		return reserveVO;
+	}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+}

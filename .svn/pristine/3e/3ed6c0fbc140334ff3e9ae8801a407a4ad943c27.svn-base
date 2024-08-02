@@ -1,0 +1,17 @@
+package com.homecat.sweethome.mapper.danji;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.danji.DanjiVO;
+
+public interface DanjiMapper {
+
+	public List<DanjiVO> getList();
+
+	public DanjiVO getDetail(String danjiCode);
+
+	public int createDanji(DanjiVO danjiVO);
+
+	public String getDanjiCode();
+
+}

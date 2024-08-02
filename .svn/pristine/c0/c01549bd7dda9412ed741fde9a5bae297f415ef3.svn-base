@@ -1,0 +1,36 @@
+package com.homecat.sweethome.mapper.board;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.board.BoardVO;
+import com.homecat.sweethome.vo.board.ReplyVO;
+
+public interface BoardMapper {
+
+	public List<BoardVO> getList(Map<String, Object> map);
+
+	public void countView(String brdNo);
+	
+	public BoardVO getDetail(String brdNo);
+
+	public List<ReplyVO> getReplyList(String brdNo);
+
+	public int boardLike(HashMap<String, String> data);
+
+	public int replyLike(HashMap<String, String> data);
+
+	public int getBrdLike(HashMap<String, String> data);
+
+	public int getRepLike(HashMap<String, String> data);
+
+	public int insertReply(ReplyVO replyVO);
+
+	public int getTotal(Map<String, Object> map);
+
+	public int insertBoard(BoardVO boardVO);
+
+
+
+}

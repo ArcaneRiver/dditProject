@@ -1,0 +1,61 @@
+package com.homecat.sweethome.vo.delivery;
+
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.homecat.sweethome.vo.ccpy.CcpyVO;
+import com.homecat.sweethome.vo.comm.CommDetailVO;
+import com.homecat.sweethome.vo.danji.DanjiVO;
+import com.homecat.sweethome.vo.member.MemberVO;
+
+import lombok.Data;
+
+@Data
+public class DeliveryVO {
+	private int rnum;//순번
+	private String pckSeq;  //택배신청 일련번호
+	private String regDt; //신청일
+	private String pickUpDt; // 수거일
+	private String pckItem; // 운송품목
+	private int weigh; // 무게
+	private int price; // 금액
+	private int pckQty; // 수량
+	private int pckTotal; //  총액
+	private String pckStatus; // 처리여부
+	private String memId;  // 회원아이디
+	private String ccpyCode; //협력업체 코드
+	private String cancelYn; // 신청 철회 여부
+	private String cancelTm; // 신청 철회 일시
+	private String attach; // 첨부파일
+	private String sendName;
+	private String sendTel;
+	private String reName;
+	private String reTel;
+	private String sendAddress;
+	private int rePost;
+	private String reAddress;
+	private String reDeAddress;
+	private String hopeDt;
+	private String backComment;
+	private String backYn;
+	private String backTm;
+	private String ccpyName;
+	
+	
+	private List<CommDetailVO> commDetailVOList;
+	
+	private List<CcpyVO> ccpyVOList;
+	
+	private MultipartFile uploadFile;
+	
+	private List<MemberVO> memberVOList;
+	
+	private List<DanjiVO> danjiVOList;
+	
+	private String yearMonth;
+	
+	private int count;
+	private String dayOfWeek;
+	
+}

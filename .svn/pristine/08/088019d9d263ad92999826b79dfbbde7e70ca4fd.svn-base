@@ -1,0 +1,19 @@
+package com.homecat.sweethome.vo.publicFacilities;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class BookLoanVO {
+
+	private String loanSeq;
+	private String bookCode;
+	private String memId;
+	private Date loanDt;  // sysdate
+	private Date returnDt;
+	private String returnStatus;
+	
+	private String[] bookCodes;
+	
+}

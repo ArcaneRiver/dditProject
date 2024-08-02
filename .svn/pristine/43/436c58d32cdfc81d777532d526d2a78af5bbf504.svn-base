@@ -1,0 +1,60 @@
+package com.homecat.sweethome.mapper.member;
+
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.member.MemberVO;
+
+public interface MemberListMapper {
+
+	/**
+	 * 가입 대기자 목록 
+	 * @param curPage
+	 * @return
+	 */
+	public List<MemberVO> waitList(int curPage);
+	
+	/**
+	 * 가입 대기자 목록 검색
+	 * @param map
+	 * @return
+	 */
+	public List<MemberVO> waitList(Map<String, Object> map);
+	
+	/**
+	 * 가입 반려자 목록
+	 */
+	public List<MemberVO> rejectList(Map<String, Object> map);
+	
+	
+	/**
+	 * 가입 대기자 수 검색
+	 * @param keyword
+	 * @return
+	 */
+	public int waitCount(String keyword);
+	
+	
+	/**
+	 * 가입 반려자 수 검색
+	 * @param keyword
+	 * @return
+	 */
+	public int rejectCount(String keyword);
+	
+	
+	/**
+	 * 가입 승인
+	 * @param memId
+	 * @return
+	 */
+	public int signOk(String memId);
+	
+	/**
+	 * 가입 반려
+	 * @param memId
+	 * @return
+	 */
+	public int signNo(String memId);
+
+}

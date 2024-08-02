@@ -1,0 +1,59 @@
+package com.homecat.sweethome.mapper.message;
+
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.message.MessageVO;
+
+public interface MessageMapper {
+	
+	public int sendMessage(MessageVO messageVO);
+	
+	/**
+	 * 받는사람 확인
+	 * @param receiver
+	 * @return
+	 */
+	public int checkReceiver(String receiver);
+	
+	/**
+	 * 받은 쪽지
+	 * @param map
+	 * @return
+	 */
+	public List<MessageVO> getReceiveMessage(Map<String, Object> map);
+	
+
+	/**
+	 * 보낸 쪽지
+	 * @param map
+	 * @return
+	 */
+	public List<MessageVO> getSendMessage(Map<String, Object> map);
+	
+	
+	/**
+	 * 받은 쪽지 상세
+	 * @return
+	 */
+	public List<MessageVO> receiveMsgDetail(String receiver);
+	
+	
+	/**
+	 * 보낸 쪽지 상세
+	 * @return
+	 */
+	public List<MessageVO> sendMsgDetail(String sender);
+	
+	public int sendCount(Map<String, Object> map);
+	
+	public int receiveCount(Map<String, Object> map);
+	
+
+	/**
+	 * 읽었냐?
+	 * @param map
+	 * @return
+	 */
+	public int readCheck(int msgSeq);
+}

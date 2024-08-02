@@ -1,0 +1,8 @@
+package com.homecat.sweethome.service.member;
+
+public interface SignUpService {
+	
+	public int chkid(String memId);
+	
+	public int chkNick(String nickname);
+}

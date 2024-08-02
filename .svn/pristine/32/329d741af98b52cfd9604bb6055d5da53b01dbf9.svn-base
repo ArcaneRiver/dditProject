@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.charge.ChargeMapper">
+
+	<select id="getDongList" resultType="string">
+		SELECT DONG_CODE FROM DONG
+		WHERE SUBSTR(DONG_CODE, 1, 4) = #{danji}
+	</select>
+
+	<select id="getRoomList" resultType="string">
+		SELECT ROOM_CODE FROM ROOM
+		WHERE DONG_CODE = #{dongCode}
+		ORDER BY ROOM_CODE
+	</select>
+	
+	<insert id="insertChargeInfo" parameterType="hashMap">
+		INSERT INTO MGMT_COST(MGMT_SEQ, ROOM_CODE, YM, TOTAL_CT, PAY_YN, PAY_DT, LATE_CT)
+		VALUES((SELECT 'CHARGE' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(MGMT_SEQ), 'CHARGE000'), 7) + 1, '000'))
+				FROM MGMT_COST), #{roomCode}, #{ym}, #{totalCt}, 'N', null, 0)
+	</insert>
+	
+	<insert id="insertCommons" parameterType="hashMap">
+		INSERT INTO GMGMT_CT(GMGMT_SEQ, SALARY, ALLOWANCE, BONUS, RTR_PAY, IAC_INS, EMP_INS, NPN, HLTH_INS, BENEFITS, OPROD_CT, 
+	                    		PRINT_CT, TSPT_CT, COMM_CT, POST_CT, CPROD_CT, ETC_CT, FAC_CT, OTHER_CT, TOTAL_CT, MGMT_SEQ)
+		VALUES((SELECT 'COMMON' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(GMGMT_SEQ), 'COMMON000'), 7) + 1, '000'))
+	        	FROM GMGMT_CT), #{salary}, #{allowance}, #{bonus}, #{rtrPay}, #{iacIns}, #{empIns}, #{npn}, #{hlthIns}, #{benefits}, #{oprodCt}, #{printCt}, #{tsptCt}, #{commCt}, #{postCt}, #{cprodCt}, #{etcCt}, #{facCt}, #{otherCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertCommonsReason" parameterType="hashMap">
+		INSERT INTO GMGMT_B(GMGMT_SEQ, SALARY, ALLOWANCE, BONUS, RTR_PAY, IAC_INS, EMP_INS, NPN, HLTH_INS, BENEFITS, OPROD_CT, 
+	                    	PRINT_CT, TSPT_CT, COMM_CT, POST_CT, CPROD_CT, ETC_CT, FAC_CT, OTHER_CT)
+		VALUES((SELECT MAX(GMGMT_SEQ) FROM GMGMT_CT), #{salary}, #{allowance}, #{bonus}, #{rtrPay}, #{iacIns}, #{empIns}, #{npn}, #{hlthIns}, #{benefits}, #{oprodCt}, #{printCt}, #{tsptCt}, #{commCt}, #{postCt}, #{cprodCt}, #{etcCt}, #{facCt}, #{otherCt})
+	</insert>
+	
+	<insert id="insertCleans" parameterType="hashMap">
+		INSERT INTO CLN_CT(CLN_SEQ, CLN_SVC_CT, EXPENDABLE_CT, WASTE_CT, OTHER_CT, TOTAL_CT, MGMT_SEQ)
+		VALUES((SELECT 'CLN' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(CLN_SEQ), 'CLN000'), 4) + 1, '000'))
+		        FROM CLN_CT), #{clnSvcCt}, #{expendableCt}, #{wasteCt}, #{otherCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertCleansReason" parameterType="hashMap">
+		INSERT INTO CLN_B(CLN_SEQ, CLN_SVC_CT, EXPENDABLE_CT, WASTE_CT, OTHER_CT)
+		VALUES((SELECT MAX(CLN_SEQ) FROM CLN_CT), #{clnSvcCt}, #{expendableCt}, #{wasteCt}, #{otherCt})
+	</insert>
+	
+	<insert id="insertDisinfec" parameterType="hashMap">
+		INSERT INTO DINF_CT(DISINF_SEQ, DISINF_CT, OTHER_CT, TOTAL_CT, MGMT_SEQ)
+		VALUES((SELECT 'DISINF' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(DISINF_SEQ), 'DISINF000'), 7) + 1, '000'))
+		        FROM DINF_CT), #{disinfCt}, #{otherCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertDisinfecReason" parameterType="hashMap">
+		INSERT INTO DINF_B(DISINF_SEQ, DISINF_CT, OTHER_CT)
+		VALUES((SELECT MAX(DISINF_SEQ) FROM DINF_CT), #{disinfCt}, #{otherCt})
+	</insert>
+	
+	<insert id="insertSecure" parameterType="hashMap">
+		INSERT INTO SEC_CT(SEC_SEQ, SEC_CT, OTHER_CT, TOTAL_CT, GMGT_SEQ)
+		VALUES((SELECT 'SEC' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(SEC_SEQ), 'SEC000'), 4) + 1, '000'))
+		        FROM SEC_CT), #{secCt}, #{otherCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertSecureReason" parameterType="hashMap">
+		INSERT INTO SEC_B(SEC_SEQ, SEC_CT, OTHER_CT)
+		VALUES((SELECT MAX(SEC_SEQ) FROM SEC_CT), #{secCt}, #{otherCt})
+	</insert>
+	
+	<insert id="insertElevator" parameterType="hashMap">
+		INSERT INTO EVT_CT(EVT_SEQ, MGMT_CT, INSP_CT, EXPENDABLE_CT, OTHER_CT, TOTAL_CT, MGMT_SEQ)
+		VALUES((SELECT 'EVT' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(EVT_SEQ), 'EVT000'), 4) + 1, '000'))
+		        FROM EVT_CT), #{mgmtCt}, #{inspCt}, #{expendableCt}, #{otherCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertElevatorReason" parameterType="hashMap">
+		INSERT INTO EVT_B(EVT_SEQ, MGMT_CT, INSP_CT, EXPENDABLE_CT, OTHER_CT)
+		VALUES((SELECT MAX(EVT_SEQ) FROM EVT_CT), #{mgmtCt}, #{inspCt}, #{expendableCt}, #{otherCt})
+	</insert>
+	
+	<insert id="insertLtrr" parameterType="hashMap">
+		INSERT INTO LTRR_CT(LTRR_SEQ, LTRR_CT, OTHER_CT, TOTAL_CT, MGMT_SEQ)
+		VALUES((SELECT 'LTRR' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(LTRR_SEQ), 'LTRR000'), 5) + 1, '000'))
+		        FROM LTRR_CT), #{ltrrCt}, #{otherCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertLtrrReason" parameterType="hashMap">
+		INSERT INTO LTRR_B(LTRR_SEQ, LTRR_CT, OTHER_CT)
+		VALUES((SELECT MAX(LTRR_SEQ) FROM LTRR_CT), #{ltrrCt}, #{otherCt})
+	</insert>
+	
+	<insert id="insertFacilites" parameterType="hashMap">
+		INSERT INTO FMGMT_CT(FMGMT_SEQ, MGMT_CT, CHK_CT, PRVNT_CT, OTHER_CT, TOTAL_CT, MGMT_SEQ)
+		VALUES((SELECT 'FAC' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(FMGMT_SEQ), 'FAC000'), 4) + 1, '000'))
+		        FROM FMGMT_CT), #{mgmtCt}, #{chkCt}, #{prvntCt}, #{otherCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertFacilitesReason" parameterType="hashMap">
+		INSERT INTO FMGMT_B(FMGMT_SEQ, MGMT_CT, CHK_CT, PRVNT_CT, OTHER_CT)
+		VALUES((SELECT MAX(FMGMT_SEQ) FROM FMGMT_CT), #{mgmtCt}, #{chkCt}, #{prvntCt}, #{otherCt})
+	</insert>
+	
+	<insert id="insertVat" parameterType="hashMap">
+		INSERT INTO VAT(VAT_SEQ, MSVC_CT, CSVC_CT, SSVC_CT, OTHER_CT, TOTAL_CT, MGMT_SEQ)
+		VALUES((SELECT 'VAT' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(VAT_SEQ), 'VAT000'), 4) + 1, '000'))
+		        FROM VAT), #{msvcCt}, #{csvsCt}, #{ssvcCt}, #{otherCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertVatReason" parameterType="hashMap">
+		INSERT INTO VAT_B(VAT_SEQ, MSVC_CT, CSVC_CT, SSVC_CT, OTHER_CT)
+		VALUES((SELECT MAX(VAT_SEQ) FROM VAT), #{msvcCt}, #{csvsCt}, #{ssvcCt}, #{otherCt})
+	</insert>
+	
+	<insert id="insertConsignments" parameterType="hashMap">
+		INSERT INTO CMGMT_CT(CMGMT_SEQ, CMGMT_CT, OTHER_CT, TOTAL_CT, MGMT_SEQ)
+		VALUES((SELECT 'CNSM' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(CMGMT_SEQ), 'CNSM000'), 5) + 1, '000'))
+		        FROM CMGMT_CT), #{cmgmtCt}, #{otherCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertConsignmentsReason" parameterType="hashMap">
+		INSERT INTO CMGMT_B(CMGMT_SEQ, CMGMT_CT, OTHER_CT)
+		VALUES((SELECT MAX(CMGMT_SEQ) FROM CMGMT_CT), #{cmgmtCt}, #{otherCt})
+	</insert>
+	
+	<insert id="insertMeeting" parameterType="hashMap">
+		INSERT INTO MEETING_CT(MEETING_SEQ, CB_CT, AB_CT, ATTDC_CT, OPERATION_CT, OTHER_CT, TOTAL_CT, MGMT_SEQ)
+		VALUES((SELECT 'MEET' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(MEETING_SEQ), 'MEET000'), 5) + 1, '000'))
+		        FROM MEETING_CT), #{cbCt}, #{abCt}, #{attdcCt}, #{operationCt}, #{otherCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertMeetingReason" parameterType="hashMap">
+		INSERT INTO MEETING_B(MEETING_SEQ, CB_CT, AB_CT, ATTDC_CT, OPERATION_CT, OTHER_CT)
+		VALUES((SELECT MAX(MEETING_SEQ) FROM MEETING_CT), #{cbCt}, #{abCt}, #{attdcCt}, #{operationCt}, #{otherCt})
+	</insert>
+	
+	<insert id="insertBuilding" parameterType="hashMap">
+		INSERT INTO BINSR_CT(BINSR_SEQ, BINSR_CT, NOTE, MGMT_SEQ)
+		VALUES((SELECT 'BINSR' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(BINSR_SEQ), 'BINSR000'), 6) + 1, '000'))
+		        FROM BINSR_CT), #{binsrCt}, #{note}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertElectrocity" parameterType="hashMap">
+		INSERT INTO ELEC_CT(ELEC_SEQ, SELEC_CT, IELEC_CT, TOTAL_CT, MGMG_SEQ)
+		VALUES((SELECT 'ELEC' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(ELEC_SEQ), 'ELEC000'), 5) + 1, '000'))
+		        FROM ELEC_CT), #{selectCt}, #{ielectCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertSharedElec" parameterType="hashMap">
+		INSERT INTO SELEC_DET(ELEC_SEQ, USAGE, PRICE)
+		VALUES((SELECT MAX(ELEC_SEQ) FROM ELEC_CT), #{usage}, #{price})
+	</insert>
+	
+	<insert id="insertIndividualElec" parameterType="hashMap">
+		INSERT INTO IELEC_DET(ELEC_SEQ, USAGE, PRICE)
+		VALUES((SELECT MAX(ELEC_SEQ) FROM ELEC_CT), #{usage}, #{price})
+	</insert>
+	
+	<insert id="insertWater" parameterType="hashMap">
+		INSERT INTO WATER_CT(WATER_SEQ, SWATER_CT, IWATER_CT, TOTAL_CT, MGMG_SEQ)
+		VALUES((SELECT 'WATER' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(WATER_SEQ), 'WATER000'), 6) + 1, '000'))
+		        FROM WATER_CT), #{swaterCt}, #{iwaterCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertSharedWater" parameterType="hashMap">
+		INSERT INTO SWATER_DET(WATER_SEQ, USAGE, PRICE)
+		VALUES((SELECT MAX(WATER_SEQ) FROM WATER_CT), #{usage}, #{price})
+	</insert>
+	
+	<insert id="insertIndividualWater" parameterType="hashMap">
+		INSERT INTO IWATER_DET(WATER_SEQ, USAGE, PRICE)
+		VALUES((SELECT MAX(WATER_SEQ) FROM WATER_CT), #{usage}, #{price})
+	</insert>
+	
+	<insert id="insertHeating" parameterType="hashMap">
+		INSERT INTO HEATING_CT(HEAT_SEQ, SHEAT_CT, IHEAT_CT, TOTAL_CT, MGMT_SEQ)
+		VALUES((SELECT 'HEAT' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(HEAT_SEQ), 'HEAT000'), 5) + 1, '000'))
+		        FROM HEATING_CT), #{sheatCt}, #{iheatCt}, #{totalCt}, (SELECT MAX(MGMT_SEQ) FROM MGMT_COST))
+	</insert>
+	
+	<insert id="insertSharedHeating" parameterType="hashMap">
+		INSERT INTO SHEAT_DET(HEAT_SEQ, USAGE, PRICE)
+		VALUES((SELECT MAX(HEAT_SEQ) FROM HEATING_CT), #{usage}, #{price})
+	</insert>
+	
+	<insert id="insertIndividualHeating" parameterType="hashMap">
+		INSERT INTO IHEAT_DET(HEAT_SEQ, USAGE, PRICE)
+		VALUES((SELECT MAX(HEAT_SEQ) FROM HEATING_CT), #{usage}, #{price})
+	</insert>
+	
+	<select id="getChargeList" parameterType="string" resultType="chargeItemVO">
+		SELECT MGMT_SEQ, ROOM_CODE, YM, TOTAL_CT, PAY_YN, TO_CHAR(PAY_DT, 'YYYY/MM/DD HH24:MI:SS') PAY_DT, LATE_CT
+		FROM MGMT_COST
+		WHERE ROOM_CODE LIKE #{danjiCode}||'_%'
+	</select>
+	
+</mapper>

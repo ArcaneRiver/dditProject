@@ -1,0 +1,13 @@
+package com.homecat.sweethome.mapper.visitCar;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.visitCar.VisitCarVO;
+
+public interface VisitCarMapper {
+
+	public List<VisitCarVO> getVisitCarList();
+
+	public int creatPost(VisitCarVO visitCarVO);
+
+}

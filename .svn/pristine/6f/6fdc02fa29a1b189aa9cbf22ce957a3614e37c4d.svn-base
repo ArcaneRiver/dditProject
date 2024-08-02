@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.member.MemberListMapper">
+	
+	
+	<!-- 승인 대기 목록  -->
+	<select id="waitList" resultType="memberVO">
+		SELECT
+     	MEM_ID, MEM_NM, ROOM_CODE, MEM_TELNO, MEM_BIRTH, REG_DT
+		FROM
+    	MEMBER
+    	WHERE MVI_STATUS = 'mvi02' AND MEM_AUTH = 'user'
+    	ORDER BY REG_DT ASC
+	</select>
+	
+	<!-- 대기자 수 -->
+	<select id="waitCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+    		MEMBER
+    	WHERE 
+    		MVI_STATUS = 'mvi02' 
+    		AND 
+    		MEM_AUTH = 'user'
+	</select>
+	
+	
+	<!-- 승인  -->
+	<update id="signOk" parameterType="String" >
+		UPDATE MEMBER
+		SET MVI_STATUS = 'mvi01'
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	<!-- 반려  -->
+	<update id="signNo" parameterType="String" >
+		UPDATE MEMBER
+		SET MVI_STATUS = 'mvi03'
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	
+	
+</mapper>

@@ -1,0 +1,157 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<style>
+tbody tr:hover{
+	background-color: lightgrey;
+}
+</style>
+<script>
+$(function() {
+    // 검색 버튼 클릭 시
+    $("#btnSearch").on("click", function() {
+        let keyword = $("#search").val();
+        getList(keyword, 1);
+    });
+
+    // 전체보기 버튼 클릭 시
+    $("#btnSearchAll").on("click", function() {
+        getList("", 1);
+    });
+
+    // 설문 등록 버튼 클릭 시
+    $("#btnCreate").on("click", function() {
+        window.location.href = "/survey/create";
+    });
+    
+    $(document).on('click', ".tblRow", function(){
+    	console.log($(this).children().eq(1).html());
+    	location.href = "/survey/detail?svCode="+$(this).children().eq(1).html();
+    });
+
+    // 설문 목록을 서버에서 받아와 출력하는 함수
+    function getList(keyword, currentPage) {
+        let data = {
+            "keyword": keyword,
+            "currentPage": currentPage
+        };
+
+        $.ajax({
+            url: "/survey/listAjax",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(data),
+            type: "post",
+            dataType: "json",
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            },
+            success: function(result) {
+                let str = "";
+
+                $.each(result.content, function(idx, surveyVO) {
+                    str += "<tr class='tblRow'>";
+                    str += "<td><input type='checkbox' class='surveyCheckbox' value='" + surveyVO.svCode + "'></td>";
+                    str += "<td style='display: none'>" + (surveyVO.svCode) + "</td>";
+                    str += "<td>" + surveyVO.svTitle + "</td>";
+                    str += "<td>" + surveyVO.count + "</td>";
+                    str += "<td>" + new Date(surveyVO.beginTm).toLocaleString() + "</td>";
+                    str += "<td>" + new Date(surveyVO.endTm).toLocaleString() + "</td>";
+                    str += "<td>" + (surveyVO.endYn == 'N' ? '진행중' : '마감됨') + "</td>";
+                    str += "</tr>";
+                });
+	
+                $(".clsPagingArea").html(result.pagingArea);
+                $("#trShow").html(str);
+            }
+        });
+    }
+
+    // 설문 마감 처리 버튼 클릭 시
+    $("#closeSurveyBtn").on("click", function() {
+        let selectedSurveys = [];
+        $(".surveyCheckbox:checked").each(function() {
+            selectedSurveys.push($(this).val());
+        });
+
+        if (selectedSurveys.length === 0) {
+            alert("선택된 설문이 없습니다.");
+            return;
+        }
+
+        $.ajax({
+            url: "/survey/closeSurveys",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(selectedSurveys),
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            },
+            success: function(data) {
+                $(".surveyCheckbox:checked").each(function() {
+                    $(this).closest("tr").find("td:last").text("마감됨");
+                });
+                alert("선택된 설문이 마감 처리되었습니다.");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log("AJAX 오류 발생: " + textStatus, errorThrown);
+            }
+        });
+    });
+});
+</script>
+<div class="col-12">
+	<div class="card">
+		<div class="card-header">
+			<h3 class="card-title" style="font-size: 40px;">설문 조사</h3>
+			<div class="card-tools">
+				<div class="input-group input-group-sm" style="width: 150px;">
+					<input type="text" name="search" id="search"
+						class="form-control float-right" placeholder="Search">
+					<div class="input-group-append">
+						<button type="button" class="btn btn-default" id="btnSearch">
+							<i class="bx bx-search-alt-2"></i>
+						</button>		
+					</div>
+				</div>		
+			</div>
+		</div>   
+	 
+		<div class="card-body table-responsive" style="height: 600px;"> 
+    		<table class="table table-head-fixed text-nowrap">
+        		<thead>
+		            <tr>
+		                <th></th>
+		                <th>제목</th>
+		                <th>참여자 수</th>
+		                <th>시작일</th>
+		                <th>마감일</th>
+		                <th>마감여부</th>
+		            </tr>
+        		</thead>
+		        <tbody id="trShow">
+		            <c:forEach var="surveyVO" items="${surveyVOList}" varStatus="stat">
+		                <tr class=tblRow>
+		                    <td><input type="checkbox" class="surveyCheckbox" value="${surveyVO.svCode}" /></td>
+		                    <td style="display: none">${surveyVO.svCode}</td>
+		                    <td>${surveyVO.svTitle}</td>
+		                    <td>${surveyVO.count}</td>
+		                    <td>${surveyVO.beginTm}</td>
+		                    <td>${surveyVO.endTm}</td>
+		                    <td>${surveyVO.endYn == 'N' ? '진행중' : '마감됨'}</td>
+		                </tr>
+		            </c:forEach>
+		        </tbody>
+		    </table>
+		</div>
+		<div class="row">
+			<div class="col-5"></div>
+			<div class="col-6 clsPagingArea" style="float: left">
+				${articlePage.pagingArea}
+			</div>
+		</div>
+		
+		<div class="text-center">
+			<a href="/survey/create" class="btn btn-primary">설문 등록</a>
+			<button type="button" class="btn btn-primary">마감 처리</button>		
+		</div>
+    </div>
+</div>

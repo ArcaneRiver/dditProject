@@ -1,0 +1,44 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<div class="col-12">
+	<div class="card">
+		<div class="card-header">
+			<h3 class="card-title" style="font-size: 40px;">나의 민원 내역</h3>
+			
+		</div>
+		
+		<div class="card-body table-responsive" style="min-height: 500px;">
+			<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>순번</th>
+							<th>민원</th>
+							<th>등록일</th>
+							<th>상태</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:if test="${fn:length(complainVOList)==0}">
+							<tr>
+								<td colspan="4" align="center">신청한 민원이 없습니다.</td>
+							</tr>
+						</c:if>
+						<c:forEach var="complainVO" items="${complainVOList}" varStatus="stat">
+							<tr>
+								<td>${stat.count}</td>
+								<td>${complainVO.compContent}</td>
+								<td>${complainVO.regDt}</td>
+								<td>
+									<c:if test="${complainVO.reply eq null}">대기중</c:if>
+									<c:if test="${complainVO.reply ne null}">답변완료</c:if>
+								</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+		</div>
+	</div>
+</div>
+

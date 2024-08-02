@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.visitCar.VisitCarMapper">
+	
+	<!-- 방문차량 리스트 -->
+	<select id="getVisitCarList" resultType="com.homecat.sweethome.vo.visitCar.VisitCarVO">
+	SELECT CAR_NO, MEM_ID, TO_CHAR(REG_DT, 'YYYY/MM/DD HH24:MI:SS') REG_DT,  TO_CHAR(IN_TM, 'YYYY/MM/DD HH24:MI') IN_TM
+           ,TO_CHAR(OUT_TM, 'YYYY/MM/DD HH24:MI') OUT_TM, PURPOSE, VISITOR_NAME
+           , VISITOR_TELNO, CANCEL_YN, TO_CHAR(CANCEL_TM, 'YYYY/MM/DD HH24:MI') CANCEL_TM, STATUS
+	FROM VISIT_CAR
+	ORDER BY REG_DT
+	</select>
+	
+	<!-- 방문차량 신청 -->
+	<insert id="creatPost" parameterType="com.homecat.sweethome.vo.visitCar.VisitCarVO">
+    INSERT INTO VISIT_CAR(MEM_ID, CAR_NO, VISITOR_NAME, VISITOR_TELNO, IN_TM, OUT_TM, PURPOSE)
+    VALUES (
+        #{memId},
+        #{carNo},
+        #{visitorName},
+        #{visitorTelno},
+        TO_DATE(#{inTm}, 'YYYY-MM-DD HH24:MI:SS'),
+        TO_DATE(#{outTm}, 'YYYY-MM-DD HH24:MI:SS'),
+        #{purpose}
+    )
+	</insert>
+	
+</mapper>

@@ -1,0 +1,92 @@
+package com.homecat.sweethome.service.calendar;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.calendar.CalendarVO;
+
+
+/**
+ * @author PC-21
+ *
+ */
+public interface CalendarService {
+
+	/**
+	 * 입주민 - 캘린더 리스트 가져오기(ajax)
+	 * @param map
+	 * @return
+	 */
+	public List<CalendarVO> list(Map<String, Object> map);
+
+	
+	/**
+	 * 입주민 - 캘린더 등록하기(ajax)
+	 * @param calendarVO
+	 * @return
+	 */
+	public int addEvent(CalendarVO calendarVO);
+
+	/**
+	 * 입주민 - 캘린더 상세 조회(ajax)
+	 * @param calendarVO
+	 * @return
+	 */
+	public CalendarVO detail(CalendarVO calendarVO);
+
+	/**
+	 * 입주민 - 캘린더 일정 수정(ajax)
+	 * @param calendarVO
+	 * @return
+	 */
+	public int updateEvent(CalendarVO calendarVO);
+
+	/**
+	 * 입주민 - 캘린더 삭제(ajax)
+	 * @param calendarVO
+	 * @return
+	 */
+	public int deleteEvent(CalendarVO calendarVO);
+
+	/**
+	 * 관리자 - 캘린더 리스트 가져오기(ajax)
+	 * @param map
+	 * @return
+	 */
+	public List<CalendarVO> adminCalList(Map<String, Object> map);
+
+	/**
+	 * 관리자 - 캘린더 등록하기(ajax)
+	 * @param calendarVO
+	 * @return
+	 */
+	public int adminAddEvent(CalendarVO calendarVO);
+
+	/**
+	 * 관리자 - 캘린더 상세 조회(ajax)
+	 * @param calendarVO
+	 * @return
+	 */
+	public CalendarVO adminDetailEvent(CalendarVO calendarVO);
+
+	/**
+	 * 관리자 - 캘린더 일정 수정(ajax)
+	 * @param calendarVO
+	 * @return
+	 */
+	public int adminUpdateEvent(CalendarVO calendarVO);
+
+	/**
+	 * 관리자 - 캘린더 삭제(ajax)
+	 * @param calendarVO
+	 * @return
+	 */
+	public int adminDeleteEvent(CalendarVO calendarVO);
+
+
+	public int dragUp(CalendarVO calendarVO);
+
+
+
+}

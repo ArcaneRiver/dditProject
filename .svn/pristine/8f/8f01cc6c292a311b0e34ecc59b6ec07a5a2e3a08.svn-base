@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.moveout.MoveoutMapper">
+
+	<insert id="insert" parameterType="moveoutVO">
+		INSERT INTO MOVE_OUT(MVO_SEQ, MEM_ID, REG_DT, EST_DT, MVO_DT, PAY_YN, CANCEL_YN, CANCEL_TM, ROOM_CODE, APPLICANT, APPLICANT_TELNO, CHARGE, STATUS)
+		VALUES((SELECT 'MVO' || TRIM(TO_CHAR(SUBSTR(NVL(MAX(MVO_SEQ), 'MVO000'), 4) + 1, '000'))
+		        FROM MOVE_OUT), #{memId}, SYSDATE, TO_DATE(#{estDt}, 'YYYY/MM/DD'), NULL, 'N', 'N', NULL, #{roomCode}, #{applicant}, #{applicantTelno}, 0, '신청')
+	</insert>
+
+</mapper>

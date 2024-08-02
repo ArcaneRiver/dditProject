@@ -1,0 +1,128 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<style>
+tbody tr:hover{
+	background-color: lightgrey;
+}
+</style>
+<br>
+<div class="col-12 row">
+	<div class="col-4">
+		<div class="card">
+			<div class="card-header">
+				<div class="row">
+					<div class="col-11">
+						<h3>공지사항</h3>
+					</div>
+					<div class="col-1">
+						<h3><a href="/site/notice?boardCat=board_site" style="font: 2em;text-decoration-line: none;">+</a></h3>
+					</div>
+				</div>
+			</div>
+			<div class="card-body" style="height: 180px;">
+				<table>
+					<thead>
+						<tr>
+							<th width="10%">작성자</th>
+							<th width="35%">제목</th>
+							<th width="35%">등록일</th>
+							<th width="10%">조회수</th>
+							<th width="10%">추천수</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach var="boardVO" items="${boardVOList}" varStatus="stat">
+							<tr class="tblRow">
+								<td style="display: none">${boardVO.brdSeq}</td>
+								<td width="10%">${boardVO.memId}</td>
+								<td width="35%">${boardVO.title}</td>
+								<td width="35%">${boardVO.regDt}</td>
+								<td width="10%">${boardVO.viewCnt}</td>
+								<td width="10%">${boardVO.likeCnt}</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="col-4">
+		<div class="card">
+			<div class="card-header">
+				<div class="row">
+					<div class="col-11">
+						<h3>입찰공고</h3>
+					</div>
+					<div class="col-1">
+						<h3><a href="/site/bidList" style="font: 2em;text-decoration-line: none;">+</a></h3>
+					</div>
+				</div>
+			</div>
+			<div class="card-body" style="height: 180px;">
+				<p>입찰공고 리스트</p>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 로그인 안했을 경우 -->
+	<c:if test="${login ne 'ok'}">
+		<div class="col-4">
+			<div class="card">
+				<div class="card-header">
+					<h3>방문자 수</h3>
+				</div>
+				<div class="card-body" style="height: 180px;">
+					<table>
+						<tr>
+							<td width="100px">총 방문자: </td>
+							<td><span style="font-size: 1.5em;">${visitTotal}명</span></td>
+						</tr>
+						<tr>
+							<td width="100px">오늘 방문자: </td>
+							<td><span style="font-size: 1.5em;">${visitToday}명</span></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</c:if>
+	<!-- 로그인 했을 경우 -->
+	<c:if test="${login eq 'ok'}">
+		<div class="col-2">
+			<div class="card">
+				<div class="card-header">
+					<h3>방문자 수</h3>
+				</div>
+				<div class="card-body" style="height: 180px;">
+					<table>
+						<tr>
+							<td width="100px">총 방문자: </td>
+							<td><span style="font-size: 1.5em;">${visitTotal}명</span></td>
+						</tr>
+						<tr>
+							<td width="100px">오늘 방문자: </td>
+							<td><span style="font-size: 1.5em;">${visitToday}명</span></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-2">
+			<div class="card">
+				<div class="card-header">
+					<h3>로그인 정보</h3>
+				</div>
+				<div class="card-body" style="height: 180px;">
+				
+				</div>
+			</div>
+		</div>
+	</c:if>
+</div>
+<br>
+<script>
+$(document).on('click', ".tblRow", function(){
+	console.log($(this).children().eq(0).html());
+	location.href = "/site/notice/detail?brdNo="+$(this).children().eq(0).html();
+})
+</script>

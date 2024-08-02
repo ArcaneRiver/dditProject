@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.calendar.CalendarMapper">
+
+	<select id="list" parameterType="hashMap" resultType="calendarVO">
+		select CAL_SEQ, MEM_ID, CAL_TITLE, CAL_START, CAL_END, CAL_CONTENT, CAL_SORT
+		from calendar
+	</select>
+	
+	<select id="calendarList" parameterType="String" resultType="Map">
+		select CAL_SEQ, MEM_ID, CAL_TITLE, CAL_START, CAL_END, CAL_CONTENT, CAL_SORT
+		from calendar
+	</select>
+	
+	
+	<select id="calenList" resultType="Map">
+		select CAL_SEQ, MEM_ID, CAL_TITLE, CAL_START, CAL_END, CAL_CONTENT, CAL_SORT
+		from calendar
+	</select>
+	
+	
+	
+	
+</mapper>

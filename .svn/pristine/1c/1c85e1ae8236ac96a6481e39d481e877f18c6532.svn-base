@@ -1,0 +1,10 @@
+package com.homecat.sweethome.mapper.moveout;
+
+import com.homecat.sweethome.vo.moveout.MoveoutVO;
+
+public interface MoveoutMapper {
+
+	public int insert(MoveoutVO moveoutVO);
+
+
+}

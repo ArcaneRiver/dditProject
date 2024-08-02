@@ -1,0 +1,13 @@
+package com.homecat.sweethome.service.complain;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.complain.ComplainVO;
+
+public interface ComplainService {
+
+	public int create(ComplainVO complainVO);
+
+	public List<ComplainVO> getList(String memId);
+
+}

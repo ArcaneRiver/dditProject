@@ -1,0 +1,55 @@
+package com.homecat.sweethome.service.impl.maintenance;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.maintenance.MaintenanceMapper;
+import com.homecat.sweethome.service.maintenance.MaintenanceService;
+import com.homecat.sweethome.vo.maintenance.MaintenanceVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+public class MaintenanceServiceImpl implements MaintenanceService{
+
+	@Autowired
+	MaintenanceMapper maintenanceMapper;
+	
+	//목록 뷰	
+	public List<MaintenanceVO> list(Map<String, Object> map){
+		return this.maintenanceMapper.list(map);
+	}
+
+	//상세 뷰
+	@Override
+	public MaintenanceVO detail(String mtSeq) {
+		return this.maintenanceMapper.detail(mtSeq);
+	}
+
+	//하자보수 신청
+	@Override
+	public int createPost(MaintenanceVO maintenanceVO) {
+		
+		// 하자보수 순번 가져오기
+		String mtSeq = this.maintenanceMapper.getMtSeq();
+		maintenanceVO.setMtSeq(mtSeq);
+		
+		return this.maintenanceMapper.createPost(maintenanceVO);
+	}
+
+	//회원정보 가져오기
+	@Override
+	public MaintenanceVO getMemberInfo(String memId) {
+		return this.maintenanceMapper.getMemberInfo(memId);
+	}
+
+	@Override
+	public String getMtSeq() {
+		return this.maintenanceMapper.getMtSeq();
+	}
+
+	
+}

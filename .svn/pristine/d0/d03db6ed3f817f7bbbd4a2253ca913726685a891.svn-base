@@ -1,0 +1,59 @@
+package com.homecat.sweethome.controller.survey;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.homecat.sweethome.service.survey.SurveyService;
+import com.homecat.sweethome.vo.survey.SurveyVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@RequestMapping("survey")
+@Slf4j
+@Controller
+public class SurveyController {
+	
+	@Autowired
+	SurveyService surveyService;
+	
+	// 설문지 입력 뷰
+	@GetMapping("/create")
+	public String create() {
+		
+		log.info("설문지 제작페이지에 왔다");
+		
+		return "survey/create";
+	}
+	
+	// 설문지 입력 실행(관리자)
+	@PostMapping("/createPost")
+	public String createPost(SurveyVO surveyVO) {
+		log.info("작성완료하고 리스트로 보내기");
+		log.info("createPost->SurveyVO : " + surveyVO);
+		
+		int result = this.surveyService.createPost(surveyVO);
+		log.info("createPost->result : " + result);
+		
+		//입력 후 리스트로 이동
+		return "redirect:/survey/list";
+	}
+	
+	// 설문 목록
+	@GetMapping("/list")
+	public String surveyList(Model model) {
+		log.info("이곳은 surveyList가 나오는곳이드아");
+		
+		List<SurveyVO> surveyVOList = this.surveyService.getList();
+		log.info("surveyVOList : " + surveyVOList);
+		
+		model.addAttribute("surveyVOList", surveyVOList);
+		
+		return "survey/list";
+	}
+}

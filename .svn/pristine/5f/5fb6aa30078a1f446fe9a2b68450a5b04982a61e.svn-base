@@ -1,0 +1,161 @@
+package com.homecat.sweethome.controller.publicFacilities;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.publicFacilities.BookService;
+import com.homecat.sweethome.unit.ArticlePage;
+import com.homecat.sweethome.vo.publicFacilities.BookLoanVO;
+import com.homecat.sweethome.vo.publicFacilities.BookRentalTotalVO;
+import com.homecat.sweethome.vo.publicFacilities.BookVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/book")
+@Slf4j
+public class BookController {
+
+	@Autowired
+	BookService bookservice;
+	
+	@GetMapping("/list")
+	public String bookList(Model model,
+			@RequestParam(value = "currentPage", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword
+			) {
+		
+		log.info("bookList 이다.");
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("keyword",keyword );
+		map.put("currentPage", currentPage);
+		
+		List<BookVO> bookList = this.bookservice.bookList(map);
+		log.info("bookList list>> " + bookList);
+		
+		int total = this.bookservice.getTotal(map);
+		log.info("bookList total>> " + total);
+		
+		log.info("bookList->keyword : " + keyword);
+		model.addAttribute("articlePage",new ArticlePage<BookVO>(total, currentPage, 10, bookList, keyword));
+		
+		model.addAttribute("bookList",bookList);
+		
+		
+		return "/publicFacilities/bookList";
+	}
+	
+	@ResponseBody
+	@PostMapping("/listAjax")
+	public ArticlePage<BookVO> listAjax(@RequestBody Map<String, Object> map) {
+		
+		System.out.println("listAjax다다다ㅏ다ㅏ");
+		
+		int total = this.bookservice.getTotal(map);
+		log.info("listAjax total>> " + total);
+		
+		List<BookVO> bookList = this.bookservice.bookList(map);
+		log.info("listAjax list>> " + bookList);
+		
+		
+		
+		return new ArticlePage<BookVO>(total, Integer.parseInt(map.get("currentPage").toString()), 10, bookList, map.get("keyword").toString());
+	}
+	
+	
+//	@ResponseBody
+//	@PostMapping(value = "/detailAjax")
+//	public BookVO detailAjax(@RequestBody BookVO bookVO , Model model) {
+//		
+//		bookVO = this.bookservice.detail(bookVO);
+//		log.info("detailAjax -> bookVO  : " + bookVO);
+//		
+//		model.addAttribute("bookVO" , bookVO);
+//		
+//		return bookVO;
+//	}
+//	
+//	
+//	
+//	@ResponseBody
+//	@PostMapping(value = "/rentalAjax")
+//	public ResponseEntity<String> rentalAjax(@RequestBody BookRentalTotalVO request, Model model) {
+//	    try {
+//	        BookVO bookVO = request.getBookVO();
+//	        BookLoanVO bookLoanVO = request.getBookLoanVO();
+//
+//	        log.info("rentalAjax -> bookVO  : " + bookVO);
+//	        log.info("rentalAjax -> bookLoanVO  : " + bookLoanVO);
+//
+//	        int resultR = this.bookservice.rentalAjax(bookLoanVO);
+//	        log.info("rentalAjax -> rental result  : " + resultR);
+//
+//	        int resultS = this.bookservice.stateAjax(bookVO);
+//	        log.info("rentalAjax -> state result  : " + resultS);
+//
+//	        if (resultR > 0 && resultS > 0) {
+//	            return ResponseEntity.ok("Rental successful");
+//	        } else {
+//	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Rental failed");
+//	        }
+//	    } catch (Exception e) {
+//	        log.error("Error during rental process", e);
+//	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+//	    }
+//	}
+	
+	@ResponseBody
+	@PostMapping(value = "/rentalAjax")
+	public BookLoanVO rentalAjax(@RequestBody  BookLoanVO bookLoanVO) {
+		log.info("rentalAjax bookLoanVO  : " + bookLoanVO);
+		
+	    int resultR = this.bookservice.rentalAjax(bookLoanVO);
+        log.info("rentalAjax -> rental result  : " + resultR);
+        
+        return bookLoanVO;
+	}
+	
+	@ResponseBody
+	@PostMapping(value = "/stateAjax")
+	public BookVO stateAjax(@RequestBody  BookVO bookVO) {
+		
+		log.info("stateAjax-> bookVO : " + bookVO);
+		
+        int resultS = this.bookservice.stateAjax(bookVO);
+        log.info("rentalAjax -> state result  : " + resultS);
+        
+        return bookVO;
+	}
+	
+	@ResponseBody
+	@PostMapping("/checkmem")
+	public int checkmem(String memId) {
+		log.info(memId);
+		memId = "b00k";
+		int result = this.bookservice.checkmem(memId);
+		log.info("checkmem-->result : " + result);
+		System.out.println(result);
+		
+	    // 사용자가 대출 중이거나 연체된 책이 3권 이상인 경우 -1 반환
+	    if (result >= 3) {
+	        return -1;
+	    }
+		
+		return result;
+	}
+	
+}

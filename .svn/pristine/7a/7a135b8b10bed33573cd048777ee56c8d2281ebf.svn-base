@@ -1,0 +1,105 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+	integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+<script type="text/javascript">
+$(function(){
+	
+
+	//btnSearch 요소를 클릭 시 검색 처리
+	$("#btnSearch").on("click",function(){
+		console.log("검색검색");
+		//검색어
+		let keyword = $("input[name='table_search']").val();
+		
+		//json오브젝트
+		let data = {
+				"keyword":keyword
+		};
+		
+		$.ajax({
+			url: "/waste/wasteList",
+			contentType:"application/json;charset=utf-8",
+			type: "GET",
+			data: JSON.stringify(data),
+			success: function(result) {
+			$("#wasteListContainer").html(result);
+			},
+			error: function(error) {
+				console.log("result:", result);
+			}
+		});
+	});
+		
+		//form을 submit
+		console.log("data : ", data);
+	
+		getList(table_search,"1");
+	
+	//전체 보기
+	$("#btnSearchAll").on("click",function(){
+		getList("",1);
+	});
+});
+</script>
+
+<div class="col-6">
+	<div class="card">
+		<div class="card-header" style="display: flex;">
+			<h4 class="card-title" style="font-size: 40px;">폐기물 배출 신청 목록</h4>
+			<div class="card-tools" style="margin-left: auto;">
+				<div class="input-group input-group-sm" style="width: 300px;">
+					<input type="text" name="table_search" class="form-control float-right" placeholder="검색어 입력">
+					<div class="input-group-append">
+						<button type="button" id="btnSearch">검색</button>
+						<button type="button" id="btnSearchAll">전체보기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="card-body table-responsive p-0">
+			<table class="table table-hover text-nowrap">
+				<thead>
+					<tr align="center">
+<!-- 						<th><input type="checkbox" id="chkAll"/></th> -->
+						<th>순번</th>
+						<th>접수번호</th>
+						<th>신청인ID</th>
+						<th>폐기물품목</th>
+						<th>수량</th>
+<!-- 						<th>배출예정일</th> -->
+						<th>접수일시</th>
+						<th>처리상태</th>
+					</tr>
+				</thead>
+					<c:forEach var="wasteVO" items="${wasteVOList}" varStatus="stat">
+						
+						<tr class="tblRow" align="center">
+<!-- 							<td><input type="checkbox" /></td> -->
+							<td data-waste-seq="${wasteVO.wasteSeq}">${wasteVO.rnum}</td>
+							<td><a href="/waste/detail?wasteSeq=${wasteVO.wasteSeq}">${wasteVO.wasteSeq}</a></td>
+							<td>${wasteVO.memId}</td>
+							<td>${wasteVO.commDetailVO.commDetCodeNm}</td>
+							<td>${wasteVO.qty}</td>
+<%-- 							<td><span class="date"><fmt:formatDate value="${wasteVO.estDt}" pattern="yyyy-MM-dd" /></span></td> --%>
+							<td><span class="date"><fmt:formatDate value="${wasteVO.regDt}" pattern="yyyy-MM-dd hh:dd:ss" /></span></td>
+							<td>${wasteVO.wasteStatus}</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- <script> -->
+<!--  $(".tblRow").on('click', function(){ -->
+<!--  	console.log($(this).children().eq(0).html()); -->
+<!--  	location.href = "/sample/boardDetail?brdNo="+$(this).children().eq(0).html(); -->
+<!--  }) -->
+<!-- </script> -->

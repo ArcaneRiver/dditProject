@@ -1,0 +1,15 @@
+package com.homecat.sweethome.controller.master;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.homecat.sweethome.controller.admin.AdminController;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/master")
+@Controller
+public class AdminListController {
+	
+}

@@ -1,0 +1,46 @@
+package com.homecat.sweethome.controller.member;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.member.LogInService;
+import com.homecat.sweethome.vo.member.MemberVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class LogInController {
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	LogInService logInService;
+	
+	/*
+	@GetMapping("/loginForm")
+	public String logIn() {
+		return "/security/loginForm";
+	}
+	*/
+	
+	@ResponseBody
+	@PostMapping("/chkAuth")
+	public Map<Object, Object> chkAuth(@RequestBody MemberVO memberVO) {
+		
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		
+		MemberVO auth = logInService.chkAuth(memberVO.getMemId());
+		map.put("auth", auth);
+		log.info("map -> {}",map);
+		return map;
+	}
+	
+}

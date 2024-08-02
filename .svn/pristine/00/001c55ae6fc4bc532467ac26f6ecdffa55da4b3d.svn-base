@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.waste.WasteMapper">
+
+	<resultMap type="wasteVO" id="wasteMap">
+		<result property="rnum" column="RNUM"/>
+		<result property="wasteSeq" column="WASTE_SEQ"/>
+		<result property="memId" column="MEM_ID"/>
+		<result property="regDt" column="REG_DT"/>
+		<result property="wasteItem" column="WASTE_ITEM"/>
+		<result property="qty" column="QTY"/>
+		<result property="fee" column="FEE"/>
+		<result property="etc" column="ETC"/>
+		<result property="recycleYn" column="RECYCLE_YN"/>
+		<result property="estDt" column="EST_DT"/>
+		<result property="attach" column="ATTACH"/>
+		<result property="wasteStatus" column="WASTE_STATUS"/>
+		<result property="cancelYn" column="CANCEL_YN"/>
+		<result property="cancelTm" column="CANCEL_TM"/>
+		<association property="commDetailVO" javaType="commDetailVO">
+			<result property="commDetCode" column="COMM_DET_CODE"/>
+			<result property="commDetCodeNm" column="COMM_DET_CODE_NM"/>
+			<result property="commDetCodeDscr" column="COMM_DET_CODE_DSCR"/>
+			<result property="commCode" column="COMM_CODE"/>
+		</association>
+	</resultMap>
+
+	<select id="wasteList" parameterType="hashMap" resultType="wasteVO" resultMap="wasteMap">
+		SELECT 
+			ROW_NUMBER() OVER(ORDER BY WASTE_SEQ ASC) RNUM,
+			A.WASTE_SEQ
+		  , A.MEM_ID
+		  , B.COMM_DET_CODE_NM
+		  , A.QTY
+		  , TO_CHAR(A.REG_DT, 'YYYY/MM/DD HH24:MI:SS') REG_DT
+		  , A.WASTE_ITEM
+		  , A.WASTE_STATUS
+		FROM
+			WASTE A
+		JOIN
+			COMM_DETAIL B
+		ON A.WASTE_ITEM = B.COMM_DET_CODE
+		ORDER BY RNUM DESC
+	</select>
+	
+	<select id="detail" parameterType="wasteVO" resultMap="wasteMap">
+		SELECT 
+		    A.WASTE_SEQ
+		  , A.MEM_ID
+		  , B.COMM_DET_CODE_NM
+		  , A.QTY
+		  , CASE
+				WHEN RECYCLE_YN = 'Y' THEN '가능'
+				WHEN RECYCLE_YN = 'N' THEN '불가능'
+				ELSE 'Unknown'
+			END AS RECYCLE_YN
+		  , TO_CHAR(A.EST_DT, 'YYYY/MM/DD') EST_DT
+		  , TO_CHAR(A.REG_DT, 'YYYY/MM/DD HH24:MI:SS') REG_DT
+		  , A.WASTE_STATUS
+		FROM
+		    WASTE A
+		JOIN
+		    COMM_DETAIL B
+		ON A.WASTE_ITEM = B.COMM_DET_CODE AND A.WASTE_SEQ = #{wasteSeq}
+	</select>
+	
+	<insert id="createPost" parameterType="wasteVO">
+		INSERT INTO WASTE (
+			WASTE_SEQ
+			, MEM_ID
+			, REG_DT
+			, WASTE_ITEM
+			, QTY
+			, FEE
+			, ETC
+			, RECYCLE_YN
+			, EST_DT
+			, WASTE_STATUS
+		)
+		VALUES(
+			(
+				SELECT TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(NVL(MAX(TO_NUMBER(SUBSTR(WASTE_SEQ, 9, 3))), 0) + 1, 3, '0')
+				FROM WASTE
+				WHERE TO_CHAR(SYSDATE, 'YYYYMMDD') = SUBSTR(WASTE_SEQ, 1, 8)
+			),
+			'aaa',
+			SYSDATE,
+			(
+				SELECT WASTE_ITEM
+				FROM WASTE
+				WHERE WASTE_ITEM = (
+					SELECT COMM_DET_CODE
+					FROM COMM_DETAIL
+					WHERE COMM_DET_CODE_NM = #{commDetCodeNm}
+				)
+			),
+			#{qty},
+			 (SELECT #{qty} * TO_NUMBER(COMM_DET_CODE_DSCR) FROM COMM_DETAIL WHERE COMM_DET_CODE_NM = #{commDetCodeNm}),
+			#{etc},
+			#{recycleYn},
+			TO_DATE(#{estDt}, 'YYYY/MM/DD'),
+			'미승인'
+		)
+	</insert>
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

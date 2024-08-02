@@ -1,0 +1,14 @@
+package com.homecat.sweethome.vo.attach;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class AttachVO {
+
+	private String attachSeq;
+	private Date firstRegDt;
+	private String firstRegId;
+	private String delYn;
+}

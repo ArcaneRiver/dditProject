@@ -1,0 +1,11 @@
+package com.homecat.sweethome.service.ccpy;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.ccpy.CcpyVO;
+
+public interface CcpyService {
+
+	public List<CcpyVO> getCcpy();
+
+}

@@ -1,0 +1,20 @@
+package com.homecat.sweethome.mapper.publicFacilities;
+
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.publicFacilities.BookLoanVO;
+import com.homecat.sweethome.vo.publicFacilities.BookVO;
+
+public interface BookMapper {
+	
+	public List<BookVO> bookList(Map<String, Object> map);
+
+	public int getTotal(Map<String, Object> map);
+
+	public BookVO detail(BookVO bookVO);
+
+	public int rentalAjax(BookLoanVO bookLoanVO);
+
+	public int stateAjax(BookVO bookVO);
+}

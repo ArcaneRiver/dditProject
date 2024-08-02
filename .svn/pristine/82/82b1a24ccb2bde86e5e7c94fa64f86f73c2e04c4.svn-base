@@ -1,0 +1,54 @@
+package com.homecat.sweethome.controller.site;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/site")
+@Controller
+public class SiteController {
+
+	@GetMapping("/residentHome")
+	public String residentHome() {
+		log.info("residentHome에 왔다");
+		return "home/residentHome";
+	}
+	
+	@GetMapping("/introduce")
+	public String inroduce() {
+		log.info("introduce에 왔다");
+		
+		return "site/introduce";
+	}
+	
+	@GetMapping("/danji")
+	public String danji() {
+		log.info("danji에 왔다");
+		
+		return "site/danji";
+	}
+	
+	@GetMapping("/notice")
+	public String notice() {
+		log.info("notice에 왔다");
+		
+		return "site/noticeList";
+	}
+	
+	@GetMapping("/bidList")
+	public String bidList() {
+		log.info("bidList에 왔다");
+		
+		return "site/bidList";
+	}
+	
+	@GetMapping("/bidResult")
+	public String bidResult() {
+		log.info("bidResult에 왔다");
+		
+		return "site/bidResult";
+	}
+}

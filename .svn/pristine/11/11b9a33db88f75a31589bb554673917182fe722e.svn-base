@@ -1,0 +1,11 @@
+package com.homecat.sweethome.mapper.ccpy;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.ccpy.CcpyVO;
+
+public interface CcpyMapper {
+
+	public List<CcpyVO> getCcpy();
+
+}

@@ -1,0 +1,27 @@
+package com.homecat.sweethome.service.impl.complain;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.complain.ComplainMapper;
+import com.homecat.sweethome.service.complain.ComplainService;
+import com.homecat.sweethome.vo.complain.ComplainVO;
+
+@Service
+public class ComplainServiceImpl implements ComplainService {
+
+	@Autowired
+	ComplainMapper complainMapper;
+
+	@Override
+	public int create(ComplainVO complainVO) {
+		return this.complainMapper.create(complainVO);
+	}
+
+	@Override
+	public List<ComplainVO> getList(String memId) {
+		return this.complainMapper.getList(memId);
+	}
+}

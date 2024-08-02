@@ -1,0 +1,52 @@
+package com.homecat.sweethome.controller.delivery;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.delivery.DeliveryService;
+import com.homecat.sweethome.vo.delivery.DeliveryVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/delivery")
+public class DeliveryController {
+
+	@Autowired
+	DeliveryService deliveryService;
+	
+	@GetMapping("/resDeliveryList")
+	public String list(Model model, Map<String, Object> map) {
+		log.info("resDeliveryList 다아아아아");
+		
+		List<DeliveryVO> deliveryVOList = this.deliveryService.list(map);
+		log.info("deliveryVOList: {}",deliveryVOList);
+		
+		model.addAttribute("deliveryVOList", deliveryVOList);
+		
+		return "resident/delivery/resDelivery";
+	}
+	
+	@ResponseBody
+	@PostMapping("/resDeliveryDetail")
+	public DeliveryVO detail(@RequestBody DeliveryVO deliveryVO) {
+		log.info("resDeliveryDetail에 왔어요오오오");
+		log.info("detail(전)-> deliveryVO : {}", deliveryVO);
+		
+		deliveryVO = this.deliveryService.detail(deliveryVO);
+		log.info("detail(후)-> deliveryVO : {}", deliveryVO);
+		
+		
+		return deliveryVO;
+	}
+}

@@ -1,0 +1,17 @@
+package com.homecat.sweethome.vo.ccpy;
+
+import lombok.Data;
+
+@Data
+public class CcpyVO {
+	private String ccpyCode;
+	private String ccpyCat;
+	private String ccpyName;
+	private String ccpyTelno;
+	private String ccpyPost;
+	private String ccpyAddr;
+	private String ccpyAddrDetail;
+	private String bizRegNo;
+	private String cntrDt;
+	private String expDt;
+}

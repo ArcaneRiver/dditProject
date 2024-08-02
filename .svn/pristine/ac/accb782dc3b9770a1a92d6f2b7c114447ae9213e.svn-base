@@ -1,0 +1,87 @@
+package com.homecat.sweethome.controller.member;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.member.MemberListService;
+import com.homecat.sweethome.vo.member.MemberVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class FindIDPWController {
+	
+	@Autowired
+	MemberListService memberListService;
+	
+	@Autowired
+	BCryptPasswordEncoder bcryptPasswordEncoder;
+	
+	@GetMapping("/idFind")
+	public String idFind() {
+		log.info("아이디찾기!");
+		return "member/idFindForm";
+	}
+	
+	@GetMapping("/pwFind")
+	public String pwFind() {
+		log.info("비밀번호 찾기!");
+		return "member/pwFindForm";
+	}
+	
+	@GetMapping("/pwChange")
+	public String pwChange() {
+		log.info("비밀번호 변경!");
+		return "member/pwChangeForm";
+	}
+	
+	@ResponseBody
+	@PostMapping("/idFind.do")
+	public MemberVO idFind(@RequestBody Map<String, String> map) {
+		log.info("아이디찾기 컨트롤러!");
+		
+		String memNm = map.get("memNm");
+		String memTelno = map.get("memTelno");
+		
+		Map<String, String> memberMap = new HashMap<>();
+		
+		memberMap.put("memNm", memNm);
+		memberMap.put("memTelno", memTelno);
+		
+		MemberVO memberVO = memberListService.idFind(memberMap);
+		
+		if(memberVO == null) {
+			return new MemberVO();
+		}
+		
+		return memberVO;
+	}
+	
+	@ResponseBody
+	@PostMapping("/pwChange.do")
+	public int pwChange(@RequestBody MemberVO memberVO) {
+		log.info("비밀번호 변경 컨트롤러!");
+		
+		String encodedPw = bcryptPasswordEncoder.encode(memberVO.getMemPw());
+		
+		MemberVO memVO = new MemberVO();
+		
+		memVO.setMemId(memberVO.getMemId());
+		memVO.setMemPw(encodedPw);
+		
+		int pwChange = memberListService.enabledAccount(memVO);
+		log.info("변경 성공하면 1 뜰거임 -> ", pwChange);
+		return pwChange;
+	}
+	
+	
+}

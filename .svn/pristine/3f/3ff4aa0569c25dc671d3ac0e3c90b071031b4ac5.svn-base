@@ -1,0 +1,115 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>설문조사 제작 페이지</title>
+
+<!-- 임시 css -->
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    h2 {
+        color: #333;
+    }
+    fieldset {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    legend {
+        font-weight: bold;
+    }
+    input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+    table {
+        width: 100%;
+        margin-top: 20px;
+        text-align: center;
+    }
+    input[type="submit"], input[type="reset"], input[type="button"] {
+        padding: 10px 20px;
+        margin: 5px;
+    }
+</style>
+
+<script>
+	// 질문 추가 버튼
+    let questionCount = 5;
+
+    function addQuestion() {
+        questionCount++;
+        const fieldset = document.createElement("fieldset");
+        fieldset.setAttribute("name", "question");
+
+        const legend = document.createElement("legend");
+        legend.textContent = questionCount + ". 질문을 입력 해주세요";
+        fieldset.appendChild(legend);
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.name = "questions[" + (questionCount - 1) + "]";
+        input.placeholder = "질문을 입력해주세요";
+        fieldset.appendChild(input);
+
+        document.getElementById("questions").appendChild(fieldset);
+    }
+    
+    // 시간 관련
+    function formatDateTime(input, hiddenFieldId) {
+        const date = new Date(input.value);
+        const formattedDate = date.toISOString().slice(0, 16).replace("T", " ");
+        document.getElementById(hiddenFieldId).value = formattedDate;
+    } 
+</script>
+</head>
+<body>
+    <h2>설문조사</h2>
+    	<form action="/survey/createPost?${_csrf.parameterName}=${_csrf.token}" method="post">
+<!--     	<form action="/survey/createPost" method="post"> -->
+    	
+<!--    <p>설문 코드: <input type="text" id="svCode" name="svCode" placeholder="코드를 입력해주세요"></p> -->
+    	<p>설문 제목: <input type="text" id="svTitle" name="svTitle" placeholder="제목을 입력해주세요"></p>         
+    	<p>시작일: <input type="datetime-local" id="beginTm" name="beginTm" onchange="formatDateTime(this, 'beginTmFormatted')"></p>
+    	<input type="hidden" id="beginTmFormatted" name="beginTmFormatted">
+    	<p>마감일: <input type="datetime-local" id="endTm" name="endTm" onchange="formatDateTime(this, 'endTmFormatted')"></p>
+		<input type="hidden" id="endTmFormatted" name="endTmFormatted">
+		
+        <div id="questions">
+            <fieldset name="question">
+                <legend>1. 질문을 입력 해주세요</legend>
+                <input type="text" name="questions[0]" placeholder="질문을 입력해주세요">
+            </fieldset>
+            <fieldset name="question">
+                <legend>2. 질문을 입력 해주세요</legend>
+                <input type="text" name="questions[1]" placeholder="질문을 입력해주세요">
+            </fieldset>
+            <fieldset name="question">
+                <legend>3. 질문을 입력 해주세요</legend>
+                <input type="text" name="questions[2]" placeholder="질문을 입력해주세요">
+            </fieldset>
+            <fieldset name="question">
+                <legend>4. 질문을 입력 해주세요</legend>
+                <input type="text" name="questions[3]" placeholder="질문을 입력해주세요">
+            </fieldset>
+            <fieldset name="question">
+                <legend>5. 질문을 입력 해주세요</legend>
+                <input type="text" name="questions[4]" placeholder="질문을 입력해주세요">
+            </fieldset>
+        </div>
+        <table>
+            <tr>
+                <td><input type="submit" value="등록"></td>
+                <td><input type="reset" value="취소"></td>
+                <td><input type="button" value="질문 추가하기" onclick="addQuestion()"></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

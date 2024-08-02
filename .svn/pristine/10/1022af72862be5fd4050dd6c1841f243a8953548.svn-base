@@ -1,0 +1,17 @@
+package com.homecat.sweethome.service.charge;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.charge.ChargeItemVO;
+
+public interface ChargeService {
+
+	public List<String> getDongList(String danji);
+
+	public List<String> getRoomList(String dongCode);
+
+	public int chargeInsert(ChargeItemVO chargeItemVO);
+
+	public List<ChargeItemVO> getChargeList(String danjiCode);
+
+}

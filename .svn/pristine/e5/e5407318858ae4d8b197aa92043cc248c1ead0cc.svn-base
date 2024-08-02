@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.homecat.sweethome.mapper.publicFacilities.BookMapper">
+
+
+	<sql id="where">
+		<if test="keyword!=null and keyword!='' ">
+			AND (title LIKE '%'|| #{keyword} ||'%'
+			OR writer LIKE '%'||
+			#{keyword} ||'%'
+			OR book_cat LIKE '%'|| #{keyword} ||'%'
+			OR publisher
+			LIKE '%'|| #{keyword} ||'%'
+			OR status LIKE '%'|| #{keyword} ||'%')
+		</if>
+
+	</sql>
+
+
+	<select id="bookList" resultType="bookVO"
+		parameterType="hashMap">
+		SELECT T.*
+		FROM
+		(
+		SELECT ROW_NUMBER() OVER(ORDER BY book_code ) RNUM ,
+		book_code
+		, book_cat
+		, intro
+		, title
+		, writer
+		, publisher
+		, total_page
+		, status
+		, attach
+		, delyn
+		FROM book
+		WHERE 1 = 1
+		<include refid="where"></include>
+		) T
+		WHERE T.RNUM BETWEEN ((#{currentPage}*10) - (10-1)) AND
+		(#{currentPage} *10)
+		
+		and delyn = 'N'
+
+
+	</select>
+
+	<select id="getTotal" parameterType="hashMap" resultType="int">
+		select count(*)
+		from book
+		where 1=1
+		and delyn = 'N'
+		<include refid="where"></include>
+	</select>
+
+	<select id="detail" resultType="bookVO" parameterType="bookVO">
+		SELECT
+		book_code
+		, book_cat
+		, intro
+		, title
+		, writer
+		, publisher
+		, total_page
+		, status
+		, attach
+		FROM
+		book
+		where
+		book_code = #{bookCode}
+	</select>
+
+	<insert id="rentalAjax" parameterType="bookLoanVO">
+
+		INSERT INTO book_loan (
+		    loan_seq
+		    , book_code
+		    , mem_id
+		    , loan_dt
+		    , return_dt
+		    , return_status
+		) VALUES (
+		    (select substr(replace(sysdate,'/'),-6) ||  (SELECT nvl(LPAD(MAX(SUBSTR(LOAN_SEQ,7) + 1), 4,0),'0001') FROM book_loan)  from dual)
+		  , #{bookCode}
+		  , 'b00k'
+		  , sysdate
+		  , sysdate + 6
+		  , '대출중'
+		)
+	</insert>
+	
+	<update id="stateAjax" parameterType="bookVO">
+		UPDATE book
+		SET STATUS = '대출중'
+		where book_code = #{bookCode}
+	</update>
+	
+	<select id="checkmem" parameterType="string" resultType="int">
+	    SELECT COUNT(mem_Id)
+	    FROM book_loan
+	    WHERE mem_id = #{memId}
+	    AND (RETURN_STATUS = '대출중' OR RETURN_STATUS = '연체')
+	</select>
+	
+	
+	<update id="bookDelAjax" parameterType="bookVO">
+		update book
+		set delyn = 'Y'
+		where book_code = #{bookCode}
+	</update>
+	
+	
+	<update id="bookUpAjax" parameterType="bookVO">
+			UPDATE book
+			SET
+				 book_cat = #{bookCat}
+				, intro = #{intro}
+				, publisher = #{publisher}
+				, title = #{title}
+				, total_page = #{totalPage}
+				, writer = #{writer}
+			where
+				book_code = #{bookCode}
+	</update>
+	
+<!-- 
+		private List<MemberVO> memList;
+		private List<RoomVO> roomList;
+		private List<BookVO> bookList;
+ -->
+ 	
+ 	<resultMap type="bookLoanVO" id="bookLoanMap">
+ 		<result property="loanSeq" column="LOAN_SEQ"/>
+		<result property="bookCode" column="BOOK_CODE"/>
+		<result property="memId" column="MEM_ID"/>
+		<result property="loanDt" column="LOAN_DT"/>
+		<result property="returnDt" column="RETURN_DT"/>
+		<result property="returnStatus" column="RETURN_STATUS"/>
+		<collection property="memList" resultMap="mamMap"></collection>
+		<collection property="roomList" resultMap="roomMap"></collection>
+		<collection property="bookList" resultMap="bookMap"></collection>
+ 	</resultMap>
+ 
+ 	<resultMap type="memberVO" id="mamMap">
+ 		<result property="memId" column="MEM_ID"/>
+		<result property="roomCode" column="ROOM_CODE"/>
+		<result property="memPw" column="MEM_PW"/>
+		<result property="memNm" column="MEM_NM"/>
+		<result property="memBirth" column="MEM_BIRTH"/>
+		<result property="memSex" column="MEM_SEX"/>
+		<result property="memTelno" column="MEM_TELNO"/>
+		<result property="memEmail" column="MEM_EMAIL"/>
+		<result property="nickname" column="NICKNAME"/>
+		<result property="regDt" column="REG_DT"/>
+		<result property="mviStatus" column="MVI_STATUS"/>
+		<result property="profImg" column="PROF_IMG"/>
+		<result property="hshldrId" column="HSHLDR_ID"/>
+ 	</resultMap>
+ 	
+ 	<resultMap type="roomVO" id="roomMap">
+ 		<result property="roomCode" column="ROOM_CODE"/>
+		<result property="dongCode" column="DONG_CODE"/>
+		<result property="floorArea" column="FLOOR_AREA"/>
+ 	</resultMap>
+ 	
+ 	<resultMap type="bookVO" id="bookMap">
+ 		<result property="bookCode" column="BOOK_CODE"/>
+		<result property="bookCat" column="BOOK_CAT"/>
+		<result property="intro" column="INTRO"/>
+		<result property="title" column="TITLE"/>
+		<result property="writer" column="WRITER"/>	
+		<result property="publisher" column="PUBLISHER"/>
+		<result property="totalPage" column="TOTAL_PAGE"/>
+		<result property="status" column="STATUS"/>
+		<result property="attach" column="ATTACH"/>
+		<result property="delyn" column="DELYN"/>	
+ 	</resultMap>
+ 
+ 
+ 
+	<select id="rentalList" resultMap="bookLoanMap" parameterType="bookLoanVO">
+		SELECT
+		    b.loan_seq
+		  , b.book_code
+		  , a.title
+		  , b.mem_id
+		  , to_char(b.loan_dt, 'YYYY-MM-DD HH24:MI') loan_dt
+		  , to_char(b.return_dt, 'YYYY-MM-DD HH24:MI') return_dt
+		  , b.return_status
+		  , m.mem_nm
+		  , m.mem_telno
+		  ,(select substr(room_code, 5) from room) roomCode
+		  ,(select substr(dong_code, 5) from room) dongCode
+		FROM
+		    book_loan  b ,    member m , book a
+		    
+		where
+		    b.mem_id = m.mem_id
+		and a.book_code = b.book_code
+	</select>
+	
+	
+
+</mapper>

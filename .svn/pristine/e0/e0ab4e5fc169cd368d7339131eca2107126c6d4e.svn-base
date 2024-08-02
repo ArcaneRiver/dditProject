@@ -1,0 +1,40 @@
+package com.homecat.sweethome.service.impl.vote;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.vote.VoteMapper;
+import com.homecat.sweethome.service.vote.VoteService;
+import com.homecat.sweethome.vo.vote.VoteVO;
+
+@Service
+public class VoteServiceImpl implements VoteService {
+	
+	@Autowired
+	VoteMapper voteMapper;
+
+
+	@Override
+	public int getTotal(Map<String, Object> map) {
+		return this.voteMapper.getTotal(map);
+	}
+
+	@Override
+	public List<VoteVO> getList(Map<String, Object> map) {
+		return this.voteMapper.getList(map);
+	}
+	
+	@Override
+	public int createPost(VoteVO voteVO) {
+		return this.voteMapper.createPost(voteVO);
+	}
+
+	@Override
+	public int closeVote(String voteCode) {
+		return this.voteMapper.closeVote(voteCode);
+	}
+	
+}

@@ -1,0 +1,64 @@
+package com.homecat.sweethome.service.impl.board;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.board.BoardMapper;
+import com.homecat.sweethome.service.board.BoardService;
+import com.homecat.sweethome.vo.board.BoardVO;
+import com.homecat.sweethome.vo.board.ReplyVO;
+
+@Service
+public class BoardServiceImpl implements BoardService {
+
+	@Autowired
+	BoardMapper boardMapper;
+	
+	@Override
+	public List<BoardVO> getList(Map<String, Object> map) {
+		return this.boardMapper.getList(map);
+	}
+
+	@Override
+	public BoardVO getDetail(String brdNo) {
+		this.boardMapper.countView(brdNo);
+		BoardVO boardVO = this.boardMapper.getDetail(brdNo);
+		boardVO.setReplyVOList(this.boardMapper.getReplyList(brdNo));
+		return boardVO;
+	}
+
+	@Override
+	public int countLike(HashMap<String, String> data) {
+		int result = 0;
+		if(data.get("repNo") == null) {
+			this.boardMapper.boardLike(data);
+			result = this.boardMapper.getBrdLike(data);
+		}else {
+			this.boardMapper.replyLike(data);
+			result = this.boardMapper.getRepLike(data);
+		}
+		return result;
+	}
+
+	@Override
+	public List<ReplyVO> insertReply(ReplyVO replyVO) {
+		this.boardMapper.insertReply(replyVO);
+		List<ReplyVO> replyList = this.boardMapper.getReplyList(replyVO.getBrdSeq());
+		return replyList;
+	}
+
+	@Override
+	public int getTotal(Map<String, Object> map) {
+		return this.boardMapper.getTotal(map);
+	}
+
+	@Override
+	public int insertBoard(BoardVO boardVO) {
+		return this.boardMapper.insertBoard(boardVO);
+	}
+
+}

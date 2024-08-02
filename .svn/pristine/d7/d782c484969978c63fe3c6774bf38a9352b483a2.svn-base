@@ -1,0 +1,18 @@
+package com.homecat.sweethome.service.calendar;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.calendar.CalendarVO;
+
+
+public interface CalendarService {
+
+	public List<CalendarVO> list(Map<String, Object> map);
+
+	public List<Map<String, Object>> calendarList();
+
+	public ArrayList<CalendarVO> calenList();
+
+}

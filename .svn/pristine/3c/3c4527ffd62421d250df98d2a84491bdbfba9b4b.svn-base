@@ -1,0 +1,77 @@
+package com.homecat.sweethome.controller.board;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.board.BoardService;
+import com.homecat.sweethome.vo.board.BoardVO;
+import com.homecat.sweethome.vo.board.ReplyVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/board")
+@Controller
+public class BoardController {
+
+	@Autowired
+	BoardService boardService;
+	
+	@GetMapping("/list")
+	public String boardList(Model model) {
+		log.info("boardList에 왔다");
+		
+		String boardCat = "board_free";
+		
+		List<BoardVO> boardVOList = this.boardService.getList(boardCat);
+		log.info("boardVOList: " + boardVOList);
+		
+		model.addAttribute("boardCat", boardCat);
+		model.addAttribute("boardVOList", boardVOList);
+		
+		return "board/list";
+	}
+	
+	@GetMapping("/detail")
+	public String boardDetail(Model model, String brdNo) {
+		log.info("boardList에 왔다");
+		
+		BoardVO boardVO = this.boardService.getDetail(brdNo);
+		log.info("boardVO: " + boardVO);
+		
+		model.addAttribute("boardVO", boardVO);
+		
+		return "board/detail";
+	}
+	
+	@ResponseBody
+	@PostMapping("/countLike")
+	public int countLike(@RequestBody HashMap<String, String> data) {
+		log.info("countLikeAjax->data: " + data);
+
+		int likeCnt = this.boardService.countLike(data);
+		log.info("countLikeAjax->cnt: " + likeCnt);
+		
+		return likeCnt;
+	}
+	
+	@ResponseBody
+	@PostMapping("reply")
+	public List<ReplyVO> replyAjax(@RequestBody ReplyVO replyVO) {
+		log.info("replyPost->replyVO: " + replyVO);
+		
+		List<ReplyVO> replyList = this.boardService.insertReply(replyVO);
+		log.info("replyPost->replyList: " + replyList);
+		
+		return replyList;
+	}
+}

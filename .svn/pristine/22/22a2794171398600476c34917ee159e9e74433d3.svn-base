@@ -1,0 +1,23 @@
+package com.homecat.sweethome.service.impl.contract;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.contract.ContractMapper;
+import com.homecat.sweethome.service.contract.ContractService;
+import com.homecat.sweethome.vo.contract.ContractVO;
+
+@Service
+public class ContractServiceImpl implements ContractService {
+	
+	@Autowired
+	ContractMapper contractMapper;
+
+	@Override
+	public List<ContractVO> contractList() {
+		return this.contractMapper.contractList();
+	}
+
+}

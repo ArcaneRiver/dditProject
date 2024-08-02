@@ -1,0 +1,1334 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<div class="card">
+	<div class="card-header row">
+		<div class="col-10">
+			<h1 class="card-title mb-0 flex-grow-1">관리비 입력</h1>
+		</div>
+		<div class="col-2">
+			<button type="button" id="getLastInfo" class="btn btn-info">전월 정보 불러오기</button>
+		</div>
+	</div>
+	<div class="card-body">
+		<form id="chargeForm" action="/charge/admin/insert?${_csrf.parameterName}=${_csrf.token}" method="post">
+			<div class="row">
+			    <div class="row col-12">
+			        <div class="col-2">
+						<select name="dongCode" id="dongCode">
+							<option>--</option>
+							<c:forEach var="dong" items="${dongList}" varStatus="stat">
+								<option value="${dong}">${fn:substring(dong, 5, 9)}</option>
+							</c:forEach>
+						</select>
+						<span>동</span>
+						<select name="roomCode" id="roomCode">
+							<option>--</option>
+						</select>
+						<span>호</span>
+					</div>
+			        <div class="col-2">
+						<input type="month" name="ym">
+					</div>
+				</div>
+				<hr>
+			    <div class="row col-12">
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#commons" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="commons"> 
+										<span>일반관리비</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="commonsCharge" name="commons" readonly placeholder="일반관리비 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="commons">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>급여</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="salary" name="salary" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="salaryReason" name="salaryReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>제수당</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="allowance" name="allowance" name="allowance" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="allowanceReason" name="allowanceReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>상여금</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="bonus" name="bonus" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="bonusReason" name="bonusReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>퇴직금</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="rtrPay" name="rtrPay" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="rtrPayReason" name="rtrPayReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>산재보험료</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="iacIns" name="iacIns" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="iacInsReason" name="iacInsReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>고용보험료</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="empIns" name="empIns" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="empInsReason" name="empInsReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>국민연금</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="npn" name="npn" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="npnReason" name="npnReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>건강보험료</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="hlthIns" name="hlthIns" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="hlthInsReason" name="hlthInsReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>식대등복리후생비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="benefits" name="benefits" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="benefitsReason" name="benefitsReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>일반사무용품비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="oprodCt" name="oprodCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="oprodCtReason" name="oprodCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>도서인쇄비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="printCt" name="printCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="printCtReason" name="printCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>여비교통비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="tsptCt" name="tsptCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="tsptCtReason" name="tsptCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>통신료</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="commCt" name="commCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="commCtReason" name="commCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>우편료</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="postCt" name="postCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="postCtReason" name="postCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>관리용품구입비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="cprodCt" name="cprodCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="cprodCtReason" name="cprodCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>잡비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="etcCt" name="etcCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="etcCtReason" name="etcCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>커뮤니티운영비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="facCt" name="facCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="facCtReason" name="facCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>기타</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control commons" id="commonsOtherCt" name="commonsOtherCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="commonsOtherCtReason" name="commonsOtherCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#cleaning" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="cleaning"> 
+										<span>청소비</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="cleaningCharge" name="cleaning" readonly placeholder="청소비 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="cleaning">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>청소용역비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control cleaning" id="clnSvcCt" name="clnSvcCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="clnSvcCtReason" name="clnSvcCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>규격봉투외 소모품 구입비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control cleaning" id="expendableCt" name="expendableCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="expendableCtReason" name="expendableCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>공용생활폐기물 처리비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control cleaning" id="wasteCt" name="wasteCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="wasteCtReason" name="wasteCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>기타</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control cleaning" id="cleaningOtherCt" name="cleaningOtherCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="cleaningOtherCtReason" name="cleaningOtherCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#disinfec" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="disinfec"> 
+										<span>소독비</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="disinfecCharge" name="disinfec" readonly placeholder="소독비 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="disinfec">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>소독비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control disinfec" id="disinfecCt" name="disinfecCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="disinfecCtReason" name="disinfecCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>기타</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control disinfec" id="disinfecOtherCt" name="disinfecOtherCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="disinfecOtherCtReason" name="disinfecOtherCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#secure" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="secure"> 
+										<span>경비비</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="secureCharge" name="secure" readonly placeholder="경비비 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="secure">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>경비비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control secure" id="secCt" name="secCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="secCtReason" name="secCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>기타</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control secure" id="secOtherCt" name="secOtherCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="secOtherCtReason" name="secOtherCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#elevator" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="elevator"> 
+										<span>승강기 유지비</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="elevatorCharge" name="elevator" readonly placeholder="승강기 유지비 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="elevator">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>유지보수비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control elevator" id="evtMgmtCt" name="evtMgmtCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="evtMgmtCtReason" name="evtMgmtCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>검사비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control elevator" id="evtInspCt" name="evtInspCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="evtInspCtReason" name="evtInspCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>소모품교체비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control elevator" id="evtExpendableCt" name="evtExpendableCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="evtExpendableCtReason" name="evtExpendableCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>기타</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control elevator" id="evtOtherCt" name="evtOtherCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="evtOtherCtReason" name="evtOtherCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#ltrr" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="ltrr"> 
+										<span>장기수선충당금</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="ltrrCharge" name="ltrr" readonly placeholder="장기수선충당금 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="ltrr">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>장기수선충당금</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control ltrr" id="ltrrCt" name="ltrrCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="ltrrCtReason" name="ltrrCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>기타</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control ltrr" id="ltrrOtherCt" name="ltrrOtherCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="ltrrOtherCtReason" name="ltrrOtherCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#facilities" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="facilities"> 
+										<span>시설유지비</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="facilitiesCharge" name="facilities" readonly placeholder="시설유지비 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="facilities">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>시설유지비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control facilities" id="facilityMgmtCt" name="facilityMgmtCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="facilityMgmtCtReason" name="facilityMgmtCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>안전점검비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control facilities" id="facilityChkCt" name="facilityChkCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="facilityChkCtReason" name="facilityChkCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>재해예방비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control facilities" id="preventCt" name="preventCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="preventCtReason" name="preventCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>기타</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control facilities" id="facilitiesOtherCt" name="facilitiesOtherCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="facilitiesOtherCtReason" name="facilitiesOtherCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#vat" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="vat"> 
+										<span>부가세</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="vatCharge" name="vat" readonly placeholder="부가세 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="vat">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>관리용역비 부가세</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control vat" id="msvcCt" name="msvcCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="msvcCtReason" name="msvcCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>청소용역비 부가세</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control vat" id="csvcCt" name="csvcCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="csvcCtReason" name="csvcCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>보안용역비 부가세</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control vat" id="ssvcCt" name="ssvcCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="ssvcCtReason" name="ssvcCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>기타</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control vat" id="vatOtherCt" name="vatOtherCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="vatOtherCtReason" name="vatOtherCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#consignment" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="consignment"> 
+										<span>위탁관리수수료</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="consignmentCharge" name="consignment" readonly placeholder="위탁관리수수료 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="consignment">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>위탁관리 수수료</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control consignment" id="consignmentCt" name="consignmentCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="consignmentCtReason" name="consignmentCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>기타</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control consignment" id="consignmentOtherCt" name="consignmentOtherCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="consignmentOtherCtReason" name="consignmentOtherCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#meeting" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="meeting"> 
+										<span>입주자 대표 회의 운영비</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="meetingCharge" name="meeting" readonly placeholder="입주자 대표 회의 운영비 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="meeting">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>회장업무추진비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control meeting" id="cbCt" name="cbCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="cbCtReason" name="cbCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>감사업무추진비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control meeting" id="abCt" name="abCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="abCtReason" name="abCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>출석수당</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control meeting" id="attdcCt" name="attdcCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="attdcCtReason" name="attdcCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>운영비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control meeting" id="operationCt" name="operationCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="operationCtReason" name="operationCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>기타</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control meeting" id="meetingOtherCt" name="meetingOtherCt" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="meetingOtherCtReason" name="meetingOtherCtReason" placeholder="산출근거">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#building" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="building"> 
+										<span>건물보험료</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="buildingCharge" name="building" readonly placeholder="건물보험료 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="building">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>건물보험료</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control building" id="buildingInsr" name="buildingInsr" placeholder="금액">
+								        </div>
+								        <div class="col-8">
+											<input type="text" class="form-control" id="buildingNote" name="buildingNote" placeholder="비고">
+								        </div>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+			    </div>
+				<hr>
+			    <div class="row col-12">
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#electrocity" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="electrocity"> 
+										<span>전기비</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="electrocityCharge" name="electrocity" readonly placeholder="전기비 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="electrocity">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>공용전기비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control electrocity" id="shElecPrice" name="shElecPrice" placeholder="단가">
+								        </div>
+								        <div class="col-8">
+											<input type="number" class="form-control electrocity" id="shElecUsage" name="shElecUsage" placeholder="사용량">
+								        </div>
+										<input type="hidden" id="sharedElec" name="sharedElec" value=0>
+									</li>
+								</ul>
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>개별전기비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control electrocity" id="idvElecPrice" name="idvElecPrice" placeholder="단가">
+								        </div>
+								        <div class="col-8">
+											<input type="number" class="form-control electrocity" id="idvElecUsage" name="idvElecUsage" placeholder="사용량">
+								        </div>
+										<input type="hidden" id="individualElec" name="individualElec" value=0>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#water" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="water"> 
+										<span>수도비</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="waterCharge" name="water" readonly placeholder="수도비 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="water">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>공용수도비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control water" id="shWaterPrice" name="shWaterPrice" placeholder="단가">
+								        </div>
+								        <div class="col-8">
+											<input type="number" class="form-control water" id="shWaterUsage" name="shWaterUsage" placeholder="사용량">
+								        </div>
+										<input type="hidden" id="sharedWater" name="sharedWater" value=0>
+									</li>
+								</ul>
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>개별수도비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control water" id="idvWaterPrice" name="idvWaterPrice" placeholder="단가">
+								        </div>
+								        <div class="col-8">
+											<input type="number" class="form-control water" id="idvWaterUsage" name="idvWaterUsage" placeholder="사용량">
+								        </div>
+										<input type="hidden" id="individualWater" name="individualWater" value=0>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+		            <ul>
+						<li class="nav-item">
+							<div class="row">
+								<div class="col-2">
+									<a class="nav-link menu-link" href="#heating" data-bs-toggle="collapse" role="button"
+										aria-expanded="false" aria-controls="heating"> 
+										<span>난방비</span>
+									</a>
+								</div>
+								<div class="col-10">
+		         	   				<input type="number" class="form-control subTotal" id="heatingCharge" name="heating" readonly placeholder="난방비 총액">
+								</div>
+							</div>
+							<div class="collapse menu-dropdown" id="heating">
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>공용난방비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control heating" id="shHeatingPrice" name="shHeatingPrice" placeholder="단가">
+								        </div>
+								        <div class="col-8">
+											<input type="number" class="form-control heating" id="shHeatingUsage" name="shHeatingUsage" placeholder="사용량">
+								        </div>
+										<input type="hidden" id="sharedHeating" name="sharedHeating" value=0>
+									</li>
+								</ul>
+								<ul class="nav nav-sm flex-column">
+									<li class="nav-item row">
+								        <div class="col-2">
+								            <p>개별난방비</p>
+								        </div>
+								        <div class="col-2">
+								            <input type="number" class="form-control heating" id="idvHeatingPrice" name="idvHeatingPrice" placeholder="단가">
+								        </div>
+								        <div class="col-8">
+											<input type="number" class="form-control heating" id="idvHeatingUsage" name="idvHeatingUsage" placeholder="사용량">
+								        </div>
+										<input type="hidden" id="individualHeating" name="individualHeating" value=0>
+									</li>
+								</ul>
+							</div>
+						</li>
+		            </ul>
+			    </div>
+				
+			</div>
+			<hr>
+			<div class="row">
+		        <div class="col-2">
+		            <label for="totalCharge" class="form-label">총액</label>
+		        </div>
+		        <div class="col-2">
+					<input type="number" class="form-control" id="totalCharge" name="totalCharge" style="display: inline; width: 90%;" placeholder="0" readonly/>&nbsp;원
+		        </div>
+			</div>
+			<input type="button" class="btn btn-primary" id="btnSubmit" value="등록" />
+		</form>
+	</div>
+</div>
+
+<script>
+	$("#dongCode").on('change', function(){
+		let data = {
+				dongCode: $("#dongCode").val()
+		}
+		
+		console.log("data: ", data);
+		
+		let optionStr = '<option>--</option>';
+		$.ajax({
+			url: "/charge/dongSelAjax", 
+			contentType: "application/json;charset=utf-8",
+			data: JSON.stringify(data), 
+			type: "post", 
+			beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+			},
+			success: function(result){
+				console.log("result: ", result);
+				for(let i=0; i<result.length; i++){
+					optionStr += '<option value=' + result[i] + '>';
+					optionStr += result[i].substring(9, 12);
+					optionStr += '</option>';
+				}
+				
+				$("#roomCode").html(optionStr);
+			}
+		});
+	})
+	
+	$(".commons").on('keyup', function(){
+		let charges = $(".commons");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#commonsCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".cleaning").on('keyup', function(){
+		let charges = $(".cleaning");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#cleaningCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".disinfec").on('keyup', function(){
+		let charges = $(".disinfec");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#disinfecCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".secure").on('keyup', function(){
+		let charges = $(".secure");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#secureCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".elevator").on('keyup', function(){
+		let charges = $(".elevator");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#elevatorCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".ltrr").on('keyup', function(){
+		let charges = $(".ltrr");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#ltrrCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".facilities").on('keyup', function(){
+		let charges = $(".facilities");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#facilitiesCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".vat").on('keyup', function(){
+		let charges = $(".vat");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#vatCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".consignment").on('keyup', function(){
+		let charges = $(".consignment");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#consignmentCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".meeting").on('keyup', function(){
+		let charges = $(".meeting");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#meetingCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".building").on('keyup', function(){
+		let charges = $(".building");
+		
+		let sum = 0;
+		for(let i=0; i<charges.length; i++){
+			console.log("charges.eq(i).val(): ", Number(charges.eq(i).val()));
+			sum += Number(charges.eq(i).val());
+		}
+		
+		$("#buildingCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".electrocity").on('keyup', function(){
+		let shPrice = $("#shElecPrice").val();
+		let shUsage = $("#shElecUsage").val();
+		let sharedElec = shPrice * shUsage;
+		
+		let idvPrice = $("#idvElecPrice").val();
+		let idvUsage = $("#idvElecUsage").val();
+		let individualElec = idvPrice * idvUsage;
+		
+		let sum = sharedElec + individualElec
+		
+		$("#sharedElec").val(sharedElec);
+		$("#individualElec").val(individualElec);
+		$("#electrocityCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".water").on('keyup', function(){
+		let shPrice = $("#shWaterPrice").val();
+		let shUsage = $("#shWaterUsage").val();
+		let sharedWater = shPrice * shUsage;
+		
+		let idvPrice = $("#idvWaterPrice").val();
+		let idvUsage = $("#idvWaterUsage").val();
+		let individualWater = idvPrice * idvUsage;
+		
+		let sum = sharedWater + individualWater;
+		
+		$("#sharedWater").val(sharedWater);
+		$("#individualWater").val(individualWater);
+		$("#waterCharge").val(sum);
+		
+		calSum();
+	})
+	
+	$(".heating").on('keyup', function(){
+		let shPrice = $("#shHeatingPrice").val();
+		let shUsage = $("#shHeatingUsage").val();
+		let sharedHeating = shPrice * shUsage;
+		
+		let idvPrice = $("#idvHeatingPrice").val();
+		let idvUsage = $("#idvHeatingUsage").val();
+		let individualHeating = idvPrice * idvUsage;
+		
+		let sum = sharedHeating + individualHeating;
+		
+		$("#sharedHeating").val(sharedHeating);
+		$("#individualHeating").val(individualHeating);
+		$("#heatingCharge").val(sum);
+		
+		calSum();
+	})
+
+	let calSum = function(){
+		let subTotals = $('.subTotal');
+		
+		let sum = 0;
+		for(let i=0; i<subTotals.length; i++){
+			sum += Number(subTotals.eq(i).val());
+			console.log(sum);
+		}
+		
+		$('#totalCharge').val(sum);
+	}
+	
+	$("#btnSubmit").on('click', function(){
+		let charges = $('input[type="number"]');
+		for(let i=0; i<charges.length; i++){
+			if(charges.eq(i).val()==""){
+				charges.eq(i).val(0);
+				console.log("charges.eq(i):", charges.eq(i).val());
+			}
+		}
+		
+		$("#chargeForm").submit();
+	})
+	
+	$("#getLastInfo").on('click', function(){
+		let roomCode = $("#roomCode").val();
+		
+		console.log("roomCode: ", roomCode);
+		
+		if(roomCode == '--'){
+			alert("호실을 선택해주세요.");
+			return;
+		}
+		
+		$.ajax({
+			url: "/charge/getLastInfo", 
+			contentType: "application/json;charset=utf-8",
+			data: roomCode,
+			type: "post", 
+			beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+			},
+			success: function(result){
+				console.log("result: ", result);
+				
+				let commonsCharge = result.salary + result.allowance + result.bonus + result.rtrPay + result.iacIns + result.empIns + result.npn + result.hlthIns + result.benefits + result.oprodCt + result.printCt + result.tsptCt + result.commCt + result.postCt + result.cprodCt + result.etcCt + result.facCt + result.commonsOtherCt;
+				let cleaningCharge = result.clnSvcCt + result.expendableCt + result.wasteCt + result.cleaningOtherCt
+				let disinfecCharge = result.disinfecCt + result.disinfecOtherCt;
+				let secureCharge = result.secCt + result.secOtherCt;
+				let elevatorCharge = result.evtMgmtCt + result.evtInspCt +result.evtExpendableCt +result.evtOtherCt;
+				let ltrrCharge = result.ltrrCt + result.ltrrOtherCt;
+				let facilitiesCharge = result.facilityMgmtCt + result.facilityChkCt + result.preventCt + result.facilitiesOtherCt;
+				let vatCharge = result.msvcCt + result.csvcCt + result.ssvcCt + result.vatOtherCt;
+				let consignmentCharge = result.consignmentCt + result.consignmentOtherCt;
+				let meetingCharge = result.cbCt + result.abCt + result.attdcCt + result.operationCt + result.meetingOtherCt;
+				let buildingCharge = result.buildingInsr;
+				let sharedElec = result.shElecPrice * result.shElecUsage;
+				let individualElec = result.idvElecPrice * result.idvElecUsage;
+				let sharedWater = result.shWaterPrice * result.shWaterUsage;
+				let individualWater = result.idvWaterPrice * result.idvWaterUsage;
+				let sharedHeating = result.shHeatingPrice * result.shHeatingUsage;
+				let individualHeating = result.idvHeatingPrice * result.idvHeatingUsage;
+				let electrocityCharge = sharedElec + individualElec
+				let waterCharge = sharedWater + individualWater
+				let heatingCharge = sharedHeating + individualHeating
+				let totalCharge = commonsCharge + cleaningCharge + disinfecCharge + secureCharge + elevatorCharge + ltrrCharge + facilitiesCharge + vatCharge + consignmentCharge + meetingCharge + buildingCharge + electrocityCharge + waterCharge + heatingCharge;
+				
+				$("#salary").val(result.salary);									$("#salaryReason").val(result.salaryReason);
+				$("#allowance").val(result.allowance);								$("#allowanceReason").val(result.allowanceReason);
+				$("#bonus").val(result.bonus);										$("#bonusReason").val(result.bonusReason);
+				$("#rtrPay").val(result.rtrPay);									$("#rtrPayReason").val(result.rtrPayReason);
+				$("#iacIns").val(result.iacIns);									$("#iacInsReason").val(result.iacInsReason);
+				$("#empIns").val(result.empIns);									$("#empInsReason").val(result.empInsReason);
+				$("#npn").val(result.npn);											$("#npnReason").val(result.npnReason);
+				$("#hlthIns").val(result.hlthIns);									$("#hlthInsReason").val(result.hlthInsReason);
+				$("#benefits").val(result.benefits);								$("#benefitsReason").val(result.benefitsReason);
+				$("#oprodCt").val(result.oprodCt);									$("#oprodCtReason").val(result.oprodCtReason);
+				$("#printCt").val(result.printCt);									$("#printCtReason").val(result.printCtReason);
+				$("#tsptCt").val(result.tsptCt);									$("#tsptCtReason").val(result.tsptCtReason);
+				$("#commCt").val(result.commCt);									$("#commCtReason").val(result.commCtReason);
+				$("#postCt").val(result.postCt);									$("#postCtReason").val(result.postCtReason);
+				$("#cprodCt").val(result.cprodCt);									$("#cprodCtReason").val(result.cprodCtReason);
+				$("#etcCt").val(result.etcCt);										$("#etcCtReason").val(result.etcCtReason);
+				$("#facCt").val(result.facCt);										$("#facCtReason").val(result.facCtReason);
+				$("#commonsOtherCt").val(result.commonsOtherCt);					$("#commonsOtherCtReason").val(result.commonsOtherCtReason);
+
+				$("#clnSvcCt").val(result.clnSvcCt);								$("#clnSvcCtReason").val(result.clnSvcCtReason);
+				$("#expendableCt").val(result.expendableCt);						$("#expendableCtReason").val(result.expendableCtReason);
+				$("#wasteCt").val(result.wasteCt);									$("#wasteCtReason").val(result.wasteCtReason);
+				$("#cleaningOtherCt").val(result.cleaningOtherCt);					$("#cleaningOtherCtReason").val(result.cleaningOtherCtReason);
+
+				$("#disinfecCt").val(result.disinfecCt);							$("#disinfecCtReason").val(result.disinfecCtReason);
+				$("#disinfecOtherCt").val(result.disinfecOtherCt);					$("#expendableCtReason").val(result.disinfecOtherCt);
+				
+				$("#secCt").val(result.secCt);										$("#secCtReason").val(result.secCtReason);
+				$("#secOtherCt").val(result.secOtherCt);							$("#secOtherCtReason").val(result.secOtherCtReason);
+
+				$("#evtMgmtCt").val(result.evtMgmtCt);								$("#evtMgmtCtReason").val(result.evtMgmtCtReason);
+				$("#evtInspCt").val(result.evtInspCt);								$("#evtInspCtReason").val(result.evtInspCtReason);
+				$("#evtExpendableCt").val(result.evtExpendableCt);					$("#evtExpendableCtReason").val(result.evtExpendableCtReason);
+				$("#evtOtherCt").val(result.evtOtherCt);							$("#evtOtherCtReason").val(result.evtOtherCtReason);
+
+				$("#ltrrCt").val(result.ltrrCt);									$("#ltrrCtReason").val(result.ltrrCtReason);
+				$("#ltrrOtherCt").val(result.ltrrOtherCt);							$("#ltrrOtherCtReason").val(result.ltrrOtherCtReason);
+
+				$("#facilityMgmtCt").val(result.facilityMgmtCt);					$("#facilityMgmtCtReason").val(result.facilityMgmtCtReason);
+				$("#facilityChkCt").val(result.facilityChkCt);						$("#facilityChkCtReason").val(result.facilityChkCtReason);
+				$("#preventCt").val(result.preventCt);								$("#preventCtReason").val(result.preventCtReason);
+				$("#facilitiesOtherCtReason").val(result.facilitiesOtherCtReason);	$("#facilitiesOtherCtReason").val(result.facilitiesOtherCtReason);
+
+				$("#msvcCt").val(result.msvcCt);									$("#msvcCtReason").val(result.msvcCtReason);
+				$("#csvcCt").val(result.csvcCt);									$("#csvcCtReason").val(result.csvcCtReason);
+				$("#ssvcCt").val(result.ssvcCt);									$("#ssvcCtReason").val(result.ssvcCtReason);
+				$("#vatOtherCt").val(result.vatOtherCt);							$("#vatOtherCtReason").val(result.vatOtherCtReason);
+
+				$("#consignmentCt").val(result.consignmentCt);						$("#consignmentCtReason").val(result.consignmentCtReason);
+				$("#consignmentOtherCt").val(result.consignmentOtherCt);			$("#consignmentOtherCtReason").val(result.consignmentOtherCtReason);
+
+				$("#cbCt").val(result.cbCt);										$("#cbCtReason").val(result.cbCtReason);
+				$("#abCt").val(result.abCt);										$("#abCtReason").val(result.abCtReason);
+				$("#attdcCt").val(result.attdcCt);									$("#attdcCtReason").val(result.attdcCtReason);
+				$("#operationCt").val(result.operationCt);							$("#operationCtReason").val(result.operationCtReason);
+				$("#meetingOtherCt").val(result.meetingOtherCt);					$("#meetingOtherCtReason").val(result.meetingOtherCtReason);
+				
+				$("#buildingInsr").val(result.buildingInsr);						$("#buildingNote").val(result.buildingNote);
+				
+				$("#shElecPrice").val(result.shElecPrice);							$("#shElecUsage").val(result.shElecUsage);
+				$("#idvElecPrice").val(result.idvElecPrice);						$("#idvElecUsage").val(result.idvElecUsage);
+				
+				$("#shWaterPrice").val(result.shWaterPrice);						$("#shWaterUsage").val(result.shWaterUsage);
+				$("#idvWaterPrice").val(result.idvWaterPrice);						$("#idvWaterUsage").val(result.idvWaterUsage);
+				
+				$("#shHeatingPrice").val(result.shHeatingPrice);					$("#shHeatingUsage").val(result.shHeatingUsage);
+				$("#idvHeatingPrice").val(result.idvHeatingPrice);					$("#idvHeatingUsage").val(result.idvHeatingUsage);
+
+				$("#sharedElec").val(result.sharedElec);							$("#individualElec").val(result.individualElec);
+				$("#sharedWater").val(result.sharedWater);							$("#individualWater").val(result.individualWater);
+				$("#sharedHeating").val(result.sharedHeating);						$("#individualHeating").val(result.individualHeating);
+
+				$("#commonsCharge").val(commonsCharge);
+				$("#cleaningCharge").val(cleaningCharge);
+				$("#disinfecCharge").val(disinfecCharge);
+				$("#secureCharge").val(secureCharge);
+				$("#elevatorCharge").val(elevatorCharge);
+				$("#ltrrCharge").val(ltrrCharge);
+				$("#facilitiesCharge").val(facilitiesCharge);
+				$("#vatCharge").val(vatCharge);
+				$("#consignmentCharge").val(consignmentCharge);
+				$("#meetingCharge").val(meetingCharge);
+				$("#buildingCharge").val(buildingCharge);
+				$("#electrocityCharge").val(electrocityCharge);
+				$("#waterCharge").val(waterCharge);
+				$("#heatingCharge").val(heatingCharge);
+				$("#totalCharge").val(totalCharge);
+			}
+		});
+	})
+</script>
+

@@ -1,0 +1,5 @@
+package com.homecat.sweethome.vo.visitCar;
+
+public class VisitCarVO {
+
+}

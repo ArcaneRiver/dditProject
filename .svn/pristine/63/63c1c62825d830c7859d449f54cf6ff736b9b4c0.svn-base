@@ -1,0 +1,84 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<style>
+tbody tr:hover{
+	background-color: lightgray;
+}
+</style>
+
+<div class="col-12">
+	<div class="card">
+		<div class="card-header">
+			<h3 class="card-title" style="font-size: 40px;">나의 민원 내역</h3>
+			
+		</div>
+		
+		<div class="card-body table-responsive" style="min-height: 600px;">
+			<div class="listArea" style="min-height: 400px;">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>민원</th>
+							<th>등록일</th>
+							<th>상태</th>
+							<th>삭제</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:if test="${fn:length(articlePage.content)==0}">
+							<tr>
+								<td colspan="4" align="center">신청한 민원이 없습니다.</td>
+							</tr>
+						</c:if>
+						<c:forEach var="complainVO" items="${articlePage.content}" varStatus="stat">
+							<tr>
+								<td class="tblRow" style="display: none">${complainVO.reply}</td>
+								<td class="tblRow" style="display: none">${complainVO.compSeq}</td>
+								<td class="tblRow">${complainVO.compContent}</td>
+								<td class="tblRow">${complainVO.regDt}</td>
+								<td class="tblRow">
+									<c:if test="${complainVO.reply eq null}">민원접수</c:if>
+									<c:if test="${complainVO.reply ne null}">답변완료</c:if>
+								</td>
+								<td><span class="compDel btn btn-warning">X</span></td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</div>
+			
+	        <div>${articlePage.pagingArea}</div>
+			
+			<div class="replyArea" style="min-height: 200px;">
+				<div class="card">
+					<div class="card-body" style="min-height: 200px;">
+						<p>답변: </p>
+						<div id="detail">.</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$('.tblRow').on('click', function(){
+		let repStr = $(this).parent().children().eq(0).text();
+		if(!repStr){
+			repStr = '아직 답변이 등록되지 않았습니다.';
+		}
+		
+		let rephtml = '';
+		rephtml += '<p>';
+		rephtml += repStr;
+		rephtml += '</p>';
+		$('#detail').html(repStr);
+	})
+	
+	$(".compDel").on('click', function(){
+		let compSeq = $(this).parent().parent().children().eq(1).text();
+		alert(compSeq);
+	})
+</script>

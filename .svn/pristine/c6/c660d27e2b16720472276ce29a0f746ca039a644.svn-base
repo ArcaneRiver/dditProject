@@ -1,0 +1,30 @@
+package com.homecat.sweethome.vo.waste;
+
+import java.util.Date;
+
+import com.homecat.sweethome.vo.comm.CommDetailVO;
+
+import lombok.Data;
+
+@Data
+public class WasteVO {
+	private int rnum;			//순번
+	private String wasteSeq;
+	private String memId;
+	private Date regDt;
+	private String wasteItem;
+	private int qty;
+	private int fee;
+	private String etc;
+	private String recycleYn;
+	private Date estDt;
+	private String attach;
+	private String wasteStatus;
+	private String cancelYn;
+	private Date cancelTm;
+	
+	//공통상세코드
+	private CommDetailVO commDetailVO;
+	
+	
+}

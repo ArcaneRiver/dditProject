@@ -1,0 +1,86 @@
+package com.homecat.sweethome.service.impl.calendar;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.calendar.CalendarMapper;
+import com.homecat.sweethome.service.calendar.CalendarService;
+import com.homecat.sweethome.vo.calendar.CalendarVO;
+
+@Service
+public class CalendarServiceImpl implements CalendarService{
+
+	@Autowired
+	CalendarMapper calendarMapper;
+	
+	@Override
+	public List<CalendarVO> list(Map<String, Object> map) {
+		return this.calendarMapper.list(map);
+	}
+
+	@Override
+	public List<Map<String, Object>> calendarList() {
+		
+		return this.calendarMapper.calendarList();
+	}
+
+	@Override
+	public ArrayList<CalendarVO> calenList() {
+		return this.calendarMapper.calenList();
+	}
+
+	@Override
+	public int addEvent(CalendarVO calendarVO) {
+		
+		 // 시작날짜 문자열에서 시간만 추출
+	    String calStart = calendarVO.getCalStart();
+	    String calStime = calStart.substring(11); // 'yyyy-mm-dd hh24:mi'에서 시간 부분 추출
+	    calendarVO.setCalStime(calStime);
+	    
+	    // 종료날짜 문자열에서 시간만 추출
+	    String calEnd = calendarVO.getCalEnd();
+	    String calEtime = calEnd.substring(11); // 'yyyy-mm-dd hh24:mi'에서 시간 부분 추출
+	    calendarVO.setCalEtime(calEtime);
+	    
+	    // memId 값을 'aaa'로 설정
+	    calendarVO.setMemId("aaa");
+	    calendarVO.setCalSort(1);
+		
+		return this.calendarMapper.addEvent(calendarVO);
+	}
+
+	@Override
+	public CalendarVO detail(CalendarVO calendarVO) {
+		return this.calendarMapper.detail(calendarVO);
+	}
+
+	@Override
+	public int updateEvent(CalendarVO calendarVO) {
+		
+		 // 시작날짜 문자열에서 시간만 추출
+	    String calStart = calendarVO.getCalStart();
+	    String calStime = calStart.substring(11); // 'yyyy-mm-dd hh24:mi'에서 시간 부분 추출
+	    calendarVO.setCalStime(calStime);
+	    
+	    // 종료날짜 문자열에서 시간만 추출
+	    String calEnd = calendarVO.getCalEnd();
+	    String calEtime = calEnd.substring(11); // 'yyyy-mm-dd hh24:mi'에서 시간 부분 추출
+	    calendarVO.setCalEtime(calEtime);
+	    
+	    // memId 값을 'aaa'로 설정
+	    calendarVO.setMemId("aaa");
+	    calendarVO.setCalSort(1);
+		
+		return this.calendarMapper.updateEvent(calendarVO);
+	}
+
+	@Override
+	public int deleteEvent(CalendarVO calendarVO) {
+		return this.calendarMapper.deleteEvent(calendarVO);
+	}
+	
+}

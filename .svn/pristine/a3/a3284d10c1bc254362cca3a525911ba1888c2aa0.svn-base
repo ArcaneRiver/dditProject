@@ -1,0 +1,104 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<style>
+.text-center {
+    margin-bottom: 30px; /* 버튼 영역 상단 여백 설정 */
+}
+</style>
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h3>${surveyVO.svTitle}&nbsp;&nbsp;&nbsp;질문 결과</h3>
+            <p><strong>참여자 수 : &nbsp;<span id="participantCount"></span>명</strong></p>
+        </div>
+        
+        <div class="card-body table-responsive" style="height: 600px;">
+            <table class="table table-head-fixed text-nowrap">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>매우 그렇다</th>
+                        <th>그렇다</th>
+                        <th>보통</th>
+                        <th>아니다</th>
+                        <th>매우 아니다</th>
+                    </tr>
+                </thead>
+                <tbody id="trShow">
+                    <c:forEach var="questionCode" items="${questionCodeList}" varStatus="loop">
+                        <tr>
+                            <td>질문 ${loop.index + 1}번</td>
+                            <td>
+                                <c:set var="count1" value="0" />
+                                <c:forEach var="surveyResultVO" items="${surveyResultVOList}">
+                                    <c:if test="${surveyResultVO.svdCode == questionCode && surveyResultVO.reply == '매우 그렇다'}">
+                                        <c:set var="count1" value="${count1 + 1}" />
+                                    </c:if>
+                                </c:forEach>
+                                ${count1}
+                            </td>
+                            <td>
+                                <c:set var="count2" value="0" />
+                                <c:forEach var="surveyResultVO" items="${surveyResultVOList}">
+                                    <c:if test="${surveyResultVO.svdCode == questionCode && surveyResultVO.reply == '그렇다'}">
+                                        <c:set var="count2" value="${count2 + 1}" />
+                                    </c:if>
+                                </c:forEach>
+                                ${count2}
+                            </td>
+                            <td>
+                                <c:set var="count3" value="0" />
+                                <c:forEach var="surveyResultVO" items="${surveyResultVOList}">
+                                    <c:if test="${surveyResultVO.svdCode == questionCode && surveyResultVO.reply == '보통'}">
+                                        <c:set var="count3" value="${count3 + 1}" />
+                                    </c:if>
+                                </c:forEach>
+                                ${count3}
+                            </td>
+                            <td>
+                                <c:set var="count4" value="0" />
+                                <c:forEach var="surveyResultVO" items="${surveyResultVOList}">
+                                    <c:if test="${surveyResultVO.svdCode == questionCode && surveyResultVO.reply == '아니다'}">
+                                        <c:set var="count4" value="${count4 + 1}" />
+                                    </c:if>
+                                </c:forEach>
+                                ${count4}
+                            </td>
+                            <td>
+                                <c:set var="count5" value="0" />
+                                <c:forEach var="surveyResultVO" items="${surveyResultVOList}">
+                                    <c:if test="${surveyResultVO.svdCode == questionCode && surveyResultVO.reply == '매우 아니다'}">
+                                        <c:set var="count5" value="${count5 + 1}" />
+                                    </c:if>
+                                </c:forEach>
+                                ${count5}
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>    
+        </div>
+        
+        <div class="text-center mt-3">
+        	<a href="/survey/list" class="btn btn-primary">목록</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 참여자 수를 계산하는 함수
+    function countParticipants() {
+        const uniqueParticipants = new Set();
+        <c:forEach var="surveyResultVO" items="${surveyResultVOList}">
+            uniqueParticipants.add("${surveyResultVO.replyer}");
+        </c:forEach>
+        return uniqueParticipants.size;
+    }
+
+    // HTML의 참여자 수를 동적으로 채우는 부분
+    const participantCountElement = document.getElementById('participantCount');
+    participantCountElement.textContent = countParticipants();
+</script>

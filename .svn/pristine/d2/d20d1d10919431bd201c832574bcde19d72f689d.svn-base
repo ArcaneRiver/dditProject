@@ -1,0 +1,25 @@
+package com.homecat.sweethome.mapper.calendar;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.calendar.CalendarVO;
+
+public interface CalendarMapper {
+
+	public List<CalendarVO> list(Map<String, Object> map);
+
+	public List<Map<String, Object>> calendarList();
+
+	public ArrayList<CalendarVO> calenList();
+
+	public int addEvent(CalendarVO calendarVO);
+
+	public CalendarVO detail(CalendarVO calendarVO);
+
+	public int updateEvent(CalendarVO calendarVO);
+
+	public int deleteEvent(CalendarVO calendarVO);
+
+}

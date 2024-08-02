@@ -1,0 +1,199 @@
+package com.homecat.sweethome.controller.survey;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.survey.SurveyService;
+import com.homecat.sweethome.unit.ArticlePage;
+import com.homecat.sweethome.vo.survey.SurveyDetailVO;
+import com.homecat.sweethome.vo.survey.SurveyVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@RequestMapping("survey")
+@Slf4j
+@Controller
+public class SurveyController {
+	
+	@Autowired
+	SurveyService surveyService;
+	
+	// 설문지 입력 페이지
+	@GetMapping("/create")
+	public String createSurvey(Model model) {
+		
+		log.info("설문지 제작 페이지 입니다");
+		model.addAttribute("surveyVO", new SurveyVO());
+		
+		return "survey/create";
+	}
+	
+    // 설문지 입력 실행(관리자)
+    @PostMapping("/createPost")
+    public String createPost(@ModelAttribute SurveyVO surveyVO) {
+        log.info("설문정보 : " + surveyVO);
+
+        // 설문 정보와 질문 목록을 Service로 전달하여 DB에 저장
+        int result = surveyService.createPost(surveyVO);
+        log.info("createPost->result : " + result);
+
+        // 입력 후 리스트로 이동
+        return "redirect:/survey/list";
+    }
+
+	
+	// 목록 가져오기
+	@GetMapping("/list")
+	public String surveyList(Model model,
+			@RequestParam(value= "currentPage", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword
+			) {
+		log.info("설문 목록이 나오는 곳");
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("keyword", keyword);
+		map.put("currentPage", currentPage);
+		
+		//기존 설문 목록 가져오기 로직
+		List<SurveyVO> surveyVOList = this.surveyService.getList(map);
+		log.info("getList : " + surveyVOList);
+		
+		int total = this.surveyService.getTotal(map);
+		log.info("getTotal : " + total);
+		
+		
+		model.addAttribute("articlePage", new ArticlePage<SurveyVO>(total, currentPage, 10, surveyVOList, keyword));
+		model.addAttribute("surveyVOList", surveyVOList);
+		
+		return "survey/list";
+	}
+	
+	@ResponseBody
+	@PostMapping("/listAjax")
+	public ArticlePage<SurveyVO> listAjax(@RequestBody Map<String, Object> map){
+	    
+        int total = this.surveyService.getTotal(map);
+
+        List<SurveyVO> surveyVOList = this.surveyService.getList(map);
+
+        return new ArticlePage<SurveyVO>(total, Integer.parseInt(map.get("currentPage").toString()), 10, surveyVOList, map.get("keyword").toString());
+	}
+	
+	// 설문조사 상세보기
+	@GetMapping("/detail")
+	public String detail(@RequestParam("svCode") String svCode, Model model) {
+
+		log.info("설문 상세 페이지입니다.");
+	    log.info("svCode: " + svCode);
+
+	    // 설문조사  정보 가져오기
+	    SurveyVO surveyVO = surveyService.getSurveyByCode(svCode);
+	    log.info("surveyVO : " + surveyVO);
+	    
+	    // 질문 리스트 가져오기
+	    List<SurveyDetailVO> surveyDetailVOList = surveyService.getDetailsByCode(svCode);
+	    log.info("surveyDetailVOList : " + surveyDetailVOList );
+	    
+	    // 설문 정보에 질문 리스트를 설정
+	    surveyVO.setSurveyDetails(surveyDetailVOList);
+	    
+	    // 모델에 설문 정보를 추가하여 detail.jsp로 전달
+	    model.addAttribute("surveyVO", surveyVO);
+	    
+	    for (SurveyDetailVO detail : surveyDetailVOList) {
+	        log.info("Question: " + detail.getSvdItem());
+	    }
+	    
+	    return "survey/detail";
+	}
+	
+	// 설문 마감 처리
+    @PostMapping("/closeSurveys")
+    @ResponseBody
+    public String closeSurvey(@RequestBody String[] svCodes) {
+        log.info("설문 마감 처리");
+        
+        int result = 0;
+        for (String svCode : svCodes) {
+        	// 설문을 마감 상태로 업데이트
+        	result = surveyService.closeSurvey(svCode);
+        
+        }
+        
+        if (result > 0) {
+            return "Success";
+        } else {
+            return "fail";
+        }
+    }
+    
+    //설문수정 페이지
+    @GetMapping("/update")
+    public String update(@RequestParam("svCode") String svCode, Model model) {
+    	log.info("설문 수정 페이지");
+    	log.info("선택한 일련번호 : " + svCode);
+    	
+    	//설문 조사 정보 가져오기
+    	SurveyVO surveyVO = surveyService.getSurveyByCode(svCode);
+    	log.info("surveyVO : " + surveyVO);
+    	
+	    // 질문 리스트 가져오기
+	    List<SurveyDetailVO> surveyDetailVOList = surveyService.getDetailsByCode(svCode);
+	    log.info("surveyDetailVOList : " + surveyDetailVOList );
+
+	    //surveyVO에 질문 리스트 설정
+	    surveyVO.setSurveyDetails(surveyDetailVOList);
+	    log.info("surveyVO: " + surveyVO);
+	    
+	    
+	    // 모델에 설문 정보를 추가하여 update.jsp로 전달
+	    model.addAttribute("surveyVO", surveyVO);
+	    model.addAttribute("svCode", svCode);
+	    log.info("여기서 model은?? : " + model);
+	    
+    	return "survey/update";
+    }
+    
+    //설문 수정 실행(관리자)
+ 	@PostMapping("updatePost")
+ 	public String updatePost(@ModelAttribute SurveyVO surveyVO, @RequestParam("svCode") String svCode, Model model) {
+ 		log.info("수정된 설문 정보 : " + surveyVO);
+ 		
+ 		// svCode 설정
+ 	    surveyVO.setSvCode(svCode);
+ 	    log.info("svCode : " + svCode);
+ 	    
+ 		// 각 질문 항목의 svCode 설정
+ 		for (SurveyDetailVO detail : surveyVO.getSurveyDetails()) {
+ 			detail.setSvCode(svCode);
+ 		}
+ 		
+ 		//설문 정보와 질문 목록을 SERVICE로 전달 후 DB에 저장
+ 		int result = surveyService.updatePost(surveyVO);
+ 		log.info("updatePost->result : " + result);
+ 		
+ 		//수정 후 리스트로 이동
+ 		return "redirect:/survey/list";
+ 	}
+	
+	//설문 결과 조회
+//	@PostMapping("/result")
+//	public String surveyResult() {
+//		log.info("설문 결과 조회 페이지");
+//		
+//		
+//		return null;
+//	}
+}

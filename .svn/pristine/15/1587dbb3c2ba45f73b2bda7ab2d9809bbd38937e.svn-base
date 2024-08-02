@@ -1,0 +1,166 @@
+package com.homecat.sweethome.controller.maintenance;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.maintenance.MaintenanceService;
+import com.homecat.sweethome.vo.comm.CommDetailVO;
+import com.homecat.sweethome.vo.maintenance.MaintenanceVO;
+import com.homecat.sweethome.vo.waste.WasteVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/maintenance")
+public class MaintenanceController {
+	
+	@Autowired
+	MaintenanceService maintenanceService;
+	
+	//목록 뷰 
+	@GetMapping("/list")
+	public String list(Model model) {
+		log.info("list에 왔다!");
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		List<MaintenanceVO> mtList = this.maintenanceService.list(map);
+		log.info("list->mtList : " + mtList);
+		
+		model.addAttribute("mtList", mtList);
+		
+		return "resident/maintenance/list";
+	}
+	
+	//상세 뷰
+	@GetMapping("/detail")
+	public String detail(Model model, String mtSeq) {
+		log.info("detail페이지야");
+		
+		MaintenanceVO maintenanceVO = this.maintenanceService.detail(mtSeq);
+		
+		model.addAttribute("maintenanceVO", maintenanceVO);
+		log.info("detail->maintenanceVO : " + maintenanceVO);
+		
+		return "resident/maintenance/detail";
+	}
+	
+	// 입력 뷰
+	@GetMapping("/create")
+	public String create(Model model) {
+		
+		log.info("create!!");
+		
+		return "resident/maintenance/create";
+	}
+	
+	//하자보수 신청
+	@ResponseBody
+	@PostMapping("/createAjax")
+	public String createAjax(MaintenanceVO maintenanceVO) {
+		log.info("creatAjax야!!!");
+
+		log.info("createAjax->maintenanceVO : " + maintenanceVO);
+		
+		int result = this.maintenanceService.createPost(maintenanceVO);
+		log.info("createAjax->result : " + result);
+		
+		//리스트로 이동
+		return "resident/maintenance/list";
+	}
+	
+	//회원정보 가져오기
+	@GetMapping("/getMemberInfo")
+	@ResponseBody
+	public MaintenanceVO getMemberInfo(@RequestParam("memId") String memId) {
+		
+		MaintenanceVO maintenanceVO = maintenanceService.getMemberInfo(memId);
+		
+		return maintenanceVO;
+	}
+	
+	//일련번호 가져오기
+	@ResponseBody
+	@PostMapping("/getMtSeq")
+	public String getMtSeq() {
+		String result = this.maintenanceService.getMtSeq();
+		
+		log.info("getMtSeq->result : " + result);
+		return result;
+	}
+	
+	//수정수정
+	@ResponseBody
+	@PostMapping("/updateAjax")
+	public MaintenanceVO updateAjax(@RequestBody MaintenanceVO maintenanceVO) {
+		log.info("updateAjax->>>>>maintenanceVO " + maintenanceVO);
+		
+		int result = this.maintenanceService.updatePost(maintenanceVO);
+		log.info("updateAjax->result : " + result);
+		
+		maintenanceVO = this.maintenanceService.detail(maintenanceVO.getMtSeq());
+		
+		return maintenanceVO;
+	}
+	
+	//삭제
+	@ResponseBody
+	@PostMapping("/deleteAjax")
+	public int deleteAjax(@RequestBody Map<String, Object> map) {
+		log.info("deleteAjax->>>>>maintenanceVO " + map);
+		
+//		String mtSeq = this.maintenanceService.getMtSeq();
+//		log.info("mtSeq: " + mtSeq);
+//		maintenanceVO.setMtSeq(mtSeq);
+		
+		int result = this.maintenanceService.deletePost(map);
+		log.info("deleteAjax->result : " + result);
+		
+		return result;
+	}
+
+	/////////////////관리자 페이지///////////////////////////////////////////////////////////////////
+	//입주민 하자보수 신청 내역
+	@GetMapping("/admin/adList")
+	public String adList(Model model) {
+		log.info("adList에 왔당!!");
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		List<MaintenanceVO> adMtList = this.maintenanceService.adList(map);
+		log.info("adList->adMtList : " + adMtList);
+		
+		model.addAttribute("adMtList", adMtList);
+		
+		return "admin/maintenance/adList";
+	}
+	
+	//모달 상세
+	@ResponseBody
+	@PostMapping("/admin/modalDetail")
+	public MaintenanceVO modalDetail(@RequestBody MaintenanceVO maintenanceVO) {
+		maintenanceVO = maintenanceService.modalDetail(maintenanceVO);
+		
+		log.info("modalDetail->wasteVO: {}", maintenanceVO);
+		
+		return maintenanceVO; 
+	}
+}
+
+
+
+
+
+

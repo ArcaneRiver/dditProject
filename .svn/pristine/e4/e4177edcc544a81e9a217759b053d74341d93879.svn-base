@@ -1,0 +1,26 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<link rel="stylesheet" href="/resources/css/Select.css">
+<div id="content">
+	<section class="box-content pt75 pb80">
+		<p class="a-c txt">
+			<strong class="block mb10 fs22">회원가입</strong>	
+		</p>
+		<ul class="plan-wrp">
+			<li>
+				<div class="bg-blue">
+					<strong class="title">입주민</strong>
+					<p class="txt a-c">입주민 전용 회원가입</p>
+					<a href="/signup">회원등록</a>
+				</div>
+			</li>
+			<li>
+				<div class="bg-green">
+					<strong class="title">주택관리자/협럭업체</strong>
+					<p class="txt a-c">주택관리자 / 협력업체 전 용 회원가입</p>
+					<a href="#">회원등록</a>
+				</div>
+			</li>
+		</ul>
+	</section>
+</div>

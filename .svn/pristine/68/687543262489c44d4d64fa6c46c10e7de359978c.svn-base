@@ -1,0 +1,9 @@
+package com.homecat.sweethome.service.member;
+
+import com.homecat.sweethome.vo.member.MemberVO;
+
+public interface LogInService {
+	
+	public MemberVO chkAuth(String memId);
+	
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.survey.SurveyMapper">
+	
+	
+	<sql id="where">
+		<if test="keyword!=null and keyword!='' ">
+			AND (SV_TITLE LIKE '%' || #{keyword} || '%')
+		</if>
+	</sql>
+	
+	
+	<!-- 설문 목록  -->
+	<select id="getList" resultType="surveyVO" parameterType="hashMap">
+    SELECT T.* 
+    FROM
+    (
+        SELECT ROW_NUMBER() OVER(ORDER BY SV_CODE) RNUM,
+				SV_CODE,
+				SV_TITLE,
+				COUNT,
+				BEGIN_TM,
+                END_TM,
+				END_YN
+		FROM SURVEY
+		WHERE 1 = 1
+		<include refid="where" />
+	) T
+    WHERE T.RNUM BETWEEN ((#{currentPage}*10) - (10-1)) AND (#{currentPage}*10)
+	</select>
+	
+	<select id="getTotal" parameterType="hashMap" resultType="int">
+		SELECT COUNT(*)
+		FROM SURVEY
+		WHERE 1=1
+		<include refid="where"/>
+	</select>
+	
+	<!-- 관리자가 작성한 설문(질문만들기) -->
+	<insert id="createPost" parameterType="surveyVO">
+	    INSERT INTO SURVEY (SV_CODE, SV_TITLE, COUNT, BEGIN_TM, END_TM, END_YN)
+	    VALUES (
+	        (SELECT 'SV' || LPAD(COALESCE(TO_NUMBER(SUBSTR(MAX(SV_CODE), 3)), 0) + 1, 3, '0') FROM SURVEY),
+	        #{svTitle}, #{count}, TO_DATE(#{beginTm}, 'YYYY-MM-DD"T"HH24:MI'), TO_DATE(#{endTm}, 'YYYY-MM-DD"T"HH24:MI'), 'N'
+	    )
+	</insert>
+	
+	<!--  -->
+</mapper> 

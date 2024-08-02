@@ -1,0 +1,35 @@
+package com.homecat.sweethome.vo.maintenance;
+
+import com.homecat.sweethome.vo.ccpy.CcpyVO;
+import com.homecat.sweethome.vo.comm.CommDetailVO;
+import com.homecat.sweethome.vo.danji.DanjiVO;
+import com.homecat.sweethome.vo.member.MemberVO;
+
+import lombok.Data;
+
+@Data
+public class MaintenanceVO {
+
+	private int rnum;
+	private String mtSeq;
+	private String mtDetail;
+	private String regDt;
+	private String prcsDt;
+	private String mtStatus;
+	private String attach;
+	private String memId;
+	private String ccpyCode;
+	private String cancelYn;
+	private String cancelTm;
+	private String mtConst;
+	private String mtLocation;
+	
+	//공통상세코드
+	private CommDetailVO commDetailVO;
+	
+	private MemberVO memberVO;
+	
+	private DanjiVO danjiVO;
+	
+	private CcpyVO ccpyVO;
+}

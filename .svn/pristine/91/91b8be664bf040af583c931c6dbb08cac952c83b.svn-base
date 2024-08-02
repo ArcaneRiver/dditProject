@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.delivery.DeliveryMapper">
+	
+	<resultMap type="deliveryVO" id="deliveryMap">
+		<result property="rnum" column="RNUM"/>
+		<result property="pckSeq" column="PCK_SEQ"/>
+		<result property="memId" column="MEM_ID"/>
+		<result property="pckItem" column="PCK_ITEM"/>
+		<result property="regDt" column="REG_DT"/>
+		<result property="pickUpDt" column="PICK_UP_DT"/>
+		<result property="weigh" column="WEIGH"/>
+		<result property="price" column="PRICE"/>
+		<result property="pckQty" column="PCK_QTY"/>
+		<result property="pckTotal" column="PCK_TOTAL"/>
+		<result property="ccpyCode" column="CCPY_CODE"/>
+		<result property="attach" column="ATTACH"/>
+		<result property="pckStatus" column="PCK_STATUS"/>
+		<result property="cancelYn" column="CANCEL_YN"/>
+		<collection property="commDetailVOList" resultMap="commDetailMap"></collection>
+		<collection property="commDetailVOList" resultMap="ccpyMap"></collection>
+	</resultMap>
+	
+	<resultMap type="commDetailVO" id="commDetailMap">
+		<result property="commDetCodeNm" column="COMM_DET_CODE_NM"/>
+		<result property="commDetCode" column="COMM_DET_CODE"/>
+	</resultMap>
+	
+	<resultMap type="ccpyVO" id="ccpyMap">
+		<result property="ccpyCode" column="CCPY_CODE"/>
+		<result property="ccpyName" column="CCPY_NAME"/>
+	</resultMap>
+	
+	<select id="list" parameterType="hashMap" resultMap="deliveryMap">
+		SELECT 
+		   ROW_NUMBER() OVER(ORDER BY A.PCK_SEQ DESC) RNUM
+		    , A.PCK_SEQ
+		    , A.MEM_ID
+		    , A.PCK_ITEM
+		    , B.COMM_DET_CODE_NM
+		    , TO_CHAR(A.REG_DT,'YYYY-MM-DD HH24:MI:SS') REG_DT
+		    , TO_CHAR(A.PICK_UP_DT,'YYYY-MM-DD HH24:MI:SS') PICK_UP_DT
+		    , A.PCK_STATUS
+		    , A.CANCEL_YN
+		FROM PACKAGE A, COMM_DETAIL B
+		WHERE A.PCK_ITEM = B.COMM_DET_CODE
+		AND A.MEM_ID ='test'
+	</select>
+	
+	<select id="detail" parameterType="deliveryVO" resultMap="deliveryMap">
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY A.PCK_SEQ DESC) RNUM 
+		    , A.PCK_SEQ
+		    , TO_CHAR(A.REG_DT,'YYYY-MM-DD HH24:MI:SS') REG_DT
+		    , A.PCK_ITEM
+		    , B.COMM_DET_CODE_NM
+		    , A.WEIGH
+		    , (A.PRICE*A.PCK_QTY) PCK_TOTAL
+		    , A.CCPY_CODE
+		    , C.CCPY_NAME
+		    , A.PRICE
+		    , A.PCK_QTY
+		    , A.ATTACH
+		    , A.PCK_STATUS
+		FROM PACKAGE A LEFT JOIN COMM_DETAIL B
+		    ON A.PCK_ITEM = B.COMM_DET_CODE
+		                    LEFT JOIN CCPY C
+		    ON A.CCPY_CODE = C.CCPY_CODE
+		    WHERE PCK_SEQ=#{pckSeq}
+	</select>
+	
+	<update id="delUpdate" parameterType="deliveryVO">
+	 	update 
+	 		package
+		set 
+			cancel_yn = 'Y'
+			, cancel_tm = sysdate
+		where 
+			pck_seq = #{pckSeq}
+	</update>
+ 
+</mapper>

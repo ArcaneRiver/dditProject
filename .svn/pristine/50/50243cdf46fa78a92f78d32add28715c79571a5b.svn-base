@@ -1,0 +1,68 @@
+package com.homecat.sweethome.controller.member;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.member.LogInService;
+import com.homecat.sweethome.vo.member.MemberVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class LogInController {
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	@Autowired
+	LogInService logInService;
+	
+	@GetMapping("/loginForm")
+	public String logIn() {
+		return "/security/loginForm";
+	}
+	
+	@ResponseBody
+	@PostMapping("/loginMember")
+	public Map<Object, Object> logInMember(@RequestBody MemberVO memberVO) {
+		log.info("입주민 로그인 컨트롤러!");
+		int rst = 0;
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		rst = logInService.memberLogIn(memberVO);
+		map.put("rst", rst);
+		
+		return map;
+	}
+	
+	@ResponseBody
+	@PostMapping("/loginAdmin")
+	public Map<Object, Object> logInAdimin(@RequestBody MemberVO memberVO) {
+		log.info("관리자 로그인 컨트롤러!");
+		int rst = 0;
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		rst = logInService.adminLogIn(memberVO);
+		log.info(""+rst);
+		map.put("rst", rst);
+		
+		return map;
+	}
+	
+	@ResponseBody
+	@PostMapping("/loginSubcon")
+	public Map<Object, Object> logInSubcon(@RequestBody MemberVO memberVO) {
+		log.info("협력업체 로그인 컨트롤러!");
+		int rst = 0;
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		rst = logInService.subconLogIn(memberVO);
+		map.put("rst", rst);
+		
+		return map;
+	}
+}

@@ -1,0 +1,20 @@
+package com.homecat.sweethome.service.impl.moveout;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.moveout.MoveoutMapper;
+import com.homecat.sweethome.service.moveout.MoveoutService;
+import com.homecat.sweethome.vo.moveout.MoveoutVO;
+
+@Service
+public class MoveoutServiceImpl implements MoveoutService {
+
+	@Autowired
+	MoveoutMapper moveoutMapper;
+
+	@Override
+	public int insert(MoveoutVO moveoutVO) {
+		return this.moveoutMapper.insert(moveoutVO);
+	}
+}

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.homecat.sweethome.mapper.publicFacilities.BookMapper">
+
+
+	<sql id="where">
+		<if test="keyword!=null and keyword!='' ">
+			AND (title LIKE '%'|| #{keyword} ||'%'
+			OR writer LIKE '%'||
+			#{keyword} ||'%'
+			OR book_cat LIKE '%'|| #{keyword} ||'%'
+			OR publisher
+			LIKE '%'|| #{keyword} ||'%'
+			OR status LIKE '%'|| #{keyword} ||'%')
+		</if>
+
+	</sql>
+
+
+	<select id="bookList" resultType="bookVO"
+		parameterType="hashMap">
+		SELECT T.*
+		FROM
+		(
+		SELECT ROW_NUMBER() OVER(ORDER BY book_code ) RNUM ,
+		book_code
+		, book_cat
+		, intro
+		, title
+		, writer
+		, publisher
+		, total_page
+		, status
+		, attach
+		FROM book
+		WHERE 1 = 1
+		<include refid="where"></include>
+		) T
+		WHERE T.RNUM BETWEEN ((#{currentPage}*10) - (10-1)) AND
+		(#{currentPage} *10)
+	</select>
+
+	<select id="getTotal" parameterType="hashMap" resultType="int">
+		select count(*)
+		from book
+		where 1=1
+		<include refid="where"></include>
+	</select>
+
+	<select id="detail" resultType="bookVO" parameterType="bookVO">
+		SELECT
+		book_code
+		, book_cat
+		, intro
+		, title
+		, writer
+		, publisher
+		, total_page
+		, status
+		, attach
+		FROM
+		book
+		where
+		book_code = #{bookCode}
+	</select>
+
+	<insert id="rentalAjax" parameterType="bookLoanVO">
+
+		INSERT INTO book_loan (
+		    loan_seq
+		    , book_code
+		    , mem_id
+		    , loan_dt
+		    , return_dt
+		    , return_status
+		) VALUES (
+		    (select substr(replace(sysdate,'/'),-6) ||  (SELECT nvl(LPAD(MAX(SUBSTR(LOAN_SEQ,7) + 1), 4,0),'0001') FROM book_loan)  from dual)
+		  , #{bookCode}
+		  , 'b00k'
+		  , sysdate
+		  , sysdate + 6
+		  , '대출중'
+		)
+	</insert>
+	
+	<update id="stateAjax" parameterType="bookVO">
+		UPDATE book
+		SET STATUS = '대출중'
+		where book_code = #{bookCode}
+	</update>
+	
+
+</mapper>

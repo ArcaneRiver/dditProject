@@ -1,0 +1,87 @@
+package com.homecat.sweethome.service.impl.waste;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.waste.WasteMapper;
+import com.homecat.sweethome.service.waste.WasteService;
+import com.homecat.sweethome.vo.comm.CommDetailVO;
+import com.homecat.sweethome.vo.waste.WasteVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+public class WasteServiceImpl implements WasteService {
+
+	@Autowired
+	WasteMapper wasteMapper;
+	
+	// 폐기물 신청 목록
+	@Override
+	public List<WasteVO> wasteList(Map<String, Object> map) {
+		return this.wasteMapper.wasteList(map);
+	}
+
+	// 폐기물 신청 상세
+	@Override
+	public WasteVO detail(String wasteSeq) {
+		return this.wasteMapper.detail(wasteSeq);
+	}
+
+	// 폐기물 배출 신청
+	@Override
+	public int createPost(WasteVO wasteVO) {
+		return this.wasteMapper.createPost(wasteVO);
+	}
+
+	// 폐기물 신청 수정
+	@Override
+	public int updatePost(WasteVO wasteVO) {
+		return this.wasteMapper.updatePost(wasteVO);
+	}
+
+	// 폐기물 신청 삭제
+	@Override
+	public int deletePost(WasteVO wasteVO) {
+		return this.wasteMapper.deletePost(wasteVO);
+	}
+
+	//관리자 페이지////////////////////////////////////////////////////////////////
+	//입주민 폐기물 신청 내역
+	@Override
+	public List<WasteVO> adWasteList(Map<String, Object> map) {
+		return this.wasteMapper.adWasteList(map);
+	}
+
+	//모달 상세
+	@Override
+	public WasteVO modalDetail(WasteVO wasteVO) {
+		return this.wasteMapper.modalDetail(wasteVO);
+	}
+
+	//모달수정
+	@Override
+	public int modalUpdate(WasteVO wasteVO) {
+		return this.wasteMapper.modalUpdate(wasteVO);
+	}
+
+
+
+
+//	//폐기물 품목 목록 가져오기
+//	@Override
+//	public List<CommDetailVO> getAllCommDetails() {
+//		return this.wasteMapper.commDetailList();
+//	}
+//
+//	//선택한 폐기물품목의 코드가져오기
+//	@Override
+//	public String getCommDetCode(String commDetCodeNm) {
+//		return wasteMapper.getCommDetCode(commDetCodeNm);
+//	}
+
+
+}

@@ -1,0 +1,1747 @@
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"  prefix="sec"%>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+
+<style>
+.charge:hover {
+	background-color: lightgrey;
+}
+</style>
+
+<div style="display: none" id="memId"><sec:authentication property="principal.memberVO.memId" /></div>
+<div style="display: none" id="memNm"><sec:authentication property="principal.memberVO.memNm" /></div>
+<div style="display: none" id="nickname"><sec:authentication property="principal.memberVO.nickname" /></div>
+<div style="display: none" id="memTelno"><sec:authentication property="principal.memberVO.memTelno" /></div>
+<div style="display: none" id="memEmail"><sec:authentication property="principal.memberVO.memEmail" /></div>
+<div style="display: none" id="roomCode"><sec:authentication property="principal.memberVO.roomCode" /></div>
+<div style="display: none" id="ym">${ym}</div>
+<div class="col-12">
+	<div class="card">
+		<div class="card-header">
+			<h3 class="card-title" style="font-size: 40px;">공과금 납부</h3>
+		</div>
+
+		<div class="card-body row">
+			<div class="col-6">
+				<div id="percent" style="display: none;"><fmt:formatNumber value="${chargeItemVO.totalCharge / avg * 100}" pattern="0" /></div>
+				<canvas id="doughnut" width="800" height="300"></canvas>
+				<div id="percentDisp1" style="font-size: 2em; display: flex; justify-content: center; margin-left: 30px; margin-top: -80px;"></div>
+				<div id="percentDisp2" style="font-size: 2em; display: flex; justify-content: center; margin-left: 30px;"></div>
+			</div>
+			<div class="col-6">
+				<div class="card" style="margin-top: 70px;">
+					<table>
+						<tr style="background-color: lightgreen">
+							<td>당월 부과액</td>
+							<td><span id="totalCharge">${chargeItemVO.totalCharge}</span>원</td>
+						</tr>
+						<tr>
+							<td>할인 총계</td>
+							<td>0원</td>
+						</tr>
+						<tr style="background-color: lightgreen">
+							<td>미납액</td>
+							<td>0원</td>
+						</tr>
+						<tr>
+							<td>미납 연체료</td>
+							<td>0원</td>
+						</tr>
+						<tr style="background-color: lightgreen">
+							<td>납기 내 금액</td>
+							<td id="dueDateFee">${chargeItemVO.totalCharge}원</td>
+						</tr>
+						<tr>
+							<td>납기 후 연체료</td>
+							<td id="lateFee"><fmt:formatNumber value="${chargeItemVO.totalCharge * 0.02}" pattern="0원" /></td>
+						</tr>
+						<tr style="background-color: lightgreen">
+							<td>납기 후 금액</td>
+							<td id="afterAmount"></td>
+						</tr>
+						<tr>
+							<td>납부 기한</td>
+							<td>당월 22일까지</td>
+						</tr>
+					</table>
+				</div>
+				<div style="display: flex; justify-content: flex-start;">
+					<div style="margin-right: auto;">
+						<a class="btn btn-info" href="#chargePerMonth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="chargePerMonth"> 
+							<span>월별 관리비 조회</span>
+						</a>
+					</div>
+					<div>
+						<a href="#" class="btn btn-primary" id="btnPay">관리비 납부</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="card-body">
+			<div class="collapse row" id="chargePerMonth">
+				<div style="display: flex; justify-content: center;">
+					<h4>
+						<a role="button" id="lastYear">-</a>
+						<span id="year">2024</span>년
+						<a role="button" id="postYear">+</a>
+					</h4>
+				</div>
+				<div class="col-12">
+					<table style="width: 1500px;">
+						<thead>
+							<tr>
+								<th width="10%">분류</th>
+								<th width="6%">펼쳐보기</th>
+								<th width="7%">1월</th>
+								<th width="7%">2월</th>
+								<th width="7%">3월</th>
+								<th width="7%">4월</th>
+								<th width="7%">5월</th>
+								<th width="7%">6월</th>
+								<th width="7%">7월</th>
+								<th width="7%">8월</th>
+								<th width="7%">9월</th>
+								<th width="7%">10월</th>
+								<th width="7%">11월</th>
+								<th width="7%">12월</th>
+							</tr>
+						</thead>
+						<tbody id="chargeDetail">
+							<tr>
+								<td>
+									<a> 
+										<span>일반관리비</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#commons" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="commons">+</a>
+								</td>
+								<td id="commons01" class="charge">0</td>
+								<td id="commons02" class="charge">0</td>
+								<td id="commons03" class="charge">0</td>
+								<td id="commons04" class="charge">0</td>
+								<td id="commons05" class="charge">0</td>
+								<td id="commons06" class="charge">0</td>
+								<td id="commons07" class="charge">0</td>
+								<td id="commons08" class="charge">0</td>
+								<td id="commons09" class="charge">0</td>
+								<td id="commons10" class="charge">0</td>
+								<td id="commons11" class="charge">0</td>
+								<td id="commons12" class="charge">0</td>
+							</tr>
+	
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ급여</td>
+								<td></td>
+								<td id="salary01" class="charge">0</td>
+								<td id="salary02" class="charge">0</td>
+								<td id="salary03" class="charge">0</td>
+								<td id="salary04" class="charge">0</td>
+								<td id="salary05" class="charge">0</td>
+								<td id="salary06" class="charge">0</td>
+								<td id="salary07" class="charge">0</td>
+								<td id="salary08" class="charge">0</td>
+								<td id="salary09" class="charge">0</td>
+								<td id="salary10" class="charge">0</td>
+								<td id="salary11" class="charge">0</td>
+								<td id="salary12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ제수당</td>
+								<td></td>
+								<td id="allowance01" class="charge">0</td>
+								<td id="allowance02" class="charge">0</td>
+								<td id="allowance03" class="charge">0</td>
+								<td id="allowance04" class="charge">0</td>
+								<td id="allowance05" class="charge">0</td>
+								<td id="allowance06" class="charge">0</td>
+								<td id="allowance07" class="charge">0</td>
+								<td id="allowance08" class="charge">0</td>
+								<td id="allowance09" class="charge">0</td>
+								<td id="allowance10" class="charge">0</td>
+								<td id="allowance11" class="charge">0</td>
+								<td id="allowance12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ상여금</td>
+								<td></td>
+								<td id="bonus01" class="charge">0</td>
+								<td id="bonus02" class="charge">0</td>
+								<td id="bonus03" class="charge">0</td>
+								<td id="bonus04" class="charge">0</td>
+								<td id="bonus05" class="charge">0</td>
+								<td id="bonus06" class="charge">0</td>
+								<td id="bonus07" class="charge">0</td>
+								<td id="bonus08" class="charge">0</td>
+								<td id="bonus09" class="charge">0</td>
+								<td id="bonus10" class="charge">0</td>
+								<td id="bonus11" class="charge">0</td>
+								<td id="bonus12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ퇴직금</td>
+								<td></td>
+								<td id="rtrPay01" class="charge">0</td>
+								<td id="rtrPay02" class="charge">0</td>
+								<td id="rtrPay03" class="charge">0</td>
+								<td id="rtrPay04" class="charge">0</td>
+								<td id="rtrPay05" class="charge">0</td>
+								<td id="rtrPay06" class="charge">0</td>
+								<td id="rtrPay07" class="charge">0</td>
+								<td id="rtrPay08" class="charge">0</td>
+								<td id="rtrPay09" class="charge">0</td>
+								<td id="rtrPay10" class="charge">0</td>
+								<td id="rtrPay11" class="charge">0</td>
+								<td id="rtrPay12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ산재보험료</td>
+								<td></td>
+								<td id="iacIns01" class="charge">0</td>
+								<td id="iacIns02" class="charge">0</td>
+								<td id="iacIns03" class="charge">0</td>
+								<td id="iacIns04" class="charge">0</td>
+								<td id="iacIns05" class="charge">0</td>
+								<td id="iacIns06" class="charge">0</td>
+								<td id="iacIns07" class="charge">0</td>
+								<td id="iacIns08" class="charge">0</td>
+								<td id="iacIns09" class="charge">0</td>
+								<td id="iacIns10" class="charge">0</td>
+								<td id="iacIns11" class="charge">0</td>
+								<td id="iacIns12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ고용보험료</td>
+								<td></td>
+								<td id="empIns01" class="charge">0</td>
+								<td id="empIns02" class="charge">0</td>
+								<td id="empIns03" class="charge">0</td>
+								<td id="empIns04" class="charge">0</td>
+								<td id="empIns05" class="charge">0</td>
+								<td id="empIns06" class="charge">0</td>
+								<td id="empIns07" class="charge">0</td>
+								<td id="empIns08" class="charge">0</td>
+								<td id="empIns09" class="charge">0</td>
+								<td id="empIns10" class="charge">0</td>
+								<td id="empIns11" class="charge">0</td>
+								<td id="empIns12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ국민연금</td>
+								<td></td>
+								<td id="npn01" class="charge">0</td>
+								<td id="npn02" class="charge">0</td>
+								<td id="npn03" class="charge">0</td>
+								<td id="npn04" class="charge">0</td>
+								<td id="npn05" class="charge">0</td>
+								<td id="npn06" class="charge">0</td>
+								<td id="npn07" class="charge">0</td>
+								<td id="npn08" class="charge">0</td>
+								<td id="npn09" class="charge">0</td>
+								<td id="npn10" class="charge">0</td>
+								<td id="npn11" class="charge">0</td>
+								<td id="npn12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ건강보험료</td>
+								<td></td>
+								<td id="hlthIns01" class="charge">0</td>
+								<td id="hlthIns02" class="charge">0</td>
+								<td id="hlthIns03" class="charge">0</td>
+								<td id="hlthIns04" class="charge">0</td>
+								<td id="hlthIns05" class="charge">0</td>
+								<td id="hlthIns06" class="charge">0</td>
+								<td id="hlthIns07" class="charge">0</td>
+								<td id="hlthIns08" class="charge">0</td>
+								<td id="hlthIns09" class="charge">0</td>
+								<td id="hlthIns10" class="charge">0</td>
+								<td id="hlthIns11" class="charge">0</td>
+								<td id="hlthIns12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ식대등복리후생비</td>
+								<td></td>
+								<td id="benefits01" class="charge">0</td>
+								<td id="benefits02" class="charge">0</td>
+								<td id="benefits03" class="charge">0</td>
+								<td id="benefits04" class="charge">0</td>
+								<td id="benefits05" class="charge">0</td>
+								<td id="benefits06" class="charge">0</td>
+								<td id="benefits07" class="charge">0</td>
+								<td id="benefits08" class="charge">0</td>
+								<td id="benefits09" class="charge">0</td>
+								<td id="benefits10" class="charge">0</td>
+								<td id="benefits11" class="charge">0</td>
+								<td id="benefits12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ일반사무용품비</td>
+								<td></td>
+								<td id="oprodCt01" class="charge">0</td>
+								<td id="oprodCt02" class="charge">0</td>
+								<td id="oprodCt03" class="charge">0</td>
+								<td id="oprodCt04" class="charge">0</td>
+								<td id="oprodCt05" class="charge">0</td>
+								<td id="oprodCt06" class="charge">0</td>
+								<td id="oprodCt07" class="charge">0</td>
+								<td id="oprodCt08" class="charge">0</td>
+								<td id="oprodCt09" class="charge">0</td>
+								<td id="oprodCt10" class="charge">0</td>
+								<td id="oprodCt11" class="charge">0</td>
+								<td id="oprodCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ도서인쇄비</td>
+								<td></td>
+								<td id="printCt01" class="charge">0</td>
+								<td id="printCt02" class="charge">0</td>
+								<td id="printCt03" class="charge">0</td>
+								<td id="printCt04" class="charge">0</td>
+								<td id="printCt05" class="charge">0</td>
+								<td id="printCt06" class="charge">0</td>
+								<td id="printCt07" class="charge">0</td>
+								<td id="printCt08" class="charge">0</td>
+								<td id="printCt09" class="charge">0</td>
+								<td id="printCt10" class="charge">0</td>
+								<td id="printCt11" class="charge">0</td>
+								<td id="printCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ여비교통비</td>
+								<td></td>
+								<td id="tsptCt01" class="charge">0</td>
+								<td id="tsptCt02" class="charge">0</td>
+								<td id="tsptCt03" class="charge">0</td>
+								<td id="tsptCt04" class="charge">0</td>
+								<td id="tsptCt05" class="charge">0</td>
+								<td id="tsptCt06" class="charge">0</td>
+								<td id="tsptCt07" class="charge">0</td>
+								<td id="tsptCt08" class="charge">0</td>
+								<td id="tsptCt09" class="charge">0</td>
+								<td id="tsptCt10" class="charge">0</td>
+								<td id="tsptCt11" class="charge">0</td>
+								<td id="tsptCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ통신료</td>
+								<td></td>
+								<td id="commCt01" class="charge">0</td>
+								<td id="commCt02" class="charge">0</td>
+								<td id="commCt03" class="charge">0</td>
+								<td id="commCt04" class="charge">0</td>
+								<td id="commCt05" class="charge">0</td>
+								<td id="commCt06" class="charge">0</td>
+								<td id="commCt07" class="charge">0</td>
+								<td id="commCt08" class="charge">0</td>
+								<td id="commCt09" class="charge">0</td>
+								<td id="commCt10" class="charge">0</td>
+								<td id="commCt11" class="charge">0</td>
+								<td id="commCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ우편료</td>
+								<td></td>
+								<td id="postCt01" class="charge">0</td>
+								<td id="postCt02" class="charge">0</td>
+								<td id="postCt03" class="charge">0</td>
+								<td id="postCt04" class="charge">0</td>
+								<td id="postCt05" class="charge">0</td>
+								<td id="postCt06" class="charge">0</td>
+								<td id="postCt07" class="charge">0</td>
+								<td id="postCt08" class="charge">0</td>
+								<td id="postCt09" class="charge">0</td>
+								<td id="postCt10" class="charge">0</td>
+								<td id="postCt11" class="charge">0</td>
+								<td id="postCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ관리용품구입비</td>
+								<td></td>
+								<td id="cprodCt01" class="charge">0</td>
+								<td id="cprodCt02" class="charge">0</td>
+								<td id="cprodCt03" class="charge">0</td>
+								<td id="cprodCt04" class="charge">0</td>
+								<td id="cprodCt05" class="charge">0</td>
+								<td id="cprodCt06" class="charge">0</td>
+								<td id="cprodCt07" class="charge">0</td>
+								<td id="cprodCt08" class="charge">0</td>
+								<td id="cprodCt09" class="charge">0</td>
+								<td id="cprodCt10" class="charge">0</td>
+								<td id="cprodCt11" class="charge">0</td>
+								<td id="cprodCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ잡비</td>
+								<td></td>
+								<td id="etcCt01" class="charge">0</td>
+								<td id="etcCt02" class="charge">0</td>
+								<td id="etcCt03" class="charge">0</td>
+								<td id="etcCt04" class="charge">0</td>
+								<td id="etcCt05" class="charge">0</td>
+								<td id="etcCt06" class="charge">0</td>
+								<td id="etcCt07" class="charge">0</td>
+								<td id="etcCt08" class="charge">0</td>
+								<td id="etcCt09" class="charge">0</td>
+								<td id="etcCt10" class="charge">0</td>
+								<td id="etcCt11" class="charge">0</td>
+								<td id="etcCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ커뮤니티운영비</td>
+								<td></td>
+								<td id="facCt01" class="charge">0</td>
+								<td id="facCt02" class="charge">0</td>
+								<td id="facCt03" class="charge">0</td>
+								<td id="facCt04" class="charge">0</td>
+								<td id="facCt05" class="charge">0</td>
+								<td id="facCt06" class="charge">0</td>
+								<td id="facCt07" class="charge">0</td>
+								<td id="facCt08" class="charge">0</td>
+								<td id="facCt09" class="charge">0</td>
+								<td id="facCt10" class="charge">0</td>
+								<td id="facCt11" class="charge">0</td>
+								<td id="facCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="commons">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ기타</td>
+								<td></td>
+								<td id="commonsOtherCt01" class="charge">0</td>
+								<td id="commonsOtherCt02" class="charge">0</td>
+								<td id="commonsOtherCt03" class="charge">0</td>
+								<td id="commonsOtherCt04" class="charge">0</td>
+								<td id="commonsOtherCt05" class="charge">0</td>
+								<td id="commonsOtherCt06" class="charge">0</td>
+								<td id="commonsOtherCt07" class="charge">0</td>
+								<td id="commonsOtherCt08" class="charge">0</td>
+								<td id="commonsOtherCt09" class="charge">0</td>
+								<td id="commonsOtherCt10" class="charge">0</td>
+								<td id="commonsOtherCt11" class="charge">0</td>
+								<td id="commonsOtherCt12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>청소비</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#cleaning" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="cleaning">+</a>
+								</td>
+								<td id="cleaning01" class="charge">0</td>
+								<td id="cleaning02" class="charge">0</td>
+								<td id="cleaning03" class="charge">0</td>
+								<td id="cleaning04" class="charge">0</td>
+								<td id="cleaning05" class="charge">0</td>
+								<td id="cleaning06" class="charge">0</td>
+								<td id="cleaning07" class="charge">0</td>
+								<td id="cleaning08" class="charge">0</td>
+								<td id="cleaning09" class="charge">0</td>
+								<td id="cleaning10" class="charge">0</td>
+								<td id="cleaning11" class="charge">0</td>
+								<td id="cleaning12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="cleaning">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ청소용역비</td>
+								<td></td>
+								<td id="clnSvcCt01" class="charge">0</td>
+								<td id="clnSvcCt02" class="charge">0</td>
+								<td id="clnSvcCt03" class="charge">0</td>
+								<td id="clnSvcCt04" class="charge">0</td>
+								<td id="clnSvcCt05" class="charge">0</td>
+								<td id="clnSvcCt06" class="charge">0</td>
+								<td id="clnSvcCt07" class="charge">0</td>
+								<td id="clnSvcCt08" class="charge">0</td>
+								<td id="clnSvcCt09" class="charge">0</td>
+								<td id="clnSvcCt10" class="charge">0</td>
+								<td id="clnSvcCt11" class="charge">0</td>
+								<td id="clnSvcCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="cleaning">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ규격봉투외 소모품 구입비</td>
+								<td></td>
+								<td id="expendableCt01" class="charge">0</td>
+								<td id="expendableCt02" class="charge">0</td>
+								<td id="expendableCt03" class="charge">0</td>
+								<td id="expendableCt04" class="charge">0</td>
+								<td id="expendableCt05" class="charge">0</td>
+								<td id="expendableCt06" class="charge">0</td>
+								<td id="expendableCt07" class="charge">0</td>
+								<td id="expendableCt08" class="charge">0</td>
+								<td id="expendableCt09" class="charge">0</td>
+								<td id="expendableCt10" class="charge">0</td>
+								<td id="expendableCt11" class="charge">0</td>
+								<td id="expendableCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="cleaning">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ공용생활폐기물 처리비</td>
+								<td></td>
+								<td id="wasteCt01" class="charge">0</td>
+								<td id="wasteCt02" class="charge">0</td>
+								<td id="wasteCt03" class="charge">0</td>
+								<td id="wasteCt04" class="charge">0</td>
+								<td id="wasteCt05" class="charge">0</td>
+								<td id="wasteCt06" class="charge">0</td>
+								<td id="wasteCt07" class="charge">0</td>
+								<td id="wasteCt08" class="charge">0</td>
+								<td id="wasteCt09" class="charge">0</td>
+								<td id="wasteCt10" class="charge">0</td>
+								<td id="wasteCt11" class="charge">0</td>
+								<td id="wasteCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="cleaning">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ기타</td>
+								<td></td>
+								<td id="cleaningOtherCt01" class="charge">0</td>
+								<td id="cleaningOtherCt02" class="charge">0</td>
+								<td id="cleaningOtherCt03" class="charge">0</td>
+								<td id="cleaningOtherCt04" class="charge">0</td>
+								<td id="cleaningOtherCt05" class="charge">0</td>
+								<td id="cleaningOtherCt06" class="charge">0</td>
+								<td id="cleaningOtherCt07" class="charge">0</td>
+								<td id="cleaningOtherCt08" class="charge">0</td>
+								<td id="cleaningOtherCt09" class="charge">0</td>
+								<td id="cleaningOtherCt10" class="charge">0</td>
+								<td id="cleaningOtherCt11" class="charge">0</td>
+								<td id="cleaningOtherCt12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>소독비</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#disinfec" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="disinfec">+</a>
+								</td>
+								<td id="disinfec01" class="charge">0</td>
+								<td id="disinfec02" class="charge">0</td>
+								<td id="disinfec03" class="charge">0</td>
+								<td id="disinfec04" class="charge">0</td>
+								<td id="disinfec05" class="charge">0</td>
+								<td id="disinfec06" class="charge">0</td>
+								<td id="disinfec07" class="charge">0</td>
+								<td id="disinfec08" class="charge">0</td>
+								<td id="disinfec09" class="charge">0</td>
+								<td id="disinfec10" class="charge">0</td>
+								<td id="disinfec11" class="charge">0</td>
+								<td id="disinfec12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="disinfec">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ소독비</td>
+								<td></td>
+								<td id="disinfecCt01" class="charge">0</td>
+								<td id="disinfecCt02" class="charge">0</td>
+								<td id="disinfecCt03" class="charge">0</td>
+								<td id="disinfecCt04" class="charge">0</td>
+								<td id="disinfecCt05" class="charge">0</td>
+								<td id="disinfecCt06" class="charge">0</td>
+								<td id="disinfecCt07" class="charge">0</td>
+								<td id="disinfecCt08" class="charge">0</td>
+								<td id="disinfecCt09" class="charge">0</td>
+								<td id="disinfecCt10" class="charge">0</td>
+								<td id="disinfecCt11" class="charge">0</td>
+								<td id="disinfecCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="disinfec">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ기타</td>
+								<td></td>
+								<td id="disinfecOtherCt01" class="charge">0</td>
+								<td id="disinfecOtherCt02" class="charge">0</td>
+								<td id="disinfecOtherCt03" class="charge">0</td>
+								<td id="disinfecOtherCt04" class="charge">0</td>
+								<td id="disinfecOtherCt05" class="charge">0</td>
+								<td id="disinfecOtherCt06" class="charge">0</td>
+								<td id="disinfecOtherCt07" class="charge">0</td>
+								<td id="disinfecOtherCt08" class="charge">0</td>
+								<td id="disinfecOtherCt09" class="charge">0</td>
+								<td id="disinfecOtherCt10" class="charge">0</td>
+								<td id="disinfecOtherCt11" class="charge">0</td>
+								<td id="disinfecOtherCt12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>경비비</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#secure" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="secure">+</a>
+								</td>
+								<td id="secure01" class="charge">0</td>
+								<td id="secure02" class="charge">0</td>
+								<td id="secure03" class="charge">0</td>
+								<td id="secure04" class="charge">0</td>
+								<td id="secure05" class="charge">0</td>
+								<td id="secure06" class="charge">0</td>
+								<td id="secure07" class="charge">0</td>
+								<td id="secure08" class="charge">0</td>
+								<td id="secure09" class="charge">0</td>
+								<td id="secure10" class="charge">0</td>
+								<td id="secure11" class="charge">0</td>
+								<td id="secure12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="secure">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ경비비</td>
+								<td></td>
+								<td id="secCt01" class="charge">0</td>
+								<td id="secCt02" class="charge">0</td>
+								<td id="secCt03" class="charge">0</td>
+								<td id="secCt04" class="charge">0</td>
+								<td id="secCt05" class="charge">0</td>
+								<td id="secCt06" class="charge">0</td>
+								<td id="secCt07" class="charge">0</td>
+								<td id="secCt08" class="charge">0</td>
+								<td id="secCt09" class="charge">0</td>
+								<td id="secCt10" class="charge">0</td>
+								<td id="secCt11" class="charge">0</td>
+								<td id="secCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="secure">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ기타</td>
+								<td></td>
+								<td id="secOtherCt01" class="charge">0</td>
+								<td id="secOtherCt02" class="charge">0</td>
+								<td id="secOtherCt03" class="charge">0</td>
+								<td id="secOtherCt04" class="charge">0</td>
+								<td id="secOtherCt05" class="charge">0</td>
+								<td id="secOtherCt06" class="charge">0</td>
+								<td id="secOtherCt07" class="charge">0</td>
+								<td id="secOtherCt08" class="charge">0</td>
+								<td id="secOtherCt09" class="charge">0</td>
+								<td id="secOtherCt10" class="charge">0</td>
+								<td id="secOtherCt11" class="charge">0</td>
+								<td id="secOtherCt12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>승강기유지비</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#elevator" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="elevator">+</a>
+								</td>
+								<td id="elevator01" class="charge">0</td>
+								<td id="elevator02" class="charge">0</td>
+								<td id="elevator03" class="charge">0</td>
+								<td id="elevator04" class="charge">0</td>
+								<td id="elevator05" class="charge">0</td>
+								<td id="elevator06" class="charge">0</td>
+								<td id="elevator07" class="charge">0</td>
+								<td id="elevator08" class="charge">0</td>
+								<td id="elevator09" class="charge">0</td>
+								<td id="elevator10" class="charge">0</td>
+								<td id="elevator11" class="charge">0</td>
+								<td id="elevator12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="elevator">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ유지보수비</td>
+								<td></td>
+								<td id="evtMgmtCt01" class="charge">0</td>
+								<td id="evtMgmtCt02" class="charge">0</td>
+								<td id="evtMgmtCt03" class="charge">0</td>
+								<td id="evtMgmtCt04" class="charge">0</td>
+								<td id="evtMgmtCt05" class="charge">0</td>
+								<td id="evtMgmtCt06" class="charge">0</td>
+								<td id="evtMgmtCt07" class="charge">0</td>
+								<td id="evtMgmtCt08" class="charge">0</td>
+								<td id="evtMgmtCt09" class="charge">0</td>
+								<td id="evtMgmtCt10" class="charge">0</td>
+								<td id="evtMgmtCt11" class="charge">0</td>
+								<td id="evtMgmtCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="elevator">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ검사비</td>
+								<td></td>
+								<td id="evtInspCt01" class="charge">0</td>
+								<td id="evtInspCt02" class="charge">0</td>
+								<td id="evtInspCt03" class="charge">0</td>
+								<td id="evtInspCt04" class="charge">0</td>
+								<td id="evtInspCt05" class="charge">0</td>
+								<td id="evtInspCt06" class="charge">0</td>
+								<td id="evtInspCt07" class="charge">0</td>
+								<td id="evtInspCt08" class="charge">0</td>
+								<td id="evtInspCt09" class="charge">0</td>
+								<td id="evtInspCt10" class="charge">0</td>
+								<td id="evtInspCt11" class="charge">0</td>
+								<td id="evtInspCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="elevator">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ소모품교체비</td>
+								<td></td>
+								<td id="evtExpendableCt01" class="charge">0</td>
+								<td id="evtExpendableCt02" class="charge">0</td>
+								<td id="evtExpendableCt03" class="charge">0</td>
+								<td id="evtExpendableCt04" class="charge">0</td>
+								<td id="evtExpendableCt05" class="charge">0</td>
+								<td id="evtExpendableCt06" class="charge">0</td>
+								<td id="evtExpendableCt07" class="charge">0</td>
+								<td id="evtExpendableCt08" class="charge">0</td>
+								<td id="evtExpendableCt09" class="charge">0</td>
+								<td id="evtExpendableCt10" class="charge">0</td>
+								<td id="evtExpendableCt11" class="charge">0</td>
+								<td id="evtExpendableCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="elevator">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ기타</td>
+								<td></td>
+								<td id="evtOtherCt01" class="charge">0</td>
+								<td id="evtOtherCt02" class="charge">0</td>
+								<td id="evtOtherCt03" class="charge">0</td>
+								<td id="evtOtherCt04" class="charge">0</td>
+								<td id="evtOtherCt05" class="charge">0</td>
+								<td id="evtOtherCt06" class="charge">0</td>
+								<td id="evtOtherCt07" class="charge">0</td>
+								<td id="evtOtherCt08" class="charge">0</td>
+								<td id="evtOtherCt09" class="charge">0</td>
+								<td id="evtOtherCt10" class="charge">0</td>
+								<td id="evtOtherCt11" class="charge">0</td>
+								<td id="evtOtherCt12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>장기수선충당금</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#ltrr" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="ltrr">+</a>
+								</td>
+								<td id="ltrr01" class="charge">0</td>
+								<td id="ltrr02" class="charge">0</td>
+								<td id="ltrr03" class="charge">0</td>
+								<td id="ltrr04" class="charge">0</td>
+								<td id="ltrr05" class="charge">0</td>
+								<td id="ltrr06" class="charge">0</td>
+								<td id="ltrr07" class="charge">0</td>
+								<td id="ltrr08" class="charge">0</td>
+								<td id="ltrr09" class="charge">0</td>
+								<td id="ltrr10" class="charge">0</td>
+								<td id="ltrr11" class="charge">0</td>
+								<td id="ltrr12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="ltrr">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ장기수선충당금</td>
+								<td></td>
+								<td id="ltrrCt01" class="charge">0</td>
+								<td id="ltrrCt02" class="charge">0</td>
+								<td id="ltrrCt03" class="charge">0</td>
+								<td id="ltrrCt04" class="charge">0</td>
+								<td id="ltrrCt05" class="charge">0</td>
+								<td id="ltrrCt06" class="charge">0</td>
+								<td id="ltrrCt07" class="charge">0</td>
+								<td id="ltrrCt08" class="charge">0</td>
+								<td id="ltrrCt09" class="charge">0</td>
+								<td id="ltrrCt10" class="charge">0</td>
+								<td id="ltrrCt11" class="charge">0</td>
+								<td id="ltrrCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="ltrr">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ기타</td>
+								<td></td>
+								<td id="ltrrOtherCt01" class="charge">0</td>
+								<td id="ltrrOtherCt02" class="charge">0</td>
+								<td id="ltrrOtherCt03" class="charge">0</td>
+								<td id="ltrrOtherCt04" class="charge">0</td>
+								<td id="ltrrOtherCt05" class="charge">0</td>
+								<td id="ltrrOtherCt06" class="charge">0</td>
+								<td id="ltrrOtherCt07" class="charge">0</td>
+								<td id="ltrrOtherCt08" class="charge">0</td>
+								<td id="ltrrOtherCt09" class="charge">0</td>
+								<td id="ltrrOtherCt10" class="charge">0</td>
+								<td id="ltrrOtherCt11" class="charge">0</td>
+								<td id="ltrrOtherCt12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>시설유지비</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#facilities" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="facilities">+</a>
+								</td>
+								<td id="facilities01" class="charge">0</td>
+								<td id="facilities02" class="charge">0</td>
+								<td id="facilities03" class="charge">0</td>
+								<td id="facilities04" class="charge">0</td>
+								<td id="facilities05" class="charge">0</td>
+								<td id="facilities06" class="charge">0</td>
+								<td id="facilities07" class="charge">0</td>
+								<td id="facilities08" class="charge">0</td>
+								<td id="facilities09" class="charge">0</td>
+								<td id="facilities10" class="charge">0</td>
+								<td id="facilities11" class="charge">0</td>
+								<td id="facilities12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="facility">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ시설유지비</td>
+								<td></td>
+								<td id="facilityMgmtCt01" class="charge">0</td>
+								<td id="facilityMgmtCt02" class="charge">0</td>
+								<td id="facilityMgmtCt03" class="charge">0</td>
+								<td id="facilityMgmtCt04" class="charge">0</td>
+								<td id="facilityMgmtCt05" class="charge">0</td>
+								<td id="facilityMgmtCt06" class="charge">0</td>
+								<td id="facilityMgmtCt07" class="charge">0</td>
+								<td id="facilityMgmtCt08" class="charge">0</td>
+								<td id="facilityMgmtCt09" class="charge">0</td>
+								<td id="facilityMgmtCt10" class="charge">0</td>
+								<td id="facilityMgmtCt11" class="charge">0</td>
+								<td id="facilityMgmtCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="facility">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ안전점검비</td>
+								<td></td>
+								<td id="facilityChkCt01" class="charge">0</td>
+								<td id="facilityChkCt02" class="charge">0</td>
+								<td id="facilityChkCt03" class="charge">0</td>
+								<td id="facilityChkCt04" class="charge">0</td>
+								<td id="facilityChkCt05" class="charge">0</td>
+								<td id="facilityChkCt06" class="charge">0</td>
+								<td id="facilityChkCt07" class="charge">0</td>
+								<td id="facilityChkCt08" class="charge">0</td>
+								<td id="facilityChkCt09" class="charge">0</td>
+								<td id="facilityChkCt10" class="charge">0</td>
+								<td id="facilityChkCt11" class="charge">0</td>
+								<td id="facilityChkCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="facility">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ재해예방비</td>
+								<td></td>
+								<td id="preventCt01" class="charge">0</td>
+								<td id="preventCt02" class="charge">0</td>
+								<td id="preventCt03" class="charge">0</td>
+								<td id="preventCt04" class="charge">0</td>
+								<td id="preventCt05" class="charge">0</td>
+								<td id="preventCt06" class="charge">0</td>
+								<td id="preventCt07" class="charge">0</td>
+								<td id="preventCt08" class="charge">0</td>
+								<td id="preventCt09" class="charge">0</td>
+								<td id="preventCt10" class="charge">0</td>
+								<td id="preventCt11" class="charge">0</td>
+								<td id="preventCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="facility">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ기타</td>
+								<td></td>
+								<td id="facilitiesOtherCt01" class="charge">0</td>
+								<td id="facilitiesOtherCt02" class="charge">0</td>
+								<td id="facilitiesOtherCt03" class="charge">0</td>
+								<td id="facilitiesOtherCt04" class="charge">0</td>
+								<td id="facilitiesOtherCt05" class="charge">0</td>
+								<td id="facilitiesOtherCt06" class="charge">0</td>
+								<td id="facilitiesOtherCt07" class="charge">0</td>
+								<td id="facilitiesOtherCt08" class="charge">0</td>
+								<td id="facilitiesOtherCt09" class="charge">0</td>
+								<td id="facilitiesOtherCt10" class="charge">0</td>
+								<td id="facilitiesOtherCt11" class="charge">0</td>
+								<td id="facilitiesOtherCt12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>부가세</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#vat" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="vat">+</a>
+								</td>
+								<td id="vat01" class="charge">0</td>
+								<td id="vat02" class="charge">0</td>
+								<td id="vat03" class="charge">0</td>
+								<td id="vat04" class="charge">0</td>
+								<td id="vat05" class="charge">0</td>
+								<td id="vat06" class="charge">0</td>
+								<td id="vat07" class="charge">0</td>
+								<td id="vat08" class="charge">0</td>
+								<td id="vat09" class="charge">0</td>
+								<td id="vat10" class="charge">0</td>
+								<td id="vat11" class="charge">0</td>
+								<td id="vat12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="vat">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ관리용역비 부가세</td>
+								<td></td>
+								<td id="msvcCt01" class="charge">0</td>
+								<td id="msvcCt02" class="charge">0</td>
+								<td id="msvcCt03" class="charge">0</td>
+								<td id="msvcCt04" class="charge">0</td>
+								<td id="msvcCt05" class="charge">0</td>
+								<td id="msvcCt06" class="charge">0</td>
+								<td id="msvcCt07" class="charge">0</td>
+								<td id="msvcCt08" class="charge">0</td>
+								<td id="msvcCt09" class="charge">0</td>
+								<td id="msvcCt10" class="charge">0</td>
+								<td id="msvcCt11" class="charge">0</td>
+								<td id="msvcCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="vat">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ청소용역비 부가세</td>
+								<td></td>
+								<td id="csvcCt01" class="charge">0</td>
+								<td id="csvcCt02" class="charge">0</td>
+								<td id="csvcCt03" class="charge">0</td>
+								<td id="csvcCt04" class="charge">0</td>
+								<td id="csvcCt05" class="charge">0</td>
+								<td id="csvcCt06" class="charge">0</td>
+								<td id="csvcCt07" class="charge">0</td>
+								<td id="csvcCt08" class="charge">0</td>
+								<td id="csvcCt09" class="charge">0</td>
+								<td id="csvcCt10" class="charge">0</td>
+								<td id="csvcCt11" class="charge">0</td>
+								<td id="csvcCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="vat">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ보안용역비 부가세</td>
+								<td></td>
+								<td id="ssvcCt01" class="charge">0</td>
+								<td id="ssvcCt02" class="charge">0</td>
+								<td id="ssvcCt03" class="charge">0</td>
+								<td id="ssvcCt04" class="charge">0</td>
+								<td id="ssvcCt05" class="charge">0</td>
+								<td id="ssvcCt06" class="charge">0</td>
+								<td id="ssvcCt07" class="charge">0</td>
+								<td id="ssvcCt08" class="charge">0</td>
+								<td id="ssvcCt09" class="charge">0</td>
+								<td id="ssvcCt10" class="charge">0</td>
+								<td id="ssvcCt11" class="charge">0</td>
+								<td id="ssvcCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="vat">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ기타</td>
+								<td></td>
+								<td id="vatOtherCt01" class="charge">0</td>
+								<td id="vatOtherCt02" class="charge">0</td>
+								<td id="vatOtherCt03" class="charge">0</td>
+								<td id="vatOtherCt04" class="charge">0</td>
+								<td id="vatOtherCt05" class="charge">0</td>
+								<td id="vatOtherCt06" class="charge">0</td>
+								<td id="vatOtherCt07" class="charge">0</td>
+								<td id="vatOtherCt08" class="charge">0</td>
+								<td id="vatOtherCt09" class="charge">0</td>
+								<td id="vatOtherCt10" class="charge">0</td>
+								<td id="vatOtherCt11" class="charge">0</td>
+								<td id="vatOtherCt12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>위탁관리수수료</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#consignment" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="consignment">+</a>
+								</td>
+								<td id="consignment01" class="charge">0</td>
+								<td id="consignment02" class="charge">0</td>
+								<td id="consignment03" class="charge">0</td>
+								<td id="consignment04" class="charge">0</td>
+								<td id="consignment05" class="charge">0</td>
+								<td id="consignment06" class="charge">0</td>
+								<td id="consignment07" class="charge">0</td>
+								<td id="consignment08" class="charge">0</td>
+								<td id="consignment09" class="charge">0</td>
+								<td id="consignment10" class="charge">0</td>
+								<td id="consignment11" class="charge">0</td>
+								<td id="consignment12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="consignment">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ위탁관리 수수료</td>
+								<td></td>
+								<td id="consignmentCt01" class="charge">0</td>
+								<td id="consignmentCt02" class="charge">0</td>
+								<td id="consignmentCt03" class="charge">0</td>
+								<td id="consignmentCt04" class="charge">0</td>
+								<td id="consignmentCt05" class="charge">0</td>
+								<td id="consignmentCt06" class="charge">0</td>
+								<td id="consignmentCt07" class="charge">0</td>
+								<td id="consignmentCt08" class="charge">0</td>
+								<td id="consignmentCt09" class="charge">0</td>
+								<td id="consignmentCt10" class="charge">0</td>
+								<td id="consignmentCt11" class="charge">0</td>
+								<td id="consignmentCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="consignment">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ기타</td>
+								<td></td>
+								<td id="consignmentOtherCt01" class="charge">0</td>
+								<td id="consignmentOtherCt02" class="charge">0</td>
+								<td id="consignmentOtherCt03" class="charge">0</td>
+								<td id="consignmentOtherCt04" class="charge">0</td>
+								<td id="consignmentOtherCt05" class="charge">0</td>
+								<td id="consignmentOtherCt06" class="charge">0</td>
+								<td id="consignmentOtherCt07" class="charge">0</td>
+								<td id="consignmentOtherCt08" class="charge">0</td>
+								<td id="consignmentOtherCt09" class="charge">0</td>
+								<td id="consignmentOtherCt10" class="charge">0</td>
+								<td id="consignmentOtherCt11" class="charge">0</td>
+								<td id="consignmentOtherCt12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>입주자대표회의운영비</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#meeting" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="meeting">+</a>
+								</td>
+								<td id="meeting01" class="charge">0</td>
+								<td id="meeting02" class="charge">0</td>
+								<td id="meeting03" class="charge">0</td>
+								<td id="meeting04" class="charge">0</td>
+								<td id="meeting05" class="charge">0</td>
+								<td id="meeting06" class="charge">0</td>
+								<td id="meeting07" class="charge">0</td>
+								<td id="meeting08" class="charge">0</td>
+								<td id="meeting09" class="charge">0</td>
+								<td id="meeting10" class="charge">0</td>
+								<td id="meeting11" class="charge">0</td>
+								<td id="meeting12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="meeting">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ회장업무추진비</td>
+								<td></td>
+								<td id="cbCt01" class="charge">0</td>
+								<td id="cbCt02" class="charge">0</td>
+								<td id="cbCt03" class="charge">0</td>
+								<td id="cbCt04" class="charge">0</td>
+								<td id="cbCt05" class="charge">0</td>
+								<td id="cbCt06" class="charge">0</td>
+								<td id="cbCt07" class="charge">0</td>
+								<td id="cbCt08" class="charge">0</td>
+								<td id="cbCt09" class="charge">0</td>
+								<td id="cbCt10" class="charge">0</td>
+								<td id="cbCt11" class="charge">0</td>
+								<td id="cbCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="meeting">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ감사업무추진비</td>
+								<td></td>
+								<td id="abCt01" class="charge">0</td>
+								<td id="abCt02" class="charge">0</td>
+								<td id="abCt03" class="charge">0</td>
+								<td id="abCt04" class="charge">0</td>
+								<td id="abCt05" class="charge">0</td>
+								<td id="abCt06" class="charge">0</td>
+								<td id="abCt07" class="charge">0</td>
+								<td id="abCt08" class="charge">0</td>
+								<td id="abCt09" class="charge">0</td>
+								<td id="abCt10" class="charge">0</td>
+								<td id="abCt11" class="charge">0</td>
+								<td id="abCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="meeting">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ출석수당</td>
+								<td></td>
+								<td id="attdcCt01" class="charge">0</td>
+								<td id="attdcCt02" class="charge">0</td>
+								<td id="attdcCt03" class="charge">0</td>
+								<td id="attdcCt04" class="charge">0</td>
+								<td id="attdcCt05" class="charge">0</td>
+								<td id="attdcCt06" class="charge">0</td>
+								<td id="attdcCt07" class="charge">0</td>
+								<td id="attdcCt08" class="charge">0</td>
+								<td id="attdcCt09" class="charge">0</td>
+								<td id="attdcCt10" class="charge">0</td>
+								<td id="attdcCt11" class="charge">0</td>
+								<td id="attdcCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="meeting">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ운영비</td>
+								<td></td>
+								<td id="operationCt01" class="charge">0</td>
+								<td id="operationCt02" class="charge">0</td>
+								<td id="operationCt03" class="charge">0</td>
+								<td id="operationCt04" class="charge">0</td>
+								<td id="operationCt05" class="charge">0</td>
+								<td id="operationCt06" class="charge">0</td>
+								<td id="operationCt07" class="charge">0</td>
+								<td id="operationCt08" class="charge">0</td>
+								<td id="operationCt09" class="charge">0</td>
+								<td id="operationCt10" class="charge">0</td>
+								<td id="operationCt11" class="charge">0</td>
+								<td id="operationCt12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="meeting">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ기타</td>
+								<td></td>
+								<td id="meetingOtherCt01" class="charge">0</td>
+								<td id="meetingOtherCt02" class="charge">0</td>
+								<td id="meetingOtherCt03" class="charge">0</td>
+								<td id="meetingOtherCt04" class="charge">0</td>
+								<td id="meetingOtherCt05" class="charge">0</td>
+								<td id="meetingOtherCt06" class="charge">0</td>
+								<td id="meetingOtherCt07" class="charge">0</td>
+								<td id="meetingOtherCt08" class="charge">0</td>
+								<td id="meetingOtherCt09" class="charge">0</td>
+								<td id="meetingOtherCt10" class="charge">0</td>
+								<td id="meetingOtherCt11" class="charge">0</td>
+								<td id="meetingOtherCt12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+									<span>건물보험료</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#building" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="building">+</a>
+								</td>
+								<td id="building01" class="charge">0</td>
+								<td id="building02" class="charge">0</td>
+								<td id="building03" class="charge">0</td>
+								<td id="building04" class="charge">0</td>
+								<td id="building05" class="charge">0</td>
+								<td id="building06" class="charge">0</td>
+								<td id="building07" class="charge">0</td>
+								<td id="building08" class="charge">0</td>
+								<td id="building09" class="charge">0</td>
+								<td id="building10" class="charge">0</td>
+								<td id="building11" class="charge">0</td>
+								<td id="building12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="building">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ건물보험료</td>
+								<td></td>
+								<td id="buildingInsr01" class="charge">0</td>
+								<td id="buildingInsr02" class="charge">0</td>
+								<td id="buildingInsr03" class="charge">0</td>
+								<td id="buildingInsr04" class="charge">0</td>
+								<td id="buildingInsr05" class="charge">0</td>
+								<td id="buildingInsr06" class="charge">0</td>
+								<td id="buildingInsr07" class="charge">0</td>
+								<td id="buildingInsr08" class="charge">0</td>
+								<td id="buildingInsr09" class="charge">0</td>
+								<td id="buildingInsr10" class="charge">0</td>
+								<td id="buildingInsr11" class="charge">0</td>
+								<td id="buildingInsr12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>전기료</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#electrocity" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="electrocity">+</a>
+								</td>
+								<td id="electrocity01" class="charge">0</td>
+								<td id="electrocity02" class="charge">0</td>
+								<td id="electrocity03" class="charge">0</td>
+								<td id="electrocity04" class="charge">0</td>
+								<td id="electrocity05" class="charge">0</td>
+								<td id="electrocity06" class="charge">0</td>
+								<td id="electrocity07" class="charge">0</td>
+								<td id="electrocity08" class="charge">0</td>
+								<td id="electrocity09" class="charge">0</td>
+								<td id="electrocity10" class="charge">0</td>
+								<td id="electrocity11" class="charge">0</td>
+								<td id="electrocity12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="electrocity">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ공용전기비</td>
+								<td></td>
+								<td id="sharedElec01" class="charge">0</td>
+								<td id="sharedElec02" class="charge">0</td>
+								<td id="sharedElec03" class="charge">0</td>
+								<td id="sharedElec04" class="charge">0</td>
+								<td id="sharedElec05" class="charge">0</td>
+								<td id="sharedElec06" class="charge">0</td>
+								<td id="sharedElec07" class="charge">0</td>
+								<td id="sharedElec08" class="charge">0</td>
+								<td id="sharedElec09" class="charge">0</td>
+								<td id="sharedElec10" class="charge">0</td>
+								<td id="sharedElec11" class="charge">0</td>
+								<td id="sharedElec12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="electrocity">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ개별전기비</td>
+								<td></td>
+								<td id="individualElec01" class="charge">0</td>
+								<td id="individualElec02" class="charge">0</td>
+								<td id="individualElec03" class="charge">0</td>
+								<td id="individualElec04" class="charge">0</td>
+								<td id="individualElec05" class="charge">0</td>
+								<td id="individualElec06" class="charge">0</td>
+								<td id="individualElec07" class="charge">0</td>
+								<td id="individualElec08" class="charge">0</td>
+								<td id="individualElec09" class="charge">0</td>
+								<td id="individualElec10" class="charge">0</td>
+								<td id="individualElec11" class="charge">0</td>
+								<td id="individualElec12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>수도료</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#water" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="water">+</a>
+								</td>
+								<td id="water01" class="charge">0</td>
+								<td id="water02" class="charge">0</td>
+								<td id="water03" class="charge">0</td>
+								<td id="water04" class="charge">0</td>
+								<td id="water05" class="charge">0</td>
+								<td id="water06" class="charge">0</td>
+								<td id="water07" class="charge">0</td>
+								<td id="water08" class="charge">0</td>
+								<td id="water09" class="charge">0</td>
+								<td id="water10" class="charge">0</td>
+								<td id="water11" class="charge">0</td>
+								<td id="water12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="water">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ공용수도료</td>
+								<td></td>
+								<td id="sharedWater01" class="charge">0</td>
+								<td id="sharedWater02" class="charge">0</td>
+								<td id="sharedWater03" class="charge">0</td>
+								<td id="sharedWater04" class="charge">0</td>
+								<td id="sharedWater05" class="charge">0</td>
+								<td id="sharedWater06" class="charge">0</td>
+								<td id="sharedWater07" class="charge">0</td>
+								<td id="sharedWater08" class="charge">0</td>
+								<td id="sharedWater09" class="charge">0</td>
+								<td id="sharedWater10" class="charge">0</td>
+								<td id="sharedWater11" class="charge">0</td>
+								<td id="sharedWater12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="water">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ개별수도료</td>
+								<td></td>
+								<td id="individualWater01" class="charge">0</td>
+								<td id="individualWater02" class="charge">0</td>
+								<td id="individualWater03" class="charge">0</td>
+								<td id="individualWater04" class="charge">0</td>
+								<td id="individualWater05" class="charge">0</td>
+								<td id="individualWater06" class="charge">0</td>
+								<td id="individualWater07" class="charge">0</td>
+								<td id="individualWater08" class="charge">0</td>
+								<td id="individualWater09" class="charge">0</td>
+								<td id="individualWater10" class="charge">0</td>
+								<td id="individualWater11" class="charge">0</td>
+								<td id="individualWater12" class="charge">0</td>
+							</tr>
+	
+							<tr>
+								<td>
+									<a>
+										<span>난방료</span>
+									</a>
+								</td>
+								<td>
+									<a class="nav-link menu-link showDetail" href="#heating" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="heating">+</a>
+								</td>
+								<td id="heating01" class="charge">0</td>
+								<td id="heating02" class="charge">0</td>
+								<td id="heating03" class="charge">0</td>
+								<td id="heating04" class="charge">0</td>
+								<td id="heating05" class="charge">0</td>
+								<td id="heating06" class="charge">0</td>
+								<td id="heating07" class="charge">0</td>
+								<td id="heating08" class="charge">0</td>
+								<td id="heating09" class="charge">0</td>
+								<td id="heating10" class="charge">0</td>
+								<td id="heating11" class="charge">0</td>
+								<td id="heating12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="heating">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ공용난방료</td>
+								<td></td>
+								<td id="sharedHeating01" class="charge">0</td>
+								<td id="sharedHeating02" class="charge">0</td>
+								<td id="sharedHeating03" class="charge">0</td>
+								<td id="sharedHeating04" class="charge">0</td>
+								<td id="sharedHeating05" class="charge">0</td>
+								<td id="sharedHeating06" class="charge">0</td>
+								<td id="sharedHeating07" class="charge">0</td>
+								<td id="sharedHeating08" class="charge">0</td>
+								<td id="sharedHeating09" class="charge">0</td>
+								<td id="sharedHeating10" class="charge">0</td>
+								<td id="sharedHeating11" class="charge">0</td>
+								<td id="sharedHeating12" class="charge">0</td>
+							</tr>
+							<tr class="collapse menu-dropdown" id="heating">
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;ㄴ개별난방료</td>
+								<td></td>
+								<td id="individualHeating01" class="charge">0</td>
+								<td id="individualHeating02" class="charge">0</td>
+								<td id="individualHeating03" class="charge">0</td>
+								<td id="individualHeating04" class="charge">0</td>
+								<td id="individualHeating05" class="charge">0</td>
+								<td id="individualHeating06" class="charge">0</td>
+								<td id="individualHeating07" class="charge">0</td>
+								<td id="individualHeating08" class="charge">0</td>
+								<td id="individualHeating09" class="charge">0</td>
+								<td id="individualHeating10" class="charge">0</td>
+								<td id="individualHeating11" class="charge">0</td>
+								<td id="individualHeating12" class="charge">0</td>
+							</tr>
+							<tr>
+								<td>총액</td>
+								<td></td>
+								<td id="total01" class="charge">0</td>
+								<td id="total02" class="charge">0</td>
+								<td id="total03" class="charge">0</td>
+								<td id="total04" class="charge">0</td>
+								<td id="total05" class="charge">0</td>
+								<td id="total06" class="charge">0</td>
+								<td id="total07" class="charge">0</td>
+								<td id="total08" class="charge">0</td>
+								<td id="total09" class="charge">0</td>
+								<td id="total10" class="charge">0</td>
+								<td id="total11" class="charge">0</td>
+								<td id="total12" class="charge">0</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<hr>
+				<div class="col-12" style="min-height: 400px;">
+					<canvas id="barChart" width="1300px" height="400px"></canvas>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<script>
+getChargeInfo();
+let totalCharge = Number($('#totalCharge').text().replace('원', ''));
+let lateFee = Number($('#lateFee').text().replace('원', ''));
+
+$("#afterAmount").text(totalCharge + lateFee + '원');
+
+$('#lastYear').on('click', function() {
+	let year = Number($('#year').text());
+	year -= 1;
+	$('#year').text(year);
+
+	getChargeInfo();
+})
+
+$('#postYear').on('click', function() {
+	let year = Number($('#year').text());
+	year += 1;
+	$('#year').text(year);
+
+	getChargeInfo();
+})
+
+$('.showDetail').on('click', function(){
+	if($(this).text() == '+'){
+		$(this).text('-');
+	}else{
+		$(this).text('+');
+	}
+		
+})
+
+function getChargeInfo() {
+	let year = $('#year').text();
+
+	let data = {
+		year : year
+	}
+
+	$.ajax({
+		url : '/charge/getInfo',
+		contentType : "application/json;charset=utf-8",
+		data : JSON.stringify(data),
+		type : 'post',
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+		},
+		success : function(result) {
+			console.log("result: ", result);
+
+			$(".charge").text(0);
+
+			$.each(result, function(idx, chargeItemVO) {
+				$('#commons' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.commons);
+				$('#salary' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.salary);
+				$('#allowance' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.allowance);
+				$('#bonus' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.bonus);
+				$('#rtrPay' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.rtrPay);
+				$('#iacIns' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.iacIns);
+				$('#empIns' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.empIns);
+				$('#npn' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.npn);
+				$('#hlthIns' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.hlthIns);
+				$('#benefits' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.benefits);
+				$('#oprodCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.oprodCt);
+				$('#printCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.printCt);
+				$('#tsptCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.tsptCt);
+				$('#commCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.commCt);
+				$('#postCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.postCt);
+				$('#cprodCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.cprodCt);
+				$('#etcCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.etcCt);
+				$('#facCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.facCt);
+				$('#commonsOtherCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.commonsOtherCt);
+
+				$('#cleaning' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.cleaning);
+				$('#clnSvcCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.clnSvcCt);
+				$('#expendableCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.expendableCt);
+				$('#wasteCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.wasteCt);
+				$('#cleaningOtherCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.cleaningOtherCt);
+
+				$('#disinfec' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.disinfec);
+				$('#disinfecCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.disinfecCt);
+				$('#disinfecOtherCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.disinfecOtherCt);
+
+				$('#secure' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.secure);
+				$('#secCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.secCt);
+				$('#secOtherCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.secOtherCt);
+
+				$('#elevator' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.elevator);
+				$('#evtMgmtCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.evtMgmtCt);
+				$('#evtInspCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.evtInspCt);
+				$('#evtExpendableCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.evtExpendableCt);
+				$('#evtOtherCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.evtOtherCt);
+
+				$('#ltrr' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.ltrr);
+				$('#ltrrCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.ltrrCt);
+				$('#ltrrOtherCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.ltrrOtherCt);
+
+				$('#facilities' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.facilities);
+				$('#facilityMgmtCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.facilityMgmtCt);
+				$('#facilityChkCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.facilityChkCt);
+				$('#preventCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.preventCt);
+				$('#facilitiesOtherCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.facilitiesOtherCt);
+
+				$('#vat' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.vat);
+				$('#msvcCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.msvcCt);
+				$('#csvcCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.csvcCt);
+				$('#ssvcCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.ssvcCt);
+				$('#vatOtherCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.vatOtherCt);
+
+				$('#consignment' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.consignment);
+				$('#consignmentCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.consignmentCt);
+				$('#consignmentOtherCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.consignmentOtherCt);
+
+				$('#meeting' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.meeting);
+				$('#cbCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.cbCt);
+				$('#abCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.abCt);
+				$('#attdcCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.attdcCt);
+				$('#operationCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.operationCt);
+				$('#meetingOtherCt' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.meetingOtherCt);
+
+				$('#building' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.buildingInsr);
+				$('#buildingInsr' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.buildingInsr);
+
+				$('#electrocity' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.electrocity);
+				$('#sharedElec' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.sharedElec);
+				$('#individualElec' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.individualElec);
+
+				$('#water' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.water);
+				$('#sharedWater' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.sharedWater);
+				$('#individualWater' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.individualWater);
+
+				$('#heating' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.heating);
+				$('#sharedHeating' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.sharedHeating);
+				$('#individualHeating' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.individualHeating);
+				
+				$('#total' + chargeItemVO.ym.substr(5, 2)).text(chargeItemVO.totalCharge);
+			});
+			newBarChart();
+		}
+	})
+}
+
+function getDoughnutColor(){
+	let percent = $("#percent").text() / 2;
+	let backgroundColors = [];
+
+	for(let i=0; i<30; i++){
+		let red = i*7;
+		let green = 150+i*3;
+		let blue = i;
+		
+		percent--;
+		if(percent == 0){
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+			backgroundColors.push('rgba('+0+', '+0+', '+0+', 1)');
+		}else{
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+		}
+	}
+	for(let i=0; i<20; i++){
+		let red = 210+i*2;
+		let green = 240+i*2;
+		let blue = 30+i;
+		
+		percent--;
+		if(percent == 0){
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+			backgroundColors.push('rgba('+0+', '+0+', '+0+', 1)');
+		}else{
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+		}
+	}
+	for(let i=0; i<20; i++){
+		let red = 240;
+		let green = 280-i*2;
+		let blue = 50-i;
+		
+		percent--;
+		if(percent == 0){
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+			backgroundColors.push('rgba('+0+', '+0+', '+0+', 1)');
+		}else{
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+		}
+	}
+	for(let i=0; i<30; i++){
+		let red = 240;
+		let green = 240-i*7;
+		let blue = 20-i;
+		
+		percent--;
+		if(percent == 0){
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+			backgroundColors.push('rgba('+0+', '+0+', '+0+', 1)');
+		}else{
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+			backgroundColors.push('rgba('+red+', '+green+', '+blue+', 1)');
+		}
+	}
+
+
+	return backgroundColors;
+}
+   
+function getDoughnutLabel(){
+	let data = [];
+	for(let i=0; i<200; i++){
+		data.push(i);
+	}
+	return data;
+}
+   
+function getDoughnutData(){
+	let data = [];
+	for(let i=0; i<200; i++){
+		data.push(1);
+	}
+	return data;
+}
+
+function percentDisp(){
+	let percent = $('#percent').text();
+	let str1 = '평균 대비 ';
+	let str2 = '';
+	if(percent > 100){
+		str1 += (Number(percent)-100) + '%';
+		str2 += '<span style="color: red;">많이 </span> 사용했습니다.';
+	}else{
+		str1 += (100 - Number(percent)) + '%';
+		str2 += '<span style="color: blue;">적게 </span> 사용했습니다.';
+	}
+	
+	$('#percentDisp1').html(str1);
+	$('#percentDisp2').html(str2);
+}
+percentDisp();
+
+
+
+
+function newBarChart(){
+	
+	let chartStatus = Chart.getChart('barChart');
+	if (chartStatus !== undefined) {
+		chartStatus.destroy();
+	}
+	
+	new Chart(barChart, {
+	    type: 'bar',
+	    data: {
+	        labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	        datasets: getBarDatasets(),
+	    },
+	    options: {
+			responsive: false,
+			plugins:{
+				legend:{
+					position: 'left'
+				},
+			},
+	        scales: {
+	            x: {
+	            	stacked: true, 
+	            },
+		        y: {
+		        	stacked: true, 
+		            beginAtZero: true
+		        }
+	        }
+	    }
+	});
+}
+	
+function getBarDatasets(){
+
+	let datasets = [];
+	
+	let engId = ['commons', 'cleaning', 'disinfec', 'secure', 'elevator', 'ltrr', 'facility', 'vat', 'consignment', 'meeting', 'building', 'electrocity', 'water', 'heating'];
+	let korId = ['일반관리비', '청소비', '소독비', '경비비', '승강기유지비', '장기수선충당금', '시설유지비', '부가세', '위탁관리수수료', '대표회의운영비', '건물보험료', '전기료', '수도료', '난방료'];
+	let colors = ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)', 'rgba(153, 102, 255, 0.5)', 'rgba(255, 159, 64, 0.5)', 'rgba(178, 255, 192, 0.5)',
+				'rgba(92, 255, 213, 0.5)', 'rgba(235, 235, 0, 0.5)', 'rgba(0, 255, 235, 0.5)', 'rgba(255, 0, 235, 0.5)', 'rgba(123, 123, 123, 0.5)', 'rgba(194, 980, 73, 0.5)', 'rgba(100, 46, 200, 0.5)'];
+	
+	for(let i=0; i<14; i++){
+		let data = [];
+		for(let j=1; j<=12; j++){
+			let idx;
+			if(j<10){
+				idx = '0'+j;
+			}else{
+				idx = j;
+			}
+			data.push(Number($("#"+engId[i]+idx).text()));
+		}
+		
+		let dataset = {
+				label: korId[i],
+				data: data,
+				backgroundColor: colors[i], 
+				borderWidth:1
+		};
+		datasets.push(dataset);
+	}
+	
+	return datasets;
+}
+
+
+$(function(){
+	const doughnut = document.querySelector('#doughnut');
+	const barChart = document.querySelector('#barChart');
+
+	new Chart(doughnut, {
+		type: 'doughnut',
+		data: {
+
+			labels: getDoughnutLabel(),
+			datasets:[{
+				backgroundColor: getDoughnutColor(), 
+				data: getDoughnutData()
+			}]
+		},
+
+		options: {
+			responsive: false,
+			plugins:{
+				legend: {
+					display: false,
+				},
+				tooltip:{
+					enabled: false
+				}
+			},
+			rotation: -90,
+			circumference: 180,
+			borderWidth: 0,
+		}
+	});
+	
+	newBarChart();
+});
+
+$("#btnPay").on('click', async function(){
+
+	data = {
+			roomCode: $('#roomCode').text(),
+			ym: $('#ym').text()
+	}
+	
+	let payYn = 'N';
+	$.ajax({
+		url: "/charge/getPayYN",
+		contentType: "application/json;charset=utf-8",
+		data: JSON.stringify(data),
+		type: "post", 
+		beforeSend:function(xhr){
+			xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+		},
+		async: false,
+		success: function(result){
+			console.log(result);
+			if(result == 'Y'){
+				payYn = 'Y';
+				alert('이미 결제하였습니다.');
+			}
+		}
+	});
+	
+	console.log("payYn: ", payYn);
+	
+	// 비동기로 payNo를 변경해줘서 밑의 if문에서 안걸림
+	if(payYn == 'Y'){
+		return;
+	}
+	
+	const response = await PortOne.requestPayment({
+		// Store ID 설정
+		storeId: "store-22c2becf-63f0-4f4d-98fb-6a665ab06ca7",
+		// 채널 키 설정
+		channelKey: "channel-key-23a08f82-f8a6-4029-86cd-befb632c7108",
+// 		paymentId: $('#roomCode').text() + '_' + $('#ym').text(),
+		paymentId: crypto.randomUUID(),
+		orderName: $('#ym').text()+' 관리비',
+		totalAmount: Number($('#totalCharge').text()),
+		currency: "CURRENCY_KRW",
+		payMethod: "CARD",
+		customer:{
+			customerId: $('#memId').text(),
+			fullName: $('#memNm').text(),
+			phoneNumber: $('#memTelno').text(),
+			email: $('#memEmail').text(),
+		},
+	});
+
+	if (response.code != null) {
+		return alert(response.message);
+	}
+	
+	$.ajax({
+		url: "/charge/paySuccess",
+		contentType: "application/json;charset=utf-8",
+		data: JSON.stringify(data),
+		type: "post", 
+		beforeSend:function(xhr){
+			xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+		},
+		success: function(result){
+			console.log(result);
+		}
+	})
+});
+
+</script>

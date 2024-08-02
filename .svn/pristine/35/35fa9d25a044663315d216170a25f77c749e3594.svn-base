@@ -1,0 +1,14 @@
+package com.homecat.sweethome.vo.complain;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class ComplainVO {
+	private String compSeq;
+	private String memId;
+	private String compContent;
+	private Date regDt;
+	private String reply;
+}

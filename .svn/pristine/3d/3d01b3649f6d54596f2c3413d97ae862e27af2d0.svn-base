@@ -1,0 +1,16 @@
+package com.homecat.sweethome.service.car;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.car.CarVO;
+
+public interface CarService {
+
+	public List<CarVO> getCarList();
+
+	public int createPost(CarVO carVO);
+
+
+//	public CarVO getCarDetail(String carNo);
+
+}

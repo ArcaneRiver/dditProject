@@ -1,0 +1,205 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+<style>
+label{
+  font-size: 1.5em;
+}
+input[type='checkbox']{
+  margin-right: 20px;
+}
+</style>
+
+<div class="card" style="height: 800px;">
+	<div class="card-body">
+		<h1 class="text-muted">관리비 리스트</h1>
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs nav-justified mb-3" role="tablist">
+			<li class="nav-item" role="presentation">
+				<a class="nav-link active" data-bs-toggle="tab" href="#all" role="tab" aria-selected="false" tabindex="-1"> 전체 </a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" data-bs-toggle="tab" href="#nonPay" role="tab" aria-selected="false" tabindex="-1"> 미납호실 </a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" data-bs-toggle="tab" href="#search" role="tab" aria-selected="false" tabindex="-1"> 검색 </a>
+			</li>
+		</ul>
+		
+		<!-- Tab panes -->
+		<div class="tab-content  text-muted">
+			<div class="tab-pane active show" id="all" role="tabpanel">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>년</th>
+							<th>월</th>
+							<th>동</th>
+							<th>호</th>
+							<th>관리비</th>
+							<th>납부여부</th>
+							<th>납부일시</th>
+							<th>연체료</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach var="chargeVO" items="${chargeList}" varStatus="stat">
+							<tr>
+								<td>${fn:substring(chargeVO.ym, 0, 4)}</td>
+								<td>${fn:substring(chargeVO.ym, 5, 7)}</td>
+								<td>${fn:substring(chargeVO.roomCode, 5, 8)}</td>
+								<td>${fn:substring(chargeVO.roomCode, 9, 12)}</td>
+								<td>${chargeVO.totalCharge}</td>
+								<td>${chargeVO.payYn}</td>
+								<td>${chargeVO.payDt}</td>
+								<td>${chargeVO.lateCt}</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</div>
+			
+			<div class="tab-pane" id="nonPay" role="tabpanel">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>년</th>
+							<th>월</th>
+							<th>동</th>
+							<th>호</th>
+							<th>관리비</th>
+							<th>납부여부</th>
+							<th>납부일시</th>
+							<th>연체료</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach var="chargeVO" items="${chargeList}" varStatus="stat">
+							<c:if test="${chargeVO.payYn ne 'Y'}">
+								<tr>
+									<td>${fn:substring(chargeVO.ym, 0, 4)}</td>
+									<td>${fn:substring(chargeVO.ym, 5, 7)}</td>
+									<td>${fn:substring(chargeVO.roomCode, 5, 8)}</td>
+									<td>${fn:substring(chargeVO.roomCode, 9, 12)}</td>
+									<td>${chargeVO.totalCharge}</td>
+									<td>${chargeVO.payYn}</td>
+									<td>${chargeVO.payDt}</td>
+									<td>${chargeVO.lateCt}</td>
+								</tr>
+							</c:if>
+						</c:forEach>
+					</tbody>
+				</table>
+			</div>
+			
+			<div class="tab-pane" id="search" role="tabpanel">
+				<div class="row">
+					<div class="col-2"></div>
+					<div class="col-7 row">
+						<div class="col-1"></div>
+						<div class="col-5">
+							<select id="dongCode">
+								<option>--</option>
+								<c:forEach var="dong" items="${dongList}" varStatus="stat">
+									<option value="${dong}">${fn:substring(dong, 5, 9)}</option>
+								</c:forEach>
+							</select>
+							<label for="dongCode">동</label>
+							<select id="roomCode">
+								<option>--</option>
+							</select>
+							<label for="roomCode">호</label>
+						</div>
+						
+						<div class="col-6">
+							<label for="ok">납부</label>
+							<input type="checkbox" id="ok" />
+							<label for="no">미납</label>
+							<input type="checkbox" id="no" />
+						</div>
+						
+						<div class="col-12">
+							<label for="JEN">1월</label>
+							<input type="checkbox" id="JEN" />
+							<label for="FEB">2월</label>
+							<input type="checkbox" id="FEB" />
+							<label for="MAR">3월</label>
+							<input type="checkbox" id="MAR" />
+							<label for="APR">4월</label>
+							<input type="checkbox" id="APR" />
+							<label for="MAY">5월</label>
+							<input type="checkbox" id="MAY" />
+							<label for="JUN">6월</label>
+							<input type="checkbox" id="JUN" />
+							<label for="JUL">7월</label>
+							<input type="checkbox" id="JUL" />
+							<label for="AUG">8월</label>
+							<input type="checkbox" id="AUG" />
+							<label for="SEP">9월</label>
+							<input type="checkbox" id="SEP" />
+							<label for="OCT">10월</label>
+							<input type="checkbox" id="OCT" />
+							<label for="NOV">11월</label>
+							<input type="checkbox" id="NOV" />
+							<label for="DEC">12월</label>
+							<input type="checkbox" id="DEC" />
+						</div>
+						
+					</div>
+					<div class="col-3">
+						<button class="btn btn-info" id="srchBtn" style="margin-top: 30px;">조건으로 검색하기</button>
+					</div>
+				</div>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>년</th>
+							<th>월</th>
+							<th>동</th>
+							<th>호</th>
+							<th>관리비</th>
+							<th>납부여부</th>
+							<th>납부일시</th>
+							<th>연체료</th>
+						</tr>
+					</thead>
+					<tbody id="srchTbody">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	$("#dongCode").on('change', function(){
+		let data = {
+				dongCode: $("#dongCode").val()
+		}
+		
+		console.log("data: ", data);
+		
+		let optionStr = '<option>--</option>';
+		$.ajax({
+			url: "/charge/dongSelAjax", 
+			contentType: "application/json;charset=utf-8",
+			data: JSON.stringify(data), 
+			type: "post", 
+			beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+			},
+			success: function(result){
+				console.log("result: ", result);
+				for(let i=0; i<result.length; i++){
+					optionStr += '<option value="' + result[i] + '">';
+					optionStr += result[i].substring(9, 12);
+					optionStr += '</option>';
+				}
+				
+				$("#roomCode").html(optionStr);
+			}
+		});
+	})
+</script>

@@ -1,0 +1,5 @@
+package com.homecat.sweethome.service.message;
+
+public interface MessageService {
+
+}

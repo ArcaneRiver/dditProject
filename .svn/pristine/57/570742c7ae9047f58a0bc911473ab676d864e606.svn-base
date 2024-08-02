@@ -1,0 +1,16 @@
+package com.homecat.sweethome.mapper.car;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.car.CarVO;
+
+public interface CarMapper {
+
+	public List<CarVO> getCarList();
+
+	public int createPost(CarVO carVO);
+
+
+//	public CarVO getCarDetail(String carNo);
+
+}

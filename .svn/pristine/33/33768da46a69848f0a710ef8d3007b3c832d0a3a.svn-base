@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.calendar.CalendarMapper">
+
+	<select id="list" parameterType="hashMap" resultType="calendarVO">
+		select CAL_SEQ, MEM_ID, CAL_TITLE, TO_CHAR(CAL_START,'YYYY-MM-DD HH24:MI') CAL_START, TO_CHAR(CAL_END,'YYYY-MM-DD HH24:MI') CAL_END, CAL_CONTENT, CAL_SORT, CAL_TIME
+		from calendar
+	</select>
+	
+	<select id="calendarList" parameterType="String" resultType="Map">
+		select CAL_SEQ, MEM_ID, CAL_TITLE, CAL_START, CAL_END, CAL_CONTENT, CAL_SORT
+		from calendar
+	</select>
+	
+	
+	<select id="calenList" resultType="Map">
+		select CAL_SEQ, MEM_ID, CAL_TITLE, CAL_START, CAL_END, CAL_CONTENT, CAL_SORT
+		from calendar`
+	</select>
+	
+	<insert id="addEvent" parameterType="calendarVO" >
+		<selectKey resultType="String" order="BEFORE" keyProperty="calSeq">
+		select 'CAL' || lpad(cal_seq.nextval,4,0) from dual
+		</selectKey>
+		INSERT INTO calendar (
+			CAL_SEQ, 
+			MEM_ID, 
+			CAL_TITLE, 
+			CAL_START, 
+			CAL_END, 
+			CAL_CONTENT, 
+			CAL_SORT, 
+<!-- 			<if test="calTime!=null and calTime!=''"> -->
+			cal_time
+<!-- 			</if>  -->
+			)
+		VALUES (
+			#{calSeq}, 
+			'aaa', 
+			#{calTitle}, 
+			TO_DATE(#{calStart}, 'YYYY-MM-DD HH24:MI'), 
+			TO_DATE(#{calEnd}, 'YYYY-MM-DD HH24:MI'), 
+			#{calContent}, 
+			1,
+<!-- 			<if test="calTime!=null and calTime!=''"> -->
+			#{calTime}
+<!-- 			</if>  -->
+			)
+	</insert>
+	
+		<select id="detail" parameterType="calendarVO" resultType="calendarVO">
+			select CAL_SEQ, MEM_ID, CAL_TITLE, TO_CHAR(CAL_START,'YYYY-MM-DD HH24:MI') CAL_START, TO_CHAR(CAL_END,'YYYY-MM-DD HH24:MI') CAL_END, CAL_CONTENT, CAL_SORT, CAL_TIME
+			from calendar
+			where cal_seq = #{calSeq}
+		</select>
+	
+		<update id="updateEvent" parameterType="calendarVO">
+			update calendar
+			set CAL_TITLE= #{calTitle},   
+				CAL_START = TO_DATE(#{calStart}, 'YYYY-MM-DD HH24:MI'), 
+				CAL_END = TO_DATE(#{calEnd}, 'YYYY-MM-DD HH24:MI'), 
+			    CAL_CONTENT= #{calContent},
+			    CAL_SORT= 1, 
+			    CAL_TIME = #{calTime}
+			where CAL_SEQ = #{calSeq}
+		</update>
+		
+		<delete id="deleteEvent" parameterType="calendarVO">
+			delete from calendar
+			where CAL_SEQ = #{calSeq}
+		</delete>
+</mapper>

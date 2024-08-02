@@ -1,0 +1,54 @@
+package com.homecat.sweethome.controller.waste;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.homecat.sweethome.service.waste.WasteService;
+import com.homecat.sweethome.vo.waste.WasteVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/waste")
+public class WasteController {
+
+	@Autowired
+	WasteService wasteService;
+
+	@GetMapping("/wasteList")
+	public String list(Model model,
+			@RequestParam(value="keyword",required=false,defaultValue="") String keyword){
+		
+		log.info("list에 왔다!!");
+		log.info("list->keyword : " + keyword);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("keyword", keyword);
+		
+		List<WasteVO> wasteVOList = this.wasteService.wasteList(map);
+		log.info("list->wasteVOList : " + wasteVOList);
+		
+		model.addAttribute("wasteVOList", wasteVOList);
+		
+		return "waste/wasteList";
+	}	
+	
+	@GetMapping("/detail")
+	public String wasteDetail(@RequestParam("wasteSeq") String wasteSeq, Model model) {
+		
+		WasteVO wasteVO = wasteService.detail(wasteSeq);
+		
+		model.addAttribute("wasteVO", wasteVO);
+		
+		return "waste/detail";
+	}
+}

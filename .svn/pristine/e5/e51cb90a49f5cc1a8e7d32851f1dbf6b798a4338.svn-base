@@ -1,0 +1,46 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<p>CCTV</p>
+
+<style>
+#cctv  {
+	    margin:  0px auto;
+	    width:  500px;
+	    height:  375px;
+	    border:  10px  #333 solid;
+}
+
+#videoElement  {
+	    width:  500px;
+	    height:  375px;
+	    background-color:   #666;
+}
+</style>
+
+<div>
+	<div id="cctv">
+		<video id="cameraview" width="720" height="480"></video>
+	</div>
+</div>
+
+ 
+
+<script>
+var streamVideo
+console.log(navigator);
+
+if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia ) {
+	alert("Media Device not supported")
+} else {
+	open()
+}
+
+function open() {
+	navigator.mediaDevices.getUserMedia({video:true}).then(stream => {
+		streamVideo = stream
+		var cameraView = document.getElementById("cameraview");
+		cameraView.srcObject = stream;
+		cameraView.play()
+	})
+}
+</script>

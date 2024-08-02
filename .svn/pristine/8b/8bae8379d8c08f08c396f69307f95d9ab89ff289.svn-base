@@ -1,0 +1,29 @@
+package com.homecat.sweethome.service.impl.delivery;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.delivery.DeliveryMapper;
+import com.homecat.sweethome.service.delivery.DeliveryService;
+import com.homecat.sweethome.vo.delivery.DeliveryVO;
+
+@Service
+public class DeliveryServiceImpl implements DeliveryService {
+
+	@Autowired
+	DeliveryMapper deliveryMapper;
+	
+	@Override
+	public List<DeliveryVO> list(Map<String, Object> map) {
+		return this.deliveryMapper.list(map);
+	}
+
+	@Override
+	public DeliveryVO detail(DeliveryVO deliveryVO) {
+		return this.deliveryMapper.detail(deliveryVO);
+	}
+
+}

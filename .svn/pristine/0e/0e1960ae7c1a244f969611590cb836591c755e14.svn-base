@@ -1,0 +1,19 @@
+package com.homecat.sweethome.mapper.member;
+
+
+public interface SignUpMapper {
+	
+	/**
+	 * 아이디 중복 확인
+	 * @param memId
+	 * @return
+	 */
+	public int chkId(String memId);
+
+	/**
+	 * 닉네임 중복 확인
+	 * @param nickname
+	 * @return
+	 */
+	public int chkNick(String nickname);
+}

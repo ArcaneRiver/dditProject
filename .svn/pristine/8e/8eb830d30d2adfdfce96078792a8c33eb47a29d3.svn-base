@@ -1,0 +1,426 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<div class="app-menu navbar-menu">
+	<!-- LOGO -->
+	<div class="navbar-brand-box">
+		<a href="/" class="logo logo-light">
+			<span class="logo-sm"> 
+				<img src="/resources/images/logo/logo6.png" alt="#"  height="30">
+			</span> 
+			<span class="logo-lg"> 
+				<img src="/resources/images/logo/logoo.png" alt="#"  height="40">
+			</span>
+		</a>
+		<button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
+			<i class="ri-record-circle-line"></i>
+		</button>
+	</div>
+
+
+	<div id="scrollbar">
+		<div class="container-fluid">
+			<div id="residentSide">
+				<ul class="navbar-nav" id="navbar-nav">
+					<li class="menu-title">
+						<i class="ri-more-fill"></i> 
+						<span>입주정보</span>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarMoveOut" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="sidebarMoveOut"> 
+							<i class="ri-dashboard-2-line"></i> 
+							<span>퇴거신고</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarMoveOut">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="#" class="nav-link"> 퇴거신고 </a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link"> 접수 내역 조회 </a>
+								</li>
+							</ul>
+						</div>
+					</li>
+	
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarCars" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="sidebarCars"> 
+							<i class="ri-apps-2-line"></i> 
+							<span>차량등록</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarCars">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/car/list" class="nav-link"> 보유 차량 등록 </a>
+								</li>
+								<li class="nav-item">
+									<a href="/visitcar/list" class="nav-link"> 방문 차량 등록 </a>
+								</li>
+							</ul>
+						</div>
+					</li>
+	
+					<li class="menu-title">
+						<i class="ri-more-fill"></i> 
+						<span>서비스</span>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarDefects" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="sidebarDefects"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>하자보수</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarDefects">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="#" class="nav-link">하자보수 신청</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">처리결과 조회</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarFacilitys" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="sidebarFacilitys"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>공동시설물 예약</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarFacilitys">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/book/list" class="nav-link">도서관</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">헬스장</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">테니스장</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">수영장</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarPays" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="sidebarPays"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>공과금 조회 및 납부</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarPays">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="#" class="nav-link">공과금 조회</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">공과금 납부</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarVotes" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="sidebarVotes"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>투표 및 설문조사</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarVotes">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="#" class="nav-link">투표</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">설문조사</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+						
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarWastes" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="sidebarWastes"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>폐기물</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarWastes">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/waste/wasteList" class="nav-link">폐기물 신청</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">신청 결과 조회</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="/calendar/calendarPage" role="button"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>일정</span>
+						</a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="/" role="button"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>계약서</span>
+						</a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="/" role="button"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>CCTV 조회</span>
+						</a>
+					</li>
+	
+	
+					<li class="menu-title">
+						<i class="ri-more-fill"></i> 
+						<span>커뮤니티</span>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarBoards" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="sidebarBoards"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>게시판</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarBoards">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/board/list?boardCat=board_notice" class="nav-link">공지사항</a>
+								</li>
+								<li class="nav-item">
+									<a href="/board/list?boardCat=board_free" class="nav-link">자유게시판</a>
+								</li>
+								<li class="nav-item">
+									<a href="/board/list?boardCat=board_trade" class="nav-link">중고거래</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#sidebarComplains" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="sidebarComplains"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>민원</span>
+						</a>
+						<div class="collapse menu-dropdown" id="sidebarComplains">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="#" class="nav-link">민원 신청</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">나의 민원</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+	
+				</ul>
+			</div>
+			
+			<div id="adminSide">
+				<ul class="navbar-nav" id="navbar-nav">
+					<li class="menu-title">
+						<i class="ri-more-fill"></i> 
+						<span>입주민</span>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#resident" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="resident"> 
+							<i class="ri-dashboard-2-line"></i> 
+							<span>입주민 관리</span>
+						</a>
+						<div class="collapse menu-dropdown" id="resident">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="#" class="nav-link"> 입주민 목록 </a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link"> 가입 신청 현황 </a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link"> 퇴거 신청 현황 </a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link"> 등록 차량 현황 </a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link"> 검침 기록 </a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#charge" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="charge"> 
+							<i class="ri-dashboard-2-line"></i> 
+							<span>관리비</span>
+						</a>
+						<div class="collapse menu-dropdown" id="charge">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/charge/admin/insert" class="nav-link"> 관리비 등록 </a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link"> 관리비 납부 현황 </a>
+								</li>
+							</ul>
+						</div>
+					</li>
+	
+					<li class="menu-title">
+						<i class="ri-more-fill"></i> 
+						<span>협력업체</span>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#" role="button"> 
+							<i class="ri-layout-3-line"></i> 
+							<span> 협력 업체 목록 </span>
+						</a>
+					</li>
+	
+					<li class="menu-title">
+						<i class="ri-more-fill"></i> 
+						<span>서비스</span>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#" role="button"> 
+							<i class="ri-layout-3-line"></i> 
+							<span> 하자보수 신청 현황 </span>
+						</a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#facilities" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="facilities"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>공동시설물 예약 현황</span>
+						</a>
+						<div class="collapse menu-dropdown" id="facilities">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="/admin/bookList" class="nav-link">도서관</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">헬스장</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">테니스장</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">수영장</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#vote_survey" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="vote_survey"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>투표 및 설문조사</span>
+						</a>
+						<div class="collapse menu-dropdown" id="vote_survey">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="#" class="nav-link">투표</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">설문조사</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#" role="button"> 
+							<i class="ri-layout-3-line"></i> 
+							<span> 폐기물 신청 현황 </span>
+						</a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="/calendar/calendarPage" role="button"> 
+							<i class="ri-layout-3-line"></i> 
+							<span> 단지 일정 관리 </span>
+						</a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="/" role="button"> 
+							<i class="ri-layout-3-line"></i> 
+							<span> 의무공개 계약서 </span>
+						</a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="/" role="button"> 
+							<i class="ri-layout-3-line"></i> 
+							<span> CCTV </span>
+						</a>
+					</li>
+	
+	
+					<li class="menu-title">
+						<i class="ri-more-fill"></i> 
+						<span>커뮤니티</span>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="#boards" data-bs-toggle="collapse" role="button"
+							aria-expanded="false" aria-controls="boards"> 
+							<i class="ri-layout-3-line"></i> 
+							<span>게시판</span>
+						</a>
+						<div class="collapse menu-dropdown" id="boards">
+							<ul class="nav nav-sm flex-column">
+								<li class="nav-item">
+									<a href="#" class="nav-link">공지사항</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">자유게시판</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link">중고거래</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link menu-link" href="/" role="button"> 
+							<i class="ri-layout-3-line"></i> 
+							<span> 민원 신청 현황 </span>
+						</a>
+					</li>
+	
+				</ul>
+			</div>
+			
+			<div id="partnerSide">
+			
+			</div>
+		</div>
+		<!-- Sidebar -->
+	</div>
+	<div class="sidebar-background"></div>
+</div>
+
+
+<!-- Vertical Overlay-->
+<div class="vertical-overlay"></div>

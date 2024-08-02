@@ -1,0 +1,23 @@
+package com.homecat.sweethome.service.impl.bidnotice;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.bidnotice.BidNoticeMapper;
+import com.homecat.sweethome.service.bidnotice.BidNoticeService;
+import com.homecat.sweethome.vo.bidnotice.BidNoticeVO;
+
+@Service
+public class BidNoticeServiceImpl implements BidNoticeService {
+	
+	
+	@Autowired
+	BidNoticeMapper bidnoticeMapper;
+
+	@Override
+	public List<BidNoticeVO> getList() {
+		return this.bidnoticeMapper.getList();
+	}
+}

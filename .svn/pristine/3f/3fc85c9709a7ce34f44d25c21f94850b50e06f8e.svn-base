@@ -1,0 +1,37 @@
+package com.homecat.sweethome.vo.bidnotice;
+
+import java.util.Date;
+
+import com.homecat.sweethome.vo.danji.DanjiVO;
+
+import lombok.Data;
+
+@Data
+public class BidNoticeVO {
+	
+	private int rum;
+	private String bidSeq;
+	private String danjiCode;
+	private String bidHow;
+	private String bidTitle;
+	private String bidContent;
+	private String bidStatus;
+	private String bidStartDt;
+	private String bidOutDt;
+	private String bidFailContent;
+	private String bidType;
+	private String bidExplan;
+	private String bidExplanDt;
+	private String bidDocDt;
+	private String bidPayment;
+	private String bidOpenDt;
+	private String bidEmergency;
+	private String bidSuccessHow;
+	private String bidCirSub;
+	
+	
+	
+	
+	
+	private String danjiName;
+}

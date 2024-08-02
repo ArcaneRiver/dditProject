@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.maintenance.MaintenanceMapper">
+
+	<resultMap type="maintenanceVO" id="mtMap">
+		<result property="rnum" column="rnum"/>
+		<result property="mtSeq" column="MT_SEQ"/>
+		<result property="mtDetail" column="MT_DETAIL"/>
+		<result property="regDt" column="REG_DT"/>
+		<result property="prcsDt" column="PRCS_DT"/>
+		<result property="mtStatus" column="MT_STATUS"/>
+		<result property="attach" column="ATTACH"/>
+		<result property="memId" column="MEM_ID"/>
+		<result property="ccpyCode" column="CCPY_CODE"/>
+		<result property="cancelYn" column="CANCEL_YN"/>
+		<result property="cancelTm" column="CANCEL_TM"/>
+		<result property="mtConst" column="MT_CONST"/>
+		<result property="mtLocation" column="MT_LOCATION"/>
+		<association property="commDetailVO" javaType="commDetailVO">
+			<result property="commDetCode" column="COMM_DET_CODE"/>
+			<result property="commDetCodeNm" column="COMM_DET_CODE_NM"/>
+			<result property="commDetCodeDscr" column="COMM_DET_CODE_DSCR"/>
+			<result property="commCode" column="COMM_CODE"/>
+		</association>
+		<association property="memberVO" javaType="memberVO">
+			<result property="memId" column="MEM_ID"/>
+			<result property="roomCode" column="ROOM_CODE"/>
+			<result property="memPw" column="MEM_PW"/>
+			<result property="memNm" column="MEM_NM"/>
+			<result property="memBirth" column="MEM_BIRTH"/>
+			<result property="memSex" column="MEM_SEX"/>
+			<result property="memTelno" column="MEM_TELNO"/>
+			<result property="memEmail" column="MEM_EMAIL"/>
+			<result property="nickname" column="NICKNAME"/>
+			<result property="regDt" column="REG_DT"/>
+			<result property="mviStatus" column="MVI_STATUS"/>
+			<result property="profImg" column="PROF_IMG"/>
+			<result property="hshldrId" column="HSHLDR_ID"/>
+			<result property="memAuth" column="MEM_AUTH"/>
+			<result property="ccpyCode" column="CCPY_CODE"/>
+			<result property="dongCode" column="DONG_CODE"/>
+		</association>
+		<association property="danjiVO" javaType="com.homecat.sweethome.vo.danji.DanjiVO">
+			<result property="danjiName" column="DANJI_NAME"/>
+			<result property="addr" column="ADDR"/>
+		</association>
+		<association property="ccpyVO" javaType="ccpyVO">
+			<result property="ccpyCode" column="CCPY_CODE"/>
+			<result property="ccpyCat" column="CCPY_CAT"/>
+			<result property="ccpyName" column="CCPY_NAME"/>
+			<result property="ccpyTelno" column="CCPY_TELNO"/>
+			<result property="ccpyPost" column="CCPY_POST"/>
+			<result property="ccpyAddr" column="CCPY_ADDR"/>
+			<result property="ccpyAddrDetail" column="CCPY_ADDR_DETAIL"/>
+			<result property="bizRegNo" column="BIZ_REG_NO"/>
+			<result property="cntrDt" column="CNTR_DT"/>
+			<result property="expDt" column="EXP_DT"/>
+		</association>
+	</resultMap>
+
+	<select id="list" parameterType="hashMap" resultType="maintenanceVO" resultMap="mtMap">
+		SELECT 
+			ROW_NUMBER() OVER(ORDER BY MT_SEQ ASC) RNUM
+			, MT_SEQ 
+			, MEM_ID
+			, MT_CONST
+			, MT_LOCATION
+			, TO_CHAR(REG_DT, 'YYYY/MM/DD') REG_DT
+			, MT_STATUS
+			, TO_CHAR(PRCS_DT, 'YYYY/MM/DD') PRCS_DT
+		FROM
+			MAINTENANCE
+		WHERE MEM_ID = 'test'
+		ORDER BY RNUM DESC
+	</select>
+
+	<select id="detail" parameterType="maintenanceVO" resultMap="mtMap">
+		SELECT 
+		      A.MT_SEQ 
+		    , B.MEM_NM
+		    , D.DANJI_NAME
+		    , D.ADDR
+		    , SUBSTR(B.ROOM_CODE, 6, 3) AS DONG_CODE    
+		    , SUBSTR(B.ROOM_CODE, 10) AS ROOM_CODE
+		    , B.MEM_TELNO
+		    , A.MT_CONST
+		    , A.MT_DETAIL
+		    , A.MT_LOCATION
+		    , TO_CHAR(A.REG_DT, 'YYYY/MM/DD HH24:MI:SS') REG_DT
+		    , A.MT_STATUS
+		    , TO_CHAR(A.PRCS_DT, 'YYYY-MM-DD') PRCS_DT
+		    , C.CCPY_NAME
+		    , C.CCPY_TELNO
+		    , C.CCPY_POST
+		    , C.CCPY_ADDR
+		    , C.CCPY_ADDR_DETAIL
+		    , C.BIZ_REG_NO
+		FROM MAINTENANCE A 
+		LEFT OUTER JOIN MEMBER B ON A.MEM_ID = B.MEM_ID
+		LEFT OUTER JOIN CCPY C ON A.CCPY_CODE = C.CCPY_CODE
+		LEFT OUTER JOIN DANJI D ON D.DANJI_CODE = SUBSTR(B.ROOM_CODE, 1, 4)
+		WHERE MT_SEQ = #{mtSeq}
+	</select>
+	
+	<select id="getMemberInfo" resultType="maintenanceVO" resultMap="mtMap">
+		SELECT 
+		    A.MT_SEQ,
+		    B.MEM_NM,
+		    C.DANJI_NAME,
+		    C.ADDR,
+		    SUBSTR(B.ROOM_CODE, 10) AS ROOM_CODE,
+		    SUBSTR(B.ROOM_CODE, 6, 3) AS DONG_CODE,    
+		    B.MEM_TELNO
+		FROM MAINTENANCE A 
+		LEFT OUTER JOIN MEMBER B ON A.MEM_ID = B.MEM_ID
+		LEFT OUTER JOIN DANJI C ON C.DANJI_CODE = SUBSTR(B.ROOM_CODE, 1, 4)
+		WHERE A.MT_SEQ = '20240619001'
+	</select>
+	
+	<!-- 하자접수 일련번호 가져오기 -->
+	<select id="getMtSeq" resultType="String">
+		SELECT TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(NVL(MAX(TO_NUMBER(SUBSTR(MT_SEQ, 9, 3))), 0) + 1, 3, '0')
+		FROM MAINTENANCE
+		WHERE TO_CHAR(SYSDATE, 'YYYYMMDD') = SUBSTR(MT_SEQ, 1, 8)
+	</select>
+</mapper>

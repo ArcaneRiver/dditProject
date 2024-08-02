@@ -1,0 +1,41 @@
+package com.homecat.sweethome.controller.publicFacilities;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.homecat.sweethome.service.publicFacilities.FacilityService;
+import com.homecat.sweethome.vo.publicFacilities.FacilityVO;
+import com.homecat.sweethome.vo.publicFacilities.ReserveVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+public class FacilityContoller {
+
+	
+	@Autowired
+	FacilityService facilityService;
+	
+	@GetMapping("/public/tennis/reservation")
+	public String tennisMain(Model model) {
+		log.info("tennisMain 옴");
+		
+		List<FacilityVO> facilityVOList = this.facilityService.tennisMain();
+		log.info("tennisMain facilityVOList-> " + facilityVOList);
+		
+		List<ReserveVO> reserveVOList = this.facilityService.reserveList();
+		log.info("tennisMain reserveVOList-> " + reserveVOList);
+		
+		model.addAttribute("facilityVOList", facilityVOList);
+		model.addAttribute("reserveVOList", reserveVOList);
+		
+		return "publicFacilities/reTennis";
+	}
+	
+	
+}

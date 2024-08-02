@@ -1,0 +1,22 @@
+package com.homecat.sweethome.vo.calendar;
+
+
+import java.sql.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.Data;
+
+@Data
+public class CalendarVO {
+
+	private String calSeq;
+	private String memId;
+	private String calTitle;
+	private String calStart;
+	private String calEnd;
+	private String calContent;
+	private int calSort;
+	private String calTime;
+	
+}

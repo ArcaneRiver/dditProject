@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.publicFacilities.FacilityMapper">
+
+	<select id="tennisMain" resultType="facilityVO">
+		SELECT
+		    fac_code
+		  , danji_code
+		  , fac_nm
+		  , fac_loc
+		  , fac_telno
+		  , fac_com
+		FROM
+		    facility
+		where danji_code = 'D001'
+		and fac_code = 'facility01'
+	</select>
+	
+	<select id="reserveList" resultType="reserveVO">
+		SELECT
+		    reserve_seq
+		  , mem_id
+		  , fac_code
+			, to_char(reg_dt,'YYYY-MM-DD')  reg_dt
+		   , TO_char(BEGIN_TM,  'HH24:MI') BEGIN_TM
+		   , TO_char(END_TM, 'HH24:MI') END_TM
+		  , seat
+		  , nop
+		  , cancle_yn
+		  , cancle_dt
+		FROM
+		    reserve
+		where fac_code = 'facility01'
+		and mem_id = 'b00k'
+	</select>
+
+</mapper>

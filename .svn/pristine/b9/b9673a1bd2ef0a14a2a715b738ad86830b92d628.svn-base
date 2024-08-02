@@ -1,0 +1,93 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>설문조사 상세 페이지</title>
+    <!-- 임시 css -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h2 {
+            color: #333;
+        }
+        fieldset {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        legend {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+        }
+        input[type="submit"], input[type="reset"], input[type="button"] {
+            padding: 10px 20px;
+            margin: 5px;
+        }
+    </style>
+<script>
+	function goBack() {
+	    const prevURL = document.referrer;
+	    if (prevURL) {
+	        window.location.href = prevURL;
+	    } else {
+	        window.history.back();
+	    }
+	}
+</script>
+</head>
+<body>
+    <h1>${surveyVO.svTitle}</h1>
+    <form action="/survey/result" method="post">
+    	<!-- 기존 질문들 -->
+        <c:forEach var="detail" items="${surveyVO.surveyDetails}" varStatus="loop">
+            <fieldset>
+                <legend>Q${loop.index + 1} . ${detail.svdItem}</legend>
+                <div class="options">
+                    <label><input type="radio" name="${detail.svdCode}" value="매우 그렇다"> 매우 그렇다</label>
+                    <label><input type="radio" name="${detail.svdCode}" value="그렇다"> 그렇다</label>
+                    <label><input type="radio" name="${detail.svdCode}" value="보통이다"> 보통이다</label>
+                    <label><input type="radio" name="${detail.svdCode}" value="아니다"> 아니다</label>
+                    <label><input type="radio" name="${detail.svdCode}" value="매우 아니다"> 매우 아니다</label>
+                </div>
+            </fieldset>
+        </c:forEach>
+        
+<!--         새로 추가된 질문 들 -->
+<%--         <c:forEach var="newDetail" items="${surveyVO.surveyDetails}" varStatus="loop"> --%>
+<!--             <fieldset> -->
+<%--                 <legend>Q${loop.index + 1} . ${newDetail.svdItem}</legend> --%>
+<!--                 새로 추가된 질문에 대한 입력 폼 등을 표시 -->
+<!--                 <div class="options"> -->
+<%--                     <label><input type="radio" name="${newDetail.svdCode}" value="매우 그렇다"> 매우 그렇다</label> --%>
+<%--                     <label><input type="radio" name="${newDetail.svdCode}" value="그렇다"> 그렇다</label> --%>
+<%--                     <label><input type="radio" name="${newDetail.svdCode}" value="보통이다"> 보통이다</label> --%>
+<%--                     <label><input type="radio" name="${newDetail.svdCode}" value="아니다"> 아니다</label> --%>
+<%--                     <label><input type="radio" name="${newDetail.svdCode}" value="매우 아니다"> 매우 아니다</label> --%>
+<!--                 </div> -->
+<!--             </fieldset> -->
+<%--         </c:forEach> --%>
+        
+        <!-- 제출/취소 -->        
+        <table>
+	        <tr>
+		        <td><input type="submit" value="제출"></td>
+		        <td><input type="button" value="취소" onclick="goBack()"></td>
+        	</tr>
+        </table>
+		        <a href="/survey/update?svCode=${surveyVO.svCode}">설문 수정하기</a>
+    </form>
+</body>
+</html>

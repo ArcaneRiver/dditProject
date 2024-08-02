@@ -1,0 +1,12 @@
+package com.homecat.sweethome.service.member;
+
+import com.homecat.sweethome.vo.member.MemberVO;
+
+public interface SignUpService {
+	
+	public int signUpMember(MemberVO memberVO);
+	
+	public int chkid(String memId);
+	
+	public int chkNick(String nickname);
+}

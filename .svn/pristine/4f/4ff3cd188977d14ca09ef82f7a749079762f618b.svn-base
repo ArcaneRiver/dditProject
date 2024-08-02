@@ -1,0 +1,289 @@
+<%@ page import="com.homecat.sweethome.vo.calendar.CalendarVO"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ page import="java.util.List" %>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+<script type="text/javascript" src="/resources/js/jquery.min.js"></script>
+    <style>
+  
+     #calendar {
+	    max-width: 1100px;
+	    margin: 0;
+	   }
+
+        #yrModal {
+            position: absolute;
+            width: 59%;
+            height: 82%;
+            background-color:rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        #deModal {
+            position: absolute;
+            width: 59%;
+            height: 82%;
+            background-color:rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        #cont {
+            position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 400px;
+			height: 400px;
+			padding: 10px;
+			text-align: center;
+			background-color: rgb(255, 255, 255);
+			border-radius: 10px;
+			box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+			transform: translateX(-50%) translateY(-50%);
+        }
+    </style>
+
+    <!-- 모달은 메인 영역 밖으로 빼어 놓는게 좋음-->
+    <div id="yrModal">
+        <div id="cont" style="text-align: center; vertical-align: middle;">
+            <br>
+            <h1>일정 추가</h1><br>
+            시 작 일 <input type="text" id="calStart" value="" ><br><br>
+            종 료 일 <input type="text" id="calEnd" value=""><br><br>
+            제&nbsp;&nbsp;&nbsp;&nbsp;목 <input type="text" id="calTitle" value=""><br><br>
+           상세내용 <input type="text" id="calContent" value=""><br><br>
+<!--             하루종일 <input type="checkbox" id="allDay"><br> -->
+            배경색<input type="color" id="schBColor" value="">
+            글자색<input type="color" id="schFColor" value=""><br><br><hr>
+<!--             <button  type="button" class="btn btn-success btn-label waves-effect waves-light"  onclick="fCalAdd()"> -->
+<!--             	<i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> 추가 </button> -->
+<!--             <button onclick="fCalAdd()">추가</button> -->
+<!--     <button class="btn btn-outline-success btn-border" onclick="fCalAdd()">추가</button> -->
+    <button type="button" class="btn btn-soft-success waves-effect waves-light material-shadow-none" onclick="fCalAdd()">추가</button>
+            <button type="button" class="btn btn-soft-dark waves-effect waves-light material-shadow-none" onclick="fMClose()">취소</button>
+<!--             <button onclick="fMClose()">취소</button> -->
+            
+        </div>
+    </div>
+    
+    <div id="deModal">
+        <div id="cont" style="text-align: center; vertical-align: middle;">
+            <br>
+            <h1>일정 상세</h1><br>
+            시 작 일 <input type="text" id="calStart" value="" readonly><br><br>
+            종 료 일 <input type="text" id="calEnd" value="" readonly><br><br>
+            제&nbsp;&nbsp;&nbsp;&nbsp;목 <input type="text" id="calTitle" value="" readonly><br><br>
+           상세내용 <input type="text" id="calContent" value="" readonly><br><br>
+<!--             하루종일 <input type="checkbox" id="allDay"><br> -->
+            배경색<input type="color" id="schBColor" value="" readonly>
+            글자색<input type="color" id="schFColor" value="" readonly><br><br><hr>
+<!--             <button  type="button" class="btn btn-success btn-label waves-effect waves-light"  onclick="fCalAdd()"> -->
+<!--             	<i class="ri-check-double-line label-icon align-middle fs-16 me-2"></i> 추가 </button> -->
+<!--             <button onclick="fCalAdd()">추가</button> -->
+<!--     <button class="btn btn-outline-success btn-border" onclick="fCalAdd()">추가</button> -->
+    		<button type="button" class="btn btn-soft-success waves-effect waves-light material-shadow-none" onclick="calUpdate()">수정</button>
+            <button type="button" class="btn btn-soft-dark waves-effect waves-light material-shadow-none" onclick="calDetele()">삭제</button>
+            <button type="button" class="btn btn-soft-dark waves-effect waves-light material-shadow-none" onclick="calConfirm()">확인</button>
+<!--             <button onclick="fMClose()">취소</button> -->
+            
+        </div>
+    </div>
+    
+    
+    <!-- 실제 화면을 담을 영역 -->
+<!--     <div id="Wrapper"> -->
+        <div id='calendar'></div>
+<!--     </div> -->
+
+
+    <script>
+        const YrModal = document.querySelector("#yrModal");
+        const deModal = document.querySelector("#deModal");
+        const calendarEl = document.querySelector('#calendar');
+        const mySchStart = document.querySelector("#calStart");
+        const mySchEnd = document.querySelector("#calEnd");
+        const mySchTitle = document.querySelector("#calTitle");
+        const mySchContent = document.querySelector("#calContent");
+//         const mySchAllday = document.querySelector("#allDay");
+        const mySchBColor = document.querySelector("#schBColor");
+        const mySchFColor = document.querySelector("#schFColor");
+
+
+        //캘린더 헤더 옵션
+        const headerToolbar = {
+            left: 'prevYear,prev,next,nextYear today',
+            center: 'title',
+            right: 'dayGridMonth,dayGridWeek,timeGridDay'
+        }
+
+        // 캘린더 생성 옵션(참공)
+        const calendarOption = {
+            height: '700px', // calendar 높이 설정
+            expandRows: true, // 화면에 맞게 높이 재설정
+            slotMinTime: '09:00', // Day 캘린더 시작 시간
+            slotMaxTime: '18:00', // Day 캘린더 종료 시간
+            // 맨 위 헤더 지정
+            headerToolbar: headerToolbar,
+            initialView: 'dayGridMonth',  // default: dayGridMonth 'dayGridWeek', 'timeGridDay', 'listWeek'
+            locale: 'kr',        // 언어 설정
+            selectable: true,    // 영역 선택
+            selectMirror: true,  // 오직 TimeGrid view에만 적용됨, default false
+            navLinks: true,      // 날짜,WeekNumber 클릭 여부, default false
+            weekNumbers: true,   // WeekNumber 출력여부, default false
+            editable: true,      // event(일정) 
+            /* 시작일 및 기간 수정가능여부
+            eventStartEditable: false,
+            eventDurationEditable: true,
+            */
+            dayMaxEventRows: true,  // Row 높이보다 많으면 +숫자 more 링크 보임!
+            /*
+            views: {
+                dayGridMonth: {
+                    dayMaxEventRows: 3
+                }
+            },
+            */
+            nowIndicator: true,
+            //events:[],
+            eventSources: [
+                './commonEvents.json',  // Ajax 요청 URL임에 유의!
+                './KYREvents.json',
+                './SYREvents.json',
+                {
+                    events: function(info, successCallback, failureCallback) { // ajax 처리로 데이터를 로딩 시킨다.
+                      $.ajax({  
+                        url: "/calendarList5",
+                        dataType: "json",
+                        type: "get",
+                        success: function(data) {
+                          console.log("data : ", data);
+                          var events = data.map(function(event) { 
+                            // event.calStart의 시간 부분이 "00:00:00"인지 확인하여 allDay 값 설정
+                            var isAllDay = event.calStart.endsWith("00:00:00");
+                            return {
+                              id: event.calSeq,
+                              title: event.calTitle,
+                              start: event.calStart,
+                              allDay: isAllDay,
+                              end: event.calEnd
+                            };
+                          });
+                          console.log(events);
+                          successCallback(events);
+                        },
+                        error: function() {
+                          failureCallback();
+                        }
+                      });
+                    }
+                  }
+              ]
+          }
+
+        // 캘린더 생성
+        const calendar = new FullCalendar.Calendar(calendarEl, calendarOption);
+
+        // 캘린더 그리깅
+        calendar.render();
+
+        // 캘린더 이벤트 등록
+        calendar.on("eventAdd", info => console.log("Add:", info));
+        calendar.on("eventChange", info => console.log("Change:", info));
+        calendar.on("eventRemove", info => console.log("Remove:", info));
+        calendar.on("eventClick", info => { alert("상세보쟈");
+        	
+        	deModal.style.display = "block";
+        
+            console.log("eClick:", info);
+            console.log('Event: ', info.event.extendedProps);
+            console.log('Coordinates: ', info.jsEvent);
+            console.log('View: ', info.view);
+            // 재미로 그냥 보더색 바꾸깅
+            info.el.style.borderColor = 'red';
+        });
+        calendar.on("eventMouseEnter", info => console.log("eEnter:", info));
+        calendar.on("eventMouseLeave", info => console.log("eLeave:", info));
+        calendar.on("dateClick", info => console.log("dateClick:", info));
+        calendar.on("select", info => {
+            console.log("체킁:", info);
+
+            mySchStart.value = info.startStr;
+            mySchEnd.value = info.endStr;
+
+            YrModal.style.display = "block";
+        });
+
+        // 일정(이벤트) 추가하깅
+        function fCalAdd() {
+            if (!mySchTitle.value) {
+                alert("제모게 머라도 써주삼")
+                mySchTitle.focus();
+                return;
+            }
+            let bColor = mySchBColor.value;
+            let fColor = mySchFColor.value;
+            if (fColor == bColor) {
+                bColor = "black";
+                fColor = "yellow";
+            }
+
+            let event = {
+            	calStart: mySchStart.value,
+            	calEnd: mySchEnd.value,
+            	calTitle: mySchTitle.value,
+            	calContent: mySchContent.value
+
+            };
+			
+            let newEvent = {
+                start: mySchStart.value,
+                end: mySchEnd.value,
+                title: mySchTitle.value,
+                content: calContent.value,
+                backgroundColor: bColor,
+                textColor: fColor
+            };
+			
+           console.log("event:",event); 
+           
+         	// 서버로 일정을 전송
+            $.ajax({
+                url: "/addEvent",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(event),
+                type: "post",
+                dataType:"text",
+                beforeSend:function(xhr){
+					xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+				},
+                success: function(response) {
+                    alert("일정이 추가되었습니다.");
+                    location.href="/calendarPage";
+                    }
+            });
+            console.log("addEvent////",event)
+            console.log("newEvent////",newEvent)
+            calendar.addEvent(newEvent);
+            fMClose();
+            
+        }
+
+        // 모달 닫기
+        function fMClose() {
+            YrModal.style.display = "none";
+        }
+        
+        function calUpdate() {
+        	
+        }
+        
+        function calDetele() {
+        	
+        }
+        
+        function calConfirm(){
+        	deModal.style.display = "none";
+        }
+    </script>

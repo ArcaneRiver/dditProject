@@ -1,0 +1,19 @@
+package com.homecat.sweethome.service.board;
+
+import java.util.HashMap;
+import java.util.List;
+
+import com.homecat.sweethome.vo.board.BoardVO;
+import com.homecat.sweethome.vo.board.ReplyVO;
+
+public interface BoardService {
+
+	public List<BoardVO> getList(String brdCat);
+
+	public BoardVO getDetail(String brdNo);
+
+	public int countLike(HashMap<String, String> data);
+
+	public List<ReplyVO> insertReply(ReplyVO replyVO);
+
+}

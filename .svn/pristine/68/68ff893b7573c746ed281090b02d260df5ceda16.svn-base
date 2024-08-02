@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.ccpy.CcpyMapper">
+
+	<select id="getCcpy" resultType="ccpyVO">
+		SELECT
+		    ccpy_code
+		  , ccpy_cat
+		  , ccpy_name
+		  , ccpy_telno
+		  , ccpy_post
+		  , ccpy_addr
+		  , ccpy_addr_detail
+		  , biz_reg_no
+		  , cntr_dt
+		  , exp_dt
+		FROM
+		    ccpy    
+		where ccpy_cat like '%pckcat%'
+	</select>
+	
+
+
+</mapper>

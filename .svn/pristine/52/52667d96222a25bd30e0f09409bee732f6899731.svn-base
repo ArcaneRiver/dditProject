@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.bidnotice.BidNoticeMapper">
+	
+	<!-- 입찰공고 리스트 -->
+	<select id="getList" resultType="com.homecat.sweethome.vo.bidnotice.BidNoticeVO">
+	SELECT 
+        ROW_NUMBER() OVER (ORDER BY BID_SEQ ASC) RUM
+        ,A.BID_SEQ
+        ,A.BID_HOW
+        ,A.BID_TITLE
+        ,A.BID_OUT_DT
+        ,A.BID_STATUS
+        ,B.DANJI_NAME
+        ,A.BID_START_DT
+	FROM
+        BIDNOTICE A, DANJI B
+	WHERE A.DANJI_CODE = B.DANJI_CODE
+	</select>
+	
+	<!-- 입찰공고 상세보기 -->
+	<select id="getDetail" parameterType="com.homecat.sweethome.vo.bidnotice.BidNoticeVO" resultType="com.homecat.sweethome.vo.bidnotice.BidNoticeVO">
+		SELECT
+		  A.BID_SEQ,
+		  A.DANJI_CODE,
+		  A.BID_HOW,
+		  A.BID_TITLE,
+		  A.BID_CONTENT,
+		  A.BID_STATUS,
+		  A.BID_START_DT,
+		  A.BID_OUT_DT,
+		  A.BID_TYPE,
+		  A.BID_EXPLAN,
+		  A.BID_EXPLAN_DT,
+		  A.BID_DOC_DT,
+		  A.BID_EMERGENCY,
+		  A.BID_SUCCESS_HOW,
+		  A.BID_CIR_SUB,
+		  A.BID_CPC_SUB,
+		  A.BID_LOCATION,
+		  A.BID_DEPOSIT,
+		  A.BID_NUM,
+		  A.BID_FAX,
+		  A.BID_ATTACH,
+		  B.DANJI_NAME,
+		  B.ADDR,
+		  B.CNT_DONG,
+		  B.CNT_TOTAL_ROOM
+		FROM BIDNOTICE A
+		JOIN DANJI B ON A.DANJI_CODE = B.DANJI_CODE
+		WHERE A.BID_SEQ = #{bidSeq}
+	</select>
+	
+	<!-- 업데이트 -->
+	<update id="updatePost" parameterType="com.homecat.sweethome.vo.bidnotice.BidNoticeVO">
+		UPDATE BIDNOTICE
+			SET 
+				BID_TITLE = #{bidTitle},
+				BID_CONTENT = #{bidContent},
+				BID_EXPLAN = #{bidExplan},
+				BID_EXPLAN_DT = #{bidExplanDt},
+				BID_LOCATION = #{bidLocation},
+				BID_EMERGENCY = #{bidEmergency},
+				BID_DEPOSIT = #{bidDeposit},
+				BID_CIR_SUB = #{bidCirSub},
+				BID_CPC_SUB = #{bidCpcSub}
+		WHERE BID_SEQ = #{bidSeq}
+	</update>
+</mapper>

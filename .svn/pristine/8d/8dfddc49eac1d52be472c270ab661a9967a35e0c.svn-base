@@ -1,0 +1,122 @@
+let currentWeekStart = new Date(); // 현재 주의 시작 날짜
+const today = new Date(); // 오늘 날짜
+
+// 날짜를 'YYYY-MM-DD' 형식으로 포맷하는 함수
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// 시작 날짜를 기준으로 주간 날짜 배열을 생성하는 함수
+function getWeekDates(startDate) {
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + i);
+    dates.push(formatDate(date));
+  }
+  return dates;
+}
+
+// 화면에 주간 날짜를 업데이트하는 함수
+function updateWeekDates() {
+  const weekDates = getWeekDates(currentWeekStart);
+  $('#weekDates').text(`${weekDates[0]} - ${weekDates[6]}`);
+  for (let i = 0; i < 7; i++) {
+    $(`#day${i}`).text(weekDates[i]).removeClass("lightblue");
+    if (weekDates[i] === formatDate(today)) {
+      $(`#day${i}`).addClass("lightblue");
+    }
+  }
+}
+
+// 시간표 테이블을 생성하는 함수
+function timetable() {
+  const tbody = $('#timetable tbody');
+  tbody.empty();
+  for (let i = 9; i < 23; i++) {
+    let hour = (i < 10) ? "0" + i : i;
+    let row = $('<tr></tr>');
+
+    row.append('<th>' + hour + ':00</th>');
+    for (let j = 0; j < 7; j++) {
+      row.append('<td class="btnclick' + (j + 1) + '"></td>');
+    }
+
+    tbody.append(row);
+  }
+}
+
+// 오늘 날짜가 포함된 주의 시작 날짜를 계산하는 함수
+function getStartOfWeek(date) {
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1); // 월요일을 시작일로 설정
+  return new Date(date.setDate(diff));
+}
+
+// 문서가 준비되면 실행
+$(document).ready(function () {
+  timetable();
+  updateWeekDates();
+
+  // 이전 주 버튼 클릭 이벤트
+  $('#prevWeek').on('click', function () {
+    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+    updateWeekDates();
+  });
+
+  // 다음 주 버튼 클릭 이벤트
+  $('#nextWeek').on('click', function () {
+    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+    updateWeekDates();
+  });
+
+  // 오늘 버튼 클릭 이벤트
+  $('#todayBtn').on('click', function () {
+    currentWeekStart = getStartOfWeek(new Date(today));
+    updateWeekDates();
+  });
+
+  // 테이블 셀 클릭 이벤트
+  $('td').on("click", function () {
+    $(this).toggleClass("gray");
+  });
+
+  // 예약 버튼 클릭 이벤트
+  $("#reBtn").on("click", function () {
+    let selectedSeats = {};
+    $("#timetable tbody tr").each(function () {
+      let hour = $(this).find('th').text();
+      $(this).find('td.gray').each(function () {
+        let seatIndex = $(this).index();
+        let day = $('#timetable thead th').eq(seatIndex).text();
+        if (!selectedSeats[day]) {
+          selectedSeats[day] = [];
+        }
+        selectedSeats[day].push(hour);
+      });
+    });
+
+    let sfaNop = $("#sfaNop").val();
+    let reservationInfo = "";
+
+    for (const [day, times] of Object.entries(selectedSeats)) {
+      let startTime = times[0];
+      let endTime = times[times.length - 1];
+      reservationInfo += `요일: ${day}, 시작시간: ${startTime}, 종료시간: ${parseInt(endTime) + 1}:00\n`;
+    }
+
+    // 선택한 좌석 및 시간, 인원수를 콘솔에 출력
+    console.log("선택한 시간:", selectedSeats);
+    console.log("인원수:", sfaNop);
+    confirm(`${reservationInfo}인원수: ${sfaNop}명\n예약 하시겠습니까?`);
+  });
+
+  // 모달이 닫힐 때 초기화
+  $('#timetableModal').on('hidden.bs.modal', function () {
+    $("#sfaNop").val('');
+    $("#timetable tbody td").removeClass("gray");
+  });
+});

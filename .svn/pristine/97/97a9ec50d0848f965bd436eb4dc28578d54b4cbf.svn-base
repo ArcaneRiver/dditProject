@@ -1,0 +1,46 @@
+package com.homecat.sweethome.controller.moveout;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.homecat.sweethome.service.moveout.MoveoutService;
+import com.homecat.sweethome.vo.moveout.MoveoutVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/moveout")
+@Controller
+public class MoveoutController {
+
+	@Autowired
+	MoveoutService moveoutService;
+	
+	@GetMapping("/insert")
+	public String insert() {
+		log.info("insert에 왔다");
+		return "resident/moveout/insertForm";
+	}
+	
+	@PostMapping("/insert")
+	public String insertPost(MoveoutVO moveoutVO) {
+		log.info("insertPost->moveoutVO" + moveoutVO);
+		
+		int cnt = this.moveoutService.insert(moveoutVO);
+		log.info("insertPost->cnt: " + cnt);
+		
+		return "redirect:/moveout/insert";
+	}
+	
+	
+	/////////////////////// 관리자 ///////////////////////
+	
+	@GetMapping("/admin/list")
+	public String moveoutList() {
+		log.info("moveoutList에 왔다");
+		return "admin/moveout/list";
+	}
+}

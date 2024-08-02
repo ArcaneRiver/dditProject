@@ -1,0 +1,10 @@
+package com.homecat.sweethome.vo.publicFacilities;
+
+import lombok.Data;
+
+@Data
+public class BookRentalTotalVO {
+
+	private BookVO bookVO;
+    private BookLoanVO bookLoanVO;
+}

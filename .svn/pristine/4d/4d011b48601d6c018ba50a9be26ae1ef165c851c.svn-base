@@ -1,0 +1,5 @@
+package com.homecat.sweethome.mapper.visitCar;
+
+public interface VisitCarMapper {
+
+}

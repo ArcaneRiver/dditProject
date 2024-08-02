@@ -1,0 +1,67 @@
+package com.homecat.sweethome.service.impl.publicFacilities;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.publicFacilities.BookMapper;
+import com.homecat.sweethome.service.publicFacilities.BookService;
+import com.homecat.sweethome.vo.publicFacilities.BookLoanVO;
+import com.homecat.sweethome.vo.publicFacilities.BookVO;
+
+@Service
+public class BookServiceImpl implements BookService{
+
+	@Autowired
+	BookMapper bookMapper;
+	
+	@Override
+	public List<BookVO> bookList(Map<String, Object> map) {
+		return this.bookMapper.bookList(map);
+	}
+
+	@Override
+	public int getTotal(Map<String, Object> map) {
+		return this.bookMapper.getTotal(map);
+	}
+
+	@Override
+	public BookVO detail(BookVO bookVO) {
+		return this.bookMapper.detail(bookVO);
+	}
+
+	@Override
+	public int rentalAjax(BookLoanVO bookLoanVO) {
+		return this.bookMapper.rentalAjax(bookLoanVO);
+	}
+
+	@Override
+	public int stateAjax(BookVO bookVO) {
+		return this.bookMapper.stateAjax(bookVO);
+	}
+
+	@Override
+	public int checkmem(String memId) {
+		return this.bookMapper.checkmem(memId);
+	}
+
+	
+	
+	@Override
+	public int bookDelAjax(BookVO bookVO) {
+		return this.bookMapper.bookDelAjax(bookVO);
+	}
+
+	@Override
+	public int bookUpAjax(BookVO bookVO) {
+		return this.bookMapper.bookUpAjax(bookVO);
+	}
+
+	@Override
+	public List<BookLoanVO> rentalList() {
+		return this.bookMapper.rentalList();
+	}
+
+}

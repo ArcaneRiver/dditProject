@@ -1,0 +1,68 @@
+package com.homecat.sweethome.service.impl.member;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.member.MemberListMapper;
+import com.homecat.sweethome.service.member.MemberListService;
+import com.homecat.sweethome.vo.member.MemberVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class MemberListServiceImpl implements MemberListService  {
+	
+	@Inject
+	MemberListMapper memberListMapper;
+
+	@Override
+	public int signOk(String memId) {
+		log.info("가입을 승인함");
+		log.debug("아이디값 : ",memId);
+		
+		int rst = this.memberListMapper.signOk(memId);
+		
+		log.info("승인하면 1 뜰거임 -> " + rst);
+		return rst;
+	}
+
+	@Override
+	public int signNo(String memId) {
+		log.info("가입을 반려함.");
+		log.debug("아이디값 : ",memId);
+		
+		int rst = this.memberListMapper.signNo(memId);
+		
+		log.info("반려하면 1 뜰거임 -> " + rst);
+		return rst;
+	}
+
+	@Override
+	public int waitCount() {
+		
+		int cnt = this.memberListMapper.waitCount();
+	
+		return cnt;
+	}
+
+	@Override
+	public int waitCount(String keyword) {
+		
+		int cnt = this.memberListMapper.waitCount(keyword);
+		
+		return cnt;
+	}
+
+	@Override
+	public List<MemberVO> waitList(Map<String, Object> map) {
+		
+		return this.memberListMapper.waitList(map);
+	}
+	
+	
+}

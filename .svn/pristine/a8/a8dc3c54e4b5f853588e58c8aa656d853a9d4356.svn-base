@@ -1,0 +1,24 @@
+package com.homecat.sweethome.vo.publicFacilities;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.member.MemberVO;
+
+import lombok.Data;
+
+@Data
+public class ReserveVO {
+
+	private String reserveSeq;
+	private String memId;
+	private String facCode;
+	private String regDt; //신청일
+	private String beginTm; //시작시간
+	private String endTm; //종료시간
+	private String seat;
+	private int nop;
+	private String cancleYn;
+	private String cancleDt;
+	
+	public List<MemberVO> memberVOList;
+}

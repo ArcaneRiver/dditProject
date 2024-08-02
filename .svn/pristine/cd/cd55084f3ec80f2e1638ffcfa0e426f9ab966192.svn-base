@@ -1,0 +1,31 @@
+package com.homecat.sweethome.controller.homepage;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/home")
+@Controller
+public class HomepageController {
+
+	@GetMapping("/residentHome")
+	public String residentHome() {
+		log.info("residentHome에 왔다");
+		return "resident/residentHome";
+	}
+	
+	@GetMapping("/adminHome")
+	public String adminHome() {
+		log.info("adminHome에 왔다");
+		return "admin/adminHome";
+	}
+	
+	@GetMapping("/partnersHome")
+	public String partnerHome() {
+		log.info("partnerHome에 왔다");
+		return "partners/partnersHome";
+	}
+}

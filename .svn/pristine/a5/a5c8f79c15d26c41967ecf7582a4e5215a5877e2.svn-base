@@ -1,0 +1,82 @@
+package com.homecat.sweethome.controller.member;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.member.LogInService;
+import com.homecat.sweethome.vo.member.MemberVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class LogInController {
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	LogInService logInService;
+
+	@ResponseBody
+	@PostMapping("/logInMember")
+	public Map<Object, Object> logInMember(@RequestBody MemberVO memberVO, HttpSession session){
+		
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		
+		MemberVO member = logInService.logInMember(memberVO.getMemId());
+		
+		// 아이디 불일치
+		if(member == null) {
+			map.put("status", "fail");
+			map.put("message", "일치하는 회원정보가 없습니다.");	
+			return map;
+			// 비밀번호 불일치		
+		}
+		boolean pwMatch = passwordEncoder.matches(memberVO.getMemPw(), member.getMemPw());
+		
+		if(!pwMatch) {
+			map.put("status", "fail");
+			map.put("message", "일치하는 회원정보가 없습니다.");
+			return map;
+		}else {	
+			map.put("status", "success");
+			map.put("message", "로그인 성공.");
+			log.info("회원정보 ->{}", member.toString());
+			
+			session.setAttribute("loginMember", member);
+			return map;
+		}
+	}
+	
+	@ResponseBody
+	@PostMapping("/idFind")
+	public Map<Object, Object> idFind(@RequestParam String memId, @RequestParam String keyword){
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		return map;
+	}
+	/*
+	
+	@ResponseBody
+	@PostMapping("/chkAuth")
+	public Map<Object, Object> chkAuth(@RequestBody MemberVO memberVO) {
+		
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		
+		MemberVO auth = logInService.chkAuth(memberVO.getMemId());
+		map.put("auth", auth);
+		log.info("map -> {}",map);
+		return map;
+	}
+	*/
+	
+}

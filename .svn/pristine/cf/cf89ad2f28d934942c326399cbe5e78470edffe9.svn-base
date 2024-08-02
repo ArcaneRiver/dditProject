@@ -1,0 +1,18 @@
+package com.homecat.sweethome.service.waste;
+
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.waste.WasteVO;
+
+
+
+public interface WasteService {
+
+	//폐기물 배출 신청 목록
+	public List<WasteVO> wasteList(Map<String, Object> map);
+
+	//폐기물 배출 신청 상세
+	public WasteVO detail(String wasteSeq);
+
+}

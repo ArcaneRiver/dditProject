@@ -1,0 +1,30 @@
+package com.homecat.sweethome.service.impl.survey;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.survey.SurveyMapper;
+import com.homecat.sweethome.service.survey.SurveyService;
+import com.homecat.sweethome.vo.survey.SurveyVO;
+
+@Service
+public class SurveyServiceImpl implements SurveyService {
+	
+	@Autowired
+	SurveyMapper surveyMapper;
+	
+	// 입력 내용 추가
+	@Override
+	public int createPost(SurveyVO surveyVO) {
+		return this.surveyMapper.createPost(surveyVO);
+	}
+
+	@Override
+	public List<SurveyVO> getList() {
+		return this.surveyMapper.getList();
+	}
+	
+
+}

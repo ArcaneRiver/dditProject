@@ -1,0 +1,318 @@
+package com.homecat.sweethome.controller.publicFacilities;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.publicFacilities.BookService;
+import com.homecat.sweethome.unit.ArticlePage;
+import com.homecat.sweethome.vo.board.BoardVO;
+import com.homecat.sweethome.vo.publicFacilities.BookLoanVO;
+import com.homecat.sweethome.vo.publicFacilities.BookVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class BookController {
+
+	@Autowired
+	BookService bookservice;
+	
+	@GetMapping("/public/book/list")
+	public String bookList(Model model,
+			@RequestParam(value = "currentPage", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword
+			) {
+		
+		log.info("bookList 이다.");
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("keyword",keyword );
+		map.put("currentPage", currentPage);
+		
+		List<BookVO> bookList = this.bookservice.bookList(map);
+		log.info("bookList list>> " + bookList);
+		
+		List<BookLoanVO> bookLoanList = this.bookservice.loanCount();
+		log.info("bookLoanList  : " + bookLoanList);
+		
+		model.addAttribute("bookLoanList",bookLoanList);
+		
+		int total = this.bookservice.getTotal(map);
+		log.info("bookList total>> " + total);
+		
+		log.info("bookList->keyword : " + keyword);
+		model.addAttribute("articlePage",new ArticlePage<BookVO>(total, currentPage, 10, bookList, keyword));
+		
+		model.addAttribute("bookList",bookList);
+		
+		
+		return "resident/publicFacilities/reBookList";
+	}
+	
+	
+	
+	@ResponseBody
+	@PostMapping("/public/book/listAjax")
+	public ArticlePage<BookVO> listAjax(@RequestBody Map<String, Object> map) {
+		
+		System.out.println("listAjax다다다ㅏ다ㅏ");
+		
+		int total = this.bookservice.getTotal(map);
+		log.info("listAjax total>> " + total);
+		
+		List<BookVO> bookList = this.bookservice.bookList(map);
+		log.info("listAjax list>> " + bookList);
+		
+		
+		
+		return new ArticlePage<BookVO>(total, Integer.parseInt(map.get("currentPage").toString()), 10, bookList, map.get("keyword").toString());
+	}
+	
+
+	
+	@ResponseBody
+	@PostMapping("/public/book/rentalAjax")
+	public BookLoanVO rentalAjax(@RequestBody  BookLoanVO bookLoanVO) {
+		log.info("rentalAjax bookLoanVO  : " + bookLoanVO);
+		
+	    int resultR = this.bookservice.rentalAjax(bookLoanVO);
+        log.info("rentalAjax -> rental result  : " + resultR);
+        
+        return bookLoanVO;
+	}
+	
+//	@ResponseBody
+//	@PostMapping(value = "/book/stateAjax")
+//	public BookVO stateAjax(@RequestBody  BookVO bookVO) {
+//		
+//		log.info("stateAjax-> bookVO : " + bookVO);
+//		
+//        int resultS = this.bookservice.stateAjax(bookVO);
+//        log.info("rentalAjax -> state result  : " + resultS);
+//        
+//        return bookVO;
+//	}
+	
+	@ResponseBody
+	@PostMapping("/public/book/checkmem")
+	public int checkmem(String memId) {
+		log.info(memId);
+		memId = "b00k";
+		int result = this.bookservice.checkmem(memId);
+		log.info("checkmem-->result : " + result);
+		System.out.println(result);
+		
+	    // 사용자가 대출 중이거나 연체된 책이 3권 이상인 경우 -1 반환
+	    if (result >= 3 ) {
+	        return -1;
+	    }else if(result == 2) {
+	    	return -2;
+	    }else if(result == 1) {
+	    	return -3;
+	    }
+		
+		return result;
+	}
+	
+
+	
+	
+	
+	////////////////////////////admin///////////////////////////////
+	@GetMapping("/public/admin/bookList")
+	public String adBookList(Model model,
+			@RequestParam(value = "currentPage", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword
+			) {
+		
+		log.info("bookList 이다.");
+		
+		//도서목록 시작 ////////////////
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("keyword",keyword );
+		map.put("currentPage", currentPage);
+		
+		List<BookVO> bookList = this.bookservice.bookList(map);
+		log.info("bookList list>> " + bookList);
+		
+		int total = this.bookservice.getTotal(map);
+		log.info("bookList total>> " + total);
+		
+		log.info("bookList->keyword : " + keyword);
+		model.addAttribute("articlePage",new ArticlePage<BookVO>(total, currentPage, 10, bookList, keyword));
+		
+		model.addAttribute("bookList",bookList);
+		//도서목록 시작 ////////////////
+		
+		
+		return "admin/publicFacilities/adBookList";
+	}
+	
+	
+	@ResponseBody
+	@PostMapping("/public/admin/bookList")
+	public ArticlePage<BookVO> adBookListAjax(@RequestBody Map<String, Object> map) {
+		
+		System.out.println("admin adBookListAjax다");
+		
+		int total = this.bookservice.getTotal(map);
+		log.info("adBookListAjax total>> " + total);
+		
+		List<BookVO> bookList = this.bookservice.bookList(map);
+		log.info("adBookListAjax list>> " + bookList);
+		
+		return new ArticlePage<BookVO>(total, Integer.parseInt(map.get("currentPage").toString()), 10, bookList, map.get("keyword").toString());
+	}
+	
+	
+	@ResponseBody
+	@PostMapping("/public/admin/bookDel")
+	public int bookDelAjax(@RequestBody BookVO bookVO) {
+		System.out.println("admin bookDelAjax다");
+		
+		int result = this.bookservice.bookDelAjax(bookVO);
+		System.out.println("admin bookDelAjax result : " + result);
+		
+		return result;
+	}
+	
+	
+	@ResponseBody
+	@PostMapping("/public/admin/bookUp")
+	public int bookUpAjax(@RequestBody BookVO bookVO) {
+		log.info("bookUpAjax-> bookVO : " + bookVO);
+		
+		int result = this.bookservice.bookUpAjax(bookVO);
+		log.info("bookUpAjax-> result : " + result);
+		
+		return result;
+	}
+	
+	
+	
+	//대여현황
+	@GetMapping("/public/admin/rentalList")
+	public String rentalList(Model model,
+			@RequestParam(value = "currentPage", required = false, defaultValue = "1") int currentPage,
+			@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword) {
+		log.info("rentalList에 옴");
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("keyword",keyword );
+		map.put("currentPage", currentPage);
+		
+		List<BookLoanVO> bookLoanList = this.bookservice.rentalList(map);
+		log.info("bookLoanList  : " + bookLoanList);
+		
+		
+		int total = this.bookservice.getTotal2(map);
+		log.info("bookList total>> " + total);
+		
+		log.info("bookList->keyword : " + keyword);
+		model.addAttribute("articlePage2",new ArticlePage<BookLoanVO>(total, currentPage, 10, bookLoanList, keyword));
+		
+		model.addAttribute("bookLoanList",bookLoanList);
+		
+		return "admin/publicFacilities/adBookList";
+	}
+	
+	//대여현황은 비동기
+	@ResponseBody
+	@PostMapping("/public/admin/rentalListAjax")
+	public ArticlePage<BookLoanVO> rentalListAjax(@RequestBody Map<String, Object> map) {
+	    log.info("rentalListAjax에 옴" + map);
+
+	    int total = this.bookservice.getTotal2(map);
+	    log.info("rentalListAjax total>> " + total);
+
+	    List<BookLoanVO> bookLoanList = this.bookservice.rentalList(map);
+	    log.info("bookLoanList>>>  : " + bookLoanList);
+
+
+	    return new ArticlePage<BookLoanVO>(total, Integer.parseInt(map.get("currentPage").toString()), 10, bookLoanList, map.get("keyword").toString(),"ajax", 0);
+	}
+
+	
+	// 1) 반납완료 비동기
+	@ResponseBody
+	@PostMapping("/public/admin/retUpdate")
+	public int retUpdate(@RequestBody BookLoanVO bookLoanVO) {
+		
+		int result = this.bookservice.retUpdate(bookLoanVO);
+		log.info("retUpdate -> result : " + result);
+		
+		return result;
+	}
+	
+//	// 2) 대여가능 비동기
+//	@ResponseBody
+//	@PostMapping("/admin/boUpdate")
+//	public int boUpdate(@RequestBody BookVO bookVO) {
+//		
+//		int result = this.bookservice.boUpdate(bookVO);
+//		log.info("ㅠㅐUpdate -> result : " + result);
+//		
+//		return result;
+//	}
+//	
+	
+	
+	@ResponseBody
+	@PostMapping("/public/admin/reDetail")
+	public BookLoanVO reDetail(@RequestBody BookLoanVO bookLoanVO,Model model) {
+		log.info("reDetail에 왔다");
+		
+		bookLoanVO = this.bookservice.reDetail(bookLoanVO);
+		log.info("reDetail ->>>> bookLoanVO : " + bookLoanVO);
+		
+		model.addAttribute("bookLoanVO", bookLoanVO);
+		
+		return bookLoanVO;
+	}
+	
+	
+	@ResponseBody
+	@PostMapping("/public/admin/getBookCode")
+	public String getBookCode() {
+		log.info("/getBookCode옴");
+		
+		String result = this.bookservice.getBookCode();
+		log.info("getBookCode->result : " + result);
+		
+		return result;
+	}
+	
+	@ResponseBody
+	@PostMapping("/public/admin/createAjax")
+	public BookVO createAjax(@RequestBody BookVO bookVO) {
+		log.info("bookVO : " + bookVO);
+		
+		// 도서등록
+		int result = this.bookservice.createAjax(bookVO);
+		log.info("result : " + result);
+		
+		return bookVO;
+	}
+	
+	
+	
+	
+	
+	
+}
+
+
+

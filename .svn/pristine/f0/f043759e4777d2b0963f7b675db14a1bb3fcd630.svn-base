@@ -1,0 +1,36 @@
+package com.homecat.sweethome.service.survey;
+
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.survey.SurveyDetailVO;
+import com.homecat.sweethome.vo.survey.SurveyVO;
+
+public interface SurveyService {
+	
+	//전체 목록
+	public int getTotal(Map<String, Object> map);
+	
+	//목록 가져오기
+	public List<SurveyVO> getList(Map<String, Object> map);
+	
+	//설문 질문 생성 (작성자)
+	public int createPost(SurveyVO surveyVO);
+	
+	//질문 가져오기
+	public SurveyVO getSurveyByCode(String svCode);
+	
+	//질문 리스트 가져오기
+	public List<SurveyDetailVO> getDetailsByCode(String svCode);
+	
+	//설문 마감 처리
+    public int closeSurvey(String svCode);
+    
+    //설문 수정
+	public int updatePost(SurveyVO surveyVO);
+	
+	//추가 질문 작성
+	public int addSurveyDetail(SurveyDetailVO surveyDetailVO);
+
+	
+}

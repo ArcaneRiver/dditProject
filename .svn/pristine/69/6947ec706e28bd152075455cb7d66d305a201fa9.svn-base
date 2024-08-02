@@ -1,0 +1,14 @@
+package com.homecat.sweethome.mapper.delivery;
+
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.delivery.DeliveryVO;
+
+public interface DeliveryMapper {
+
+	public List<DeliveryVO> list(Map<String, Object> map);
+
+	public DeliveryVO detail(DeliveryVO deliveryVO);
+
+}

@@ -1,0 +1,65 @@
+package com.homecat.sweethome.service.impl.message;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.message.MessageMapper;
+import com.homecat.sweethome.service.message.MessageService;
+import com.homecat.sweethome.vo.message.MessageVO;
+
+@Service
+public class MessageServiceImpl implements MessageService {
+
+	@Inject
+	MessageMapper messageMappaer;
+
+	@Override
+	public int sendMessage(MessageVO messageVO) {
+		return this.messageMappaer.sendMessage(messageVO);
+	}
+
+	@Override
+	public int checkReceiver(String receiver) {
+		return this.messageMappaer.checkReceiver(receiver);
+	}
+
+	@Override
+	public List<MessageVO> getReceiveMessage(Map<String, Object> map) {
+		return this.messageMappaer.getReceiveMessage(map);
+	}
+
+	@Override
+	public List<MessageVO> getSendMessage(Map<String, Object> map) {
+		return this.messageMappaer.getSendMessage(map);
+	}
+
+	@Override
+	public List<MessageVO> receiveMsgDetail(String receiver) {
+		return this.messageMappaer.receiveMsgDetail(receiver);
+	}
+
+	@Override
+	public List<MessageVO> sendMsgDetail(String sender) {
+		return this.messageMappaer.sendMsgDetail(sender);
+	}
+
+	@Override
+	public int readCheck(int msgSeq) {
+		return this.messageMappaer.readCheck(msgSeq);
+	}
+
+	@Override
+	public int sendCount(Map<String, Object> map) {
+		return this.messageMappaer.sendCount(map);
+	}
+
+	@Override
+	public int receiveCount(Map<String, Object> map) {
+		return this.messageMappaer.receiveCount(map);
+	}
+
+}

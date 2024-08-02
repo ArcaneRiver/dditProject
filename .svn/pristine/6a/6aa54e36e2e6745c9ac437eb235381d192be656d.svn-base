@@ -1,0 +1,18 @@
+package com.homecat.sweethome.vo.maintenance;
+
+import lombok.Data;
+
+@Data
+public class MaintenanceVO {
+
+	private String mtSeq;
+	private String mtDetail;
+	private String regDt;
+	private String prcsDt;
+	private String mtStatus;
+	private String attach;
+	private String memId;
+	private String ccpyCode;
+	private String cancelYn;
+	private String cancelTm;
+}

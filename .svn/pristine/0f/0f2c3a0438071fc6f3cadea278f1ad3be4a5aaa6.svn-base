@@ -1,0 +1,151 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
+<%@ taglib uri="http://www.springframework.org/security/tags"  prefix="sec"%>
+
+<div style="display: none" id="memId"><sec:authentication property="principal.memberVO.memId" /></div>
+
+<script type="text/javascript">
+	
+$(function(){
+	getCarList();
+	$('#btnSubmit').on("click",function(){
+		var carNo = $("#carNo").val();
+		var memId = $("#memId").text();
+		var carModel = $("#carModel").val();
+		
+		console.log(carNo, memId, carModel);
+		
+		let data = {
+				'carNo':carNo,
+				'memId':memId,
+				'carModel':carModel
+		};
+		
+		$.ajax({
+			url	:"/car/create",
+			contentType:"application/json;charset=utf-8",
+			data:JSON.stringify(data),
+			type:"post",
+			dataType:"text",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+			},
+			success:function(result){
+				console.log("result : " , result);
+				
+				getCarList();
+				
+			}
+		});
+	});
+});
+
+function getCarList(){
+	let data = {
+			'memId':$("#memId").text()
+	};
+	
+	$.ajax({
+		url: "/car/list",
+		contentType: "application/json;charset=utf-8",
+		data:JSON.stringify(data),
+		type: "post",
+		dataType: "json",
+		beforeSend:function(xhr){
+			xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+		},
+		success: function(result) {
+			
+			console.log("result : ", result);
+			
+			let str = "";
+			for(let i=0; i<result.length; i++){
+
+				str += "<tr>";
+				str += "<td>"+result[i].memId+"</td>";
+				str += "<td>"+result[i].carNo+"</td>";
+				str += "<td>"+result[i].carModel+"</td>";
+				str += "<td>"+result[i].regDt+"</td>";
+				str += "<td style='text-align: center;'>"+result[i].status+"</td>";
+				str += "<td><a href='#' class='link-danger'><i style='margin-left: 28px; width: 30px;' class='ri-delete-bin-5-line'></i></a></td>";
+				str += "</tr>";
+
+			}
+			console.log("str : ", str);
+			
+// 			$(".clsPagingArea").html(result.pagingArea);
+			$("#carList").html(str);
+			
+			$("#carNo").val("");
+			$("#carModel").val("");
+			
+// 			location.reload();      //(일단 이렇게)
+		}
+	});
+}
+
+
+</script>
+<div class="row">
+	<div class="col-6">
+		<div style="height: 374px;" class="card shadow p-3 rounded">
+			<div class="card-header align-items-center d-flex">
+				<p class="card-title mb-0 flex-grow-1" style="font-size: 25px;">
+					<img alt="보유차량" src="/resources/images/차량등록.png" style="width: 35px; margin-right: 10px;">보유차량 신청
+				</p>
+			</div>
+			<div class="card-body" style="font-size: 15px;">
+				<div class="live-preview">
+					<form id="frm" name="frm" action="/maintenance/updatePost" method="post" enctype="multipart/form-data" style="font-size: 15px;">
+						<div class="mb-3">
+							<label for="carNo" class="form-label">차량 번호</label> 
+							<input type="button" class="btn btn-secondary waves-effect waves-light end" id="btnSubmit" value="신청" style="float: right; margin-bottom:10px;">
+							<input type="text" class="form-control" id="carNo" name="carNo" value="" >
+						</div>
+						<div class="mb-3">
+							<label for="carModel" class="form-label">차량 종류</label> 
+							<input type="text" class="form-control" id="carModel" value="" required="required">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+<div class="col-6">
+	<div class="card shadow p-3 rounded">
+		<div class="card-header align-items-center d-flex">
+			<p class="card-title mb-0 flex-grow-1" style="font-size: 25px;">
+				<img alt="보유차량" src="/resources/images/차량등록.png" style="width: 35px; margin-right: 10px;">보유차량 목록
+			</p>
+		</div>
+		<div class="card-body">
+			<table id="carTbl"
+						class="display table table-bordered dt-responsive"
+						style="width: 100%">
+	        	<thead>
+	            <tr>
+	                <th style="text-align: center;">회원아이디</th>
+	                <th style="text-align: center;">차량번호</th>
+	                <th style="text-align: center;">차량 종류</th>
+	                <th style="text-align: center;">등록일</th>
+	                <th style="text-align: center;">상태</th>
+	                <th style="text-align: center;">삭제</th>
+	            </tr>
+	       		</thead>
+	       		<tbody id="carList">
+	       		
+	        	</tbody>
+	    	</table>
+	    </div>
+	  </div>
+	</div>
+</div>
+
+
+
+
+

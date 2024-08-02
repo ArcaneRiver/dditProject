@@ -1,0 +1,18 @@
+package com.homecat.sweethome.vo.survey;
+
+import java.util.Date;
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class SurveyVO {
+	private String svCode;		// 설문조사 일련번호 EX) SV001 (아파트조경만족도)
+	private String svTitle;		// 설문제목 SV001 - 아파트조경만족도
+	private int count;			// 참여자 수
+	private Date beginTm;		// 시작일
+	private Date endTm;			// 마감일
+	private String endYn;		// 마감여부
+	
+	private List<String> questions;	// 질문 목록 EX) 1. 아파트 테니스장에 만족하십니까?
+}

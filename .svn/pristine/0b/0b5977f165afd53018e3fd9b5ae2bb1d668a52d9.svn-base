@@ -1,0 +1,18 @@
+package com.homecat.sweethome.vo.publicFacilities;
+
+import lombok.Data;
+
+@Data
+public class ReserveVO {
+
+	private String reserveSeq;
+	private String memId;
+	private String facCode;
+	private String regDt;
+	private String beginTm;
+	private String endTm;
+	private String seat;
+	private int nop;
+	private String cancleYn;
+	private String cancleDt;
+}

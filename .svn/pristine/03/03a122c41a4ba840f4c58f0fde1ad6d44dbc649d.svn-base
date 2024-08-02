@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.message.MessageMapper">
+
+<sql id="whereSender">
+	<if test="sender!=null and sender!='' ">
+	    AND (SENDER LIKE '%'|| #{sender} ||'%')
+	</if>
+</sql>
+
+<sql id="whereReceiver">
+	<if test="receiver!=null and receiver!='' ">
+	    AND (RECEIVER LIKE '%'|| #{receiver} ||'%')
+	</if>
+</sql>
+
+<!-- 메세지 전송  -->
+<insert id="sendMessage" parameterType="messageVO">
+	INSERT INTO MESSAGE (MSG_SEQ, SENDER, RECEIVER, TITLE, CONTENT)
+	VALUES((SELECT TO_NUMBER(NVL(MAX(MSG_SEQ), '0')) + 1 FROM  MESSAGE), #{sender}, #{receiver}, #{title} ,#{content})
+</insert>
+
+<!-- 의미가 없어진 것 같은 아이디 체크  -->
+<select id="checkReceiver" parameterType="String" resultType="int">
+	SELECT 
+		COUNT(MEM_ID)
+	FROM 
+		MEMBER
+	WHERE
+		MEM_ID = #{memId}
+		AND
+		MVI_STATUS = 'mvi01'
+</select>
+
+<!-- 받은 쪽지함 -->
+<select id ="getReceiveMessage" parameterType = "map" resultType = "messageVO">
+    SELECT
+        T.MSG_SEQ, 
+        T.SENDER, 
+        T.RECEIVER, 
+        T.TITLE,
+        CASE 
+            WHEN LENGTH(T.CONTENT) > 15 THEN SUBSTR(T.CONTENT, 1, 15) || '...'
+            ELSE T.CONTENT
+        END AS CONTENT,  
+        T.SEND_DT
+    FROM (
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY SEND_DT ASC) AS RNUM,
+            MSG_SEQ, 
+            SENDER, 
+            RECEIVER, 
+            TITLE,
+            CONTENT,
+            SEND_DT 
+        FROM MESSAGE
+        WHERE
+        	RECEIVE_DEL = 'N'
+        	AND 
+            RECEIVER = #{receiver}
+            <include refid="whereSender"></include> 
+    ) T
+    WHERE T.RNUM BETWEEN ((#{receivePage}*10)- (10-1)) AND (#{receivePage}*10)
+</select>
+
+<!-- 보낸 쪽지함 -->
+<select id="getSendMessage" parameterType = "map" resultType="messageVO">
+    SELECT
+        T.MSG_SEQ, 
+        T.SENDER, 
+        T.RECEIVER, 
+        T.TITLE,
+        CASE 
+            WHEN LENGTH(T.CONTENT) > 15 THEN SUBSTR(T.CONTENT, 1, 15) || '...'
+            ELSE T.CONTENT
+        END AS CONTENT,  
+        T.SEND_DT,
+        T.READ_YN
+    FROM (
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY SEND_DT ASC) AS RNUM,
+            MSG_SEQ, 
+            SENDER, 
+            RECEIVER, 
+            TITLE,
+            CONTENT,
+            SEND_DT,
+            READ_YN 
+        FROM MESSAGE
+        WHERE
+        	SEND_DEL = 'N'
+        	AND 
+            SENDER = #{sender}
+            <include refid="whereReceiver"></include> 
+    ) T
+    WHERE T.RNUM BETWEEN ((#{sendPage}*10)- (10-1)) AND (#{sendPage}*10)
+</select>
+
+
+<!-- 쪽지 상세내용  -->
+<select id="receiveMsgDetail" parameterType = "String" resultType = "messageVO">
+	SELECT 
+		SENDER, 
+		TITLE, 
+		CONTENT, 
+		SEND_DT
+	FROM
+		MESSAGE
+	WHERE 
+		RECEIVER = #{receiver}	
+</select>
+
+<select id="sendMsgDetail" parameterType = "String" resultType = "messageVO">
+	SELECT 
+		SENDER, 
+		TITLE, 
+		CONTENT, 
+		SEND_DT
+	FROM
+		MESSAGE
+	WHERE 
+		SENDER = #{sender}
+</select>
+
+<select id="receiveCount" parameterType = "map" resultType = "int">
+	SELECT
+		COUNT(*)
+	FROM
+		MESSAGE
+	WHERE
+		RECEIVER = #{receiver}
+	<include refid="whereSender"></include>
+</select>
+
+<select id="sendCount" parameterType = "map" resultType = "int">
+	SELECT
+		COUNT(*)
+	FROM
+		MESSAGE
+	WHERE
+		SENDER = #{sender}
+	<include refid="whereReceiver"></include>
+</select>
+
+
+
+<update id="readCheck" parameterType="int">
+	UPDATE MESSAGE
+	SET 
+		READ_YN = 'Y'
+	WHERE 
+		MSG_SEQ = #{msgSeq}
+</update>
+</mapper>

@@ -1,0 +1,9 @@
+package com.homecat.sweethome.service.moveout;
+
+import com.homecat.sweethome.vo.moveout.MoveoutVO;
+
+public interface MoveoutService {
+
+	public int insert(MoveoutVO moveoutVO);
+
+}

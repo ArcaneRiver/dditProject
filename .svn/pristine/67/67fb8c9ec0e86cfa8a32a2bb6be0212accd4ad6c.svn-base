@@ -1,0 +1,79 @@
+package com.homecat.sweethome.controller.member;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.mail.MailService;
+import com.homecat.sweethome.service.member.MemberListService;
+import com.homecat.sweethome.vo.member.MemberVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class FindIDPWController {
+	
+	@Autowired
+	MemberListService memberListService;
+	
+	@Autowired
+	MailService mailService;
+	
+	@GetMapping("/idFind")
+	public String idFind() {
+		log.info("아이디찾기!");
+		return "member/idFindForm";
+	}
+	
+	@ResponseBody
+	@PostMapping("/idFind.do")
+	public MemberVO idFind(@RequestBody Map<String, String> map) {
+		log.info("아이디찾기 컨트롤러!");
+		
+		String memNm = map.get("memNm");
+		String memTelno = map.get("memTelno");
+		
+		Map<String, String> memberMap = new HashMap<>();
+		
+		memberMap.put("memNm", memNm);
+		memberMap.put("memTelno", memTelno);
+		
+		MemberVO memberVO = memberListService.idFind(memberMap);
+		
+		if(memberVO == null) {
+			return new MemberVO();
+		}
+		
+		return memberVO;
+	}
+	
+	@ResponseBody
+	@PostMapping("/sendEmail.do")
+	public Map<String, String> idFindtoMail(@RequestBody Map<String, String> map) {
+		
+		String memEmail = map.get("memEmail");
+		String memId = map.get("memId");
+		
+		log.info(memEmail);
+		 // 이메일 전송 서비스 호출
+	    try {
+	        mailService.sendEmail(memEmail, "Your ID Information", "Your full ID is: " + memId);
+	        log.info("이메일 전송 성공: " + memEmail);
+	        Map<String, String> response = new HashMap<>();
+	        response.put("message", "이메일이 성공적으로 전송되었습니다.");
+	        return response;
+	    } catch (Exception e) {
+	        log.error("이메일 전송 실패: " + e.getMessage());
+	        Map<String, String> response = new HashMap<>();
+	        response.put("message", "이메일 전송 중 오류가 발생했습니다.");
+	        return response;
+	    }
+	}
+}

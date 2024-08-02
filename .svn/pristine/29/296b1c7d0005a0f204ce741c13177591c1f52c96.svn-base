@@ -1,0 +1,78 @@
+package com.homecat.sweethome.controller.charge;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.homecat.sweethome.service.charge.ChargeService;
+import com.homecat.sweethome.vo.charge.ChargeItemVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/charge")
+@Controller
+public class ChargeController {
+
+	@Autowired
+	ChargeService chargeService;
+
+	String danjiCode = "D001";
+	
+	@GetMapping("/admin/insert")
+	public String chargeInsert(Model model) {
+		log.info("chargeInsert에 왔다");
+		
+		List<String> dongList = this.chargeService.getDongList(danjiCode);
+		log.info("dongList: " + dongList);
+		model.addAttribute("dongList", dongList);
+		
+		return "admin/charge/insert";
+	}
+	
+	@ResponseBody
+	@PostMapping("/dongSelAjax")
+	public List<String> dongSelAjax(@RequestBody HashMap<String, String> data) {
+		log.info("dongSelAjax->dongCode: " + data);
+		
+		List<String> roomList = this.chargeService.getRoomList(data.get("dongCode"));
+		log.info("roomList: " + roomList);
+		
+		return roomList;
+	}
+	
+	@PostMapping("/admin/insert")
+	public String chargeInsertPost(Model model, ChargeItemVO chargeItemVO) {
+		log.info("chargeInsertPost->chargeItemVO: " + chargeItemVO);
+
+		int cnt = this.chargeService.chargeInsert(chargeItemVO);
+		log.info("chargeInsertPost->cnt" + cnt);
+		
+		return "redirect:/admin/charge/admin/insert";
+	}
+	
+	@GetMapping("/admin/list")
+	public String chargeList(Model model) {
+		log.info("chargeList에 왔다");
+
+		List<String> dongList = this.chargeService.getDongList(danjiCode);
+		log.info("dongList: " + dongList);
+		model.addAttribute("dongList", dongList);
+		
+		List<ChargeItemVO> chargeList = this.chargeService.getChargeList(danjiCode);
+		log.info("chargeList: " + chargeList);
+		
+		model.addAttribute("chargeList", chargeList);
+		
+		return "admin/charge/list";
+	}
+	
+}

@@ -1,0 +1,50 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>설문조사 상세 페이지</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    h2 {
+        color: #333;
+    }
+    fieldset {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    legend {
+        font-weight: bold;
+    }
+    input[type="radio"] {
+        margin-right: 10px;
+    }
+    input[type="submit"] {
+        padding: 10px 20px;
+        margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+    <h2>${survey.svTitle}</h2>
+    <form action="/survey/submit" method="post">
+        <input type="hidden" name="svCode" value="${survey.svCode}" />
+        <c:forEach var="question" items="${survey.questions}" varStatus="status">
+            <fieldset>
+                <legend>${status.index + 1}. ${question}</legend>
+                <label>
+                    <input type="radio" name="answers[${status.index}]" value="yes" required> 예
+                </label>
+                <label>
+                    <input type="radio" name="answers[${status.index}]" value="no" required> 아니오
+                </label>
+            </fieldset>
+        </c:forEach>
+        <input type="submit" value="설문 제출">
+    </form>
+</body>
+</html>

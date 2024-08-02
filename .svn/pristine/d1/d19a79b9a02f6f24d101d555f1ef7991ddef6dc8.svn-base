@@ -1,0 +1,101 @@
+package com.homecat.sweethome.service.impl.vote;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.vote.VoteMapper;
+import com.homecat.sweethome.service.vote.VoteService;
+import com.homecat.sweethome.vo.vote.VoteDetailVO;
+import com.homecat.sweethome.vo.vote.VoteResultVO;
+import com.homecat.sweethome.vo.vote.VoteVO;
+
+@Service
+public class VoteServiceImpl implements VoteService {
+	
+	@Autowired
+	VoteMapper voteMapper;
+
+
+	@Override
+	public int getTotal(Map<String, Object> map) {
+		return this.voteMapper.getTotal(map);
+	}
+
+	@Override
+	public List<VoteVO> getList(Map<String, Object> map) {
+		return this.voteMapper.getList(map);
+	}
+	
+	@Override
+	public int createPost(VoteVO voteVO) {
+		
+		//1) VOTE 테이블에 INSERT
+		int result = this.voteMapper.createPost(voteVO);
+		
+		String voteCode = this.voteMapper.getVoteCode(voteVO);
+		voteVO.setVoteCode(voteCode);
+		
+		//2) VOTE_DETAIL 테이블에 INSERT
+		List<VoteDetailVO> voteDetVOList = voteVO.getVoteDetails();
+		for(VoteDetailVO voteDetailVO : voteDetVOList) {
+			voteDetailVO.setVoteCode(voteVO.getVoteCode());
+			result += this.voteMapper.insertDetail(voteDetailVO);
+		}
+		
+		return result;
+	}
+
+	@Override
+	public int closeVote(String voteCode) {
+		return this.voteMapper.closeVote(voteCode);
+	}
+
+	@Override
+	public VoteVO getVoteByCode(String voteCode) {
+		return this.voteMapper.getVoteByCode(voteCode);
+	}
+
+	@Override
+	public List<VoteDetailVO> getDetailsByCode(String voteCode) {
+		return this.voteMapper.getDetailsByCode(voteCode);
+	}
+
+	@Override
+	public int voteDetailDelete(VoteVO voteVO) {
+		return this.voteMapper.voteDetailDelete(voteVO);
+	}
+
+	@Override
+	public int insertDetail(VoteDetailVO voteDetailVO) {
+		return this.voteMapper.insertDetail(voteDetailVO);
+	}
+
+	@Override
+	public int updatePost(VoteVO voteVO) {
+		return this.voteMapper.updatePost(voteVO);
+	}
+
+	@Override
+	public int voteDelete(VoteVO voteVO) {
+		return this.voteMapper.voteDelete(voteVO);
+	}
+
+	@Override
+	public int insertResult(VoteResultVO voteResultVO) {
+		return this.voteMapper.insertResult(voteResultVO);
+	}
+
+	@Override
+	public List<VoteResultVO> searchResult(String voteCode) {
+		return this.voteMapper.searchResult(voteCode);
+	}
+
+	@Override
+	public List<String> getReplyerList(String voteCode) {
+		return this.voteMapper.getReplyerList(voteCode);
+	}
+	
+}

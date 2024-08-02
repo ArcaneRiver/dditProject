@@ -1,0 +1,62 @@
+package com.homecat.sweethome.service.impl.danji;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.homecat.sweethome.mapper.danji.DanjiMapper;
+import com.homecat.sweethome.service.danji.DanjiService;
+import com.homecat.sweethome.unit.AttachDao;
+import com.homecat.sweethome.unit.UploadController;
+import com.homecat.sweethome.vo.attach.AttachVO;
+import com.homecat.sweethome.vo.danji.DanjiVO;
+
+@Service
+public class DanjiServiceImpl implements DanjiService {
+	
+	@Autowired
+	DanjiMapper danjiMapper;
+	
+	@Autowired
+	UploadController uploadController;
+	
+	@Autowired
+	AttachDao attachDao;
+	
+	//단지 리스트
+	@Override
+	public List<DanjiVO> getList() {
+		return this.danjiMapper.getList();
+	}
+	
+	//단지 상세보기
+	@Override
+	public DanjiVO getDetail(String danjiCode) {
+		return this.danjiMapper.getDetail(danjiCode);
+	}
+
+	@Override
+	public int createDanji(DanjiVO danjiVO) {
+		
+		// 파일 업로드
+		this.uploadController.uploadOne(danjiVO.getDanjiLayoutFile(), danjiVO.getDanjiCode()+"_layout");
+		this.uploadController.uploadOne(danjiVO.getDanjiPictureFile(), danjiVO.getDanjiCode()+"_picture");
+		
+		// 파일 명 불러오기
+		AttachVO danjiLayout = this.attachDao.getFileName(danjiVO.getDanjiCode() + "_layout");
+		AttachVO danjiPicture = this.attachDao.getFileName(danjiVO.getDanjiCode() + "_picture");
+		
+		// 파일 명 셋팅
+		danjiVO.setDanjiLayout(danjiLayout.getFileName());
+		danjiVO.setDanjiPicture(danjiPicture.getFileName());
+		
+		return this.danjiMapper.createDanji(danjiVO);
+	}
+
+	@Override
+	public String getDanjiCode() {
+		return this.danjiMapper.getDanjiCode();
+	}
+
+}

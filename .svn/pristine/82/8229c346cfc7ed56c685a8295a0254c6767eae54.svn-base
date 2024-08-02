@@ -1,0 +1,26 @@
+package com.homecat.sweethome.mapper.survey;
+
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.survey.SurveyDetailVO;
+import com.homecat.sweethome.vo.survey.SurveyVO;
+
+public interface SurveyMapper {
+	
+	// 전체 목록
+	public int getTotal(Map<String, Object> map);
+
+	// 목록 가져오기
+	public List<SurveyVO> getList(Map<String, Object> map);
+
+	// 설문 질문 생성 (작성자)
+	public int createPost(SurveyVO surveyVO);
+	
+	// 설문 상세
+	public int insertDetail(SurveyDetailVO surveyDetVO);
+	
+	// 질문가져오기
+	public List<SurveyVO> getCode(String svCode);
+	
+}

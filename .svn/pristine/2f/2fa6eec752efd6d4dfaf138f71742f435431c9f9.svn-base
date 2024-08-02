@@ -1,0 +1,106 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<script type="text/javascript">
+$(function(){
+	$('#btnSubmit').on("click",function(){
+		var carNo = $("#carNo").val();
+		var memId = 'admin';
+		var carModel = $("#carModel").val();
+		
+		console.log(carNo, memId, carModel);
+		
+		let data = {
+				'carNo':carNo,
+				'memId':memId,
+				'carModel':carModel
+		};
+		
+		$.ajax({
+			url	:"createPost",
+			contentType:"application/json;charset=utf-8",
+			data:JSON.stringify(data),
+			type:"post",
+			dataType:"text",
+			beforeSend:function(xhr){
+				xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+			},
+			success:function(result){
+				console.log("result : " , result);
+				
+				list();
+			}
+		});
+	});
+});
+
+function list(){
+	$.ajax({
+		url: "list",
+		contentType: "application/json;charset=utf-8",
+		type: "post",
+		dataType: "json",
+		beforeSend:function(xhr){
+			xhr.setRequestHeader("${_csrf.headerName}","${_csrf.token}");
+		},
+		success: function(result) {
+			
+			console.log("result : ", result);
+			
+			let str = "";
+			for(let i=0; i<result.length; i++){
+
+				str += "<tr>";
+				str += "<td>"+result[i].carNo+"</td>";
+				str += "<td>"+result[i].memId+"</td>";
+				str += "<td>"+result[i].carModel+"</td>";
+				str += "<td>"+result[i].regDt+"</td>";
+				str += "</tr>";
+
+			}
+			
+			console.log("str : ", str);
+			
+			$("#carlist").html(str);
+			
+			$("#carNo").val("");
+			$("#carModel").val("");
+			
+		}
+	});
+};
+
+</script>
+
+	<h1>차량 등록</h1>
+	<!-- 
+	요청URI : /create
+	요청파라미터 : {차량번호=151너7864, 차종=SANTAFE}
+	요청방식 : post
+	-->
+	<form action="/create" method="post">
+		<p><input type="text" id="carNo" name="carno" placeholder="차량번호" required /></p>
+		<p><input type="text" id="carModel" name="category" placeholder="차종" required /></p>
+		<p><button type="button" id="btnSubmit">등록</button></p>
+	</form>
+	
+<table>
+  <h1>등록 된 차량 목록</h1>
+  <tr>
+    <th>차량번호</th>
+    <th>회원아이디</th>
+    <th>모델명</th>
+    <th>등록일</th>
+  </tr>
+  <tbody id="carlist">
+  <c:forEach var="carList" items="${carVOList}" varStatus="stat">
+  <tr>
+    <td>${carList.carNo}</td>
+    <td>${carList.memId}</td>
+    <td>${carList.carModel}</td>
+    <td>${carList.regDt}</td>
+  </tr>
+  </c:forEach>
+  </tbody>
+</table>

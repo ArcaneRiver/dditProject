@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.member.MemberListMapper">
+	
+	<sql id="where">
+		<if test="keyword!=null and keyword!='' ">
+		    	AND (MEM_ID LIKE '%'|| #{keyword} ||'%'
+		            OR MEM_NM LIKE '%'|| #{keyword} ||'%')
+		</if>
+
+	</sql>
+	
+	<!-- 승인 대기 목록  -->
+	<select id="waitList" parameterType ="map" resultType="memberVO">
+		SELECT
+		    T.MEM_ID, 
+		    T.MEM_NM, 
+		    T.ROOM_CODE, 
+		    T.MEM_TELNO, 
+		    T.MEM_BIRTH,
+		    T.HSHLDR_ID, 
+		    T.REG_DT   
+		FROM (
+		    SELECT
+		        ROW_NUMBER() OVER (ORDER BY REG_DT ASC) AS RNUM,
+		        MEM_ID, 
+		        MEM_NM, 
+		        ROOM_CODE, 
+		        MEM_TELNO, 
+		        MEM_BIRTH,
+		        HSHLDR_ID, 
+		        REG_DT
+		    FROM MEMBER
+		    WHERE 
+		    	MVI_STATUS = 'mvi02' 
+		      	AND MEM_AUTH = 'ROLE_USER'
+		      	<include refid="where"></include>
+		) T
+		WHERE T.RNUM BETWEEN ((#{curPage}*10)- (10-1)) AND (#{curPage}*10)
+		ORDER BY T.REG_DT ASC
+	</select>
+	
+	<!-- 대기자 수 -->
+	<select id="waitCount" parameterType="String" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+    		MEMBER
+    	WHERE 
+    		MVI_STATUS = 'mvi02' 
+    		AND 
+    		MEM_AUTH = 'ROLE_USER'
+    		<include refid="where"></include>
+	</select>
+	
+	
+	<!-- 승인  -->
+	<update id="signOk" parameterType="String" >
+		UPDATE MEMBER
+		SET MVI_STATUS = 'mvi01'
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	<!-- 반려  -->
+	<update id="signNo" parameterType="String" >
+		UPDATE MEMBER
+		SET MVI_STATUS = 'mvi03'
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	<!-- 아이디 찾기  -->
+	<select id="idFind" parameterType="map" resultType = "memberVO">
+		SELECT 	MEM_ID, MEM_EMAIL
+		FROM 	MEMBER
+		WHERE 	MEM_NM = #{memNm} 
+				AND MEM_TELNO = #{memTelno} 
+				AND MVI_STATUS = 'mvi01'
+	</select>
+	
+	<!-- 비밀번호 업데이트 -->
+	<select id="pwFind" parameterType="memberVO" resultType = "memberVO">
+		SELECT MEM_ID, MEM_NM, MEM_TELNO, MEM_EMAIL
+		FROM   MEMBER
+		WHERE MEM_ID = #{memId} AND MEM_NM = #{memNm}
+		AND   MEM_TELNO = #{memTelno} AND MVI_STATUS = 'mvi01'
+	</select>
+	
+	<update id="pwChange" parameterType="memberVO">
+		UPDATE MEMBER
+		SET MEM_PW = #{memPw},
+			ENABLED = '0'
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	<update id="enabledAccount" parameterType="memberVO">
+		UPDATE MEMBER
+		SET MEM_PW = #{memPw},
+			ENABLED = '1'
+		WHERE MEM_ID = #{memId}
+	</update>
+
+</mapper>

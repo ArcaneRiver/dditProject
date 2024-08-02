@@ -1,0 +1,15 @@
+package com.homecat.sweethome.service.survey;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.survey.SurveyVO;
+
+public interface SurveyService {
+	
+	//입력 내용 추가
+	public int createPost(SurveyVO surveyVO);
+	
+	//설문 리스트
+	public List<SurveyVO> getList();
+
+}

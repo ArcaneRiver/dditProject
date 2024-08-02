@@ -1,0 +1,204 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<!-- 탭 시작 -->
+<!-- 탭 시작 -->
+<div class="card col-7" style="height: 300px; font-size: 16px; margin-left: 40px;">
+	<div class="card-body">
+		<!-- Nav tabs -->
+		<ul class="nav nav-pills nav-justified mb-3" role="tablist"
+			style="border: 1px solid #405189; border-radius: 6px;">
+			<li class="nav-item waves-effect waves-light" role="presentation">
+				<a class="nav-link active" data-bs-toggle="tab" href="#notYet"
+				role="tab" aria-selected="false" tabindex="-1"> 진행중 </a>
+			</li>
+			<li class="nav-item waves-effect waves-light" role="presentation">
+				<a class="nav-link" data-bs-toggle="tab" href="#endWork" role="tab"
+				aria-selected="true"> 완료 </a>
+			</li>
+		</ul>
+		<!-- Tab panes -->
+		<div class="tab-content text-muted">
+			<!-- 진행중 탭 -->
+			<div class="tab-pane active show" id="notYet" role="tabpanel">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">회원 가입 신청 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">차량 등록 신청 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">진행 중 투표 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">진행 중 설문 조사 ( )건</a>
+						</div>
+						<br>
+					</div>
+					<div class="col-md-6">
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">하자 보수 신청 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">폐기물 신청 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">1:1 민원 신청 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">택배 신청 ( )건</a>
+						</div>
+						<br>
+					</div>
+				</div>
+			</div>
+			<!--  -->
+
+			<!--  -->
+			<div class="tab-pane" id="endWork" role="tabpanel">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">회원 가입 신청 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">차량 등록 신청 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">진행 중 투표 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">진행 중 설문 조사 ( )건</a>
+						</div>
+						<br>
+					</div>
+					<div class="col-md-6">
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">하자 보수 신청 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">폐기물 신청 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">1:1 민원 신청 ( )건</a>
+						</div>
+						<br>
+						<div class="d-flex  align-items-center mb-2"
+							style="margin-left: 135px;">
+							<i class="ri-checkbox-circle-fill text-success"></i> <a href="#"
+								class="ms-3">택배 신청 ( )건</a>
+						</div>
+						<br>
+					</div>
+				</div>
+			</div>
+			<!--  -->
+		</div>
+	</div>
+	<!-- end card-body -->
+</div>
+<!-- 탭 끝 -->
+
+
+<!--프로필 -->
+<div class="card col-4" style="height: 300px; font-size: 16px; margin-left: 50px;">
+    <div class="card-body p-4">
+        <div style="display: flex;">
+            <div class="profile-user position-relative d-inline-block mx-auto mb-4 col-md-6">
+                <img src="/resources/images/양이증사.jpg" style="width: 180px; height: 180px;"
+                     class="rounded-circle avatar-xl img-thumbnail user-profile-image material-shadow"
+                     alt="user-profile-image">
+            </div>
+            <div class="col-md-6">
+                <h3>_______아파트</h3><br><br>
+                <p><b>관리자님</b> 환영합니다.</p><br><br>
+                <p style="float: left; margin-right: 10px;">알림 __개</p>
+                <p>쪽지 __개</p>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-center align-items-center" style="position: absolute; bottom: 0; width: 95%;">
+        <button class="btn btn-outline-primary" style="margin:  0px 73px 0px 19px;">마이페이지</button>
+        <button class="btn btn-outline-primary" style="width: 100px;">로그아웃</button>
+    </div>
+</div>
+<!--프로필 -->
+
+
+
+<!-- 공지사항 -->
+<div class="card col-7" style="height: 300px; font-size: 16px; margin-left: 40px;">
+	<div class="card-body">
+	        <h1>공지사항</h1>
+	</div>
+</div>
+<!-- 공지사항 -->
+
+<!--주차 가능 -->
+<div class="card col-4" style="height: 300px; font-size: 16px; margin-left: 50px;">
+    <div class="card-body p-4">
+                <h1>주차</h1>
+    </div>
+</div>
+<!--주차 가능 -->
+
+
+<!--관리비? 차트 -->
+<div class="card col-7" style="height: 400px; font-size: 16px; margin-left: 40px;">
+	<div class="card-body">
+	        <h1>관리비?</h1>
+	</div>
+</div>
+<!--관리비? 차트 -->
+
+
+<!-- 달력 -->
+<div class="card col-4" style="height: 400px; font-size: 16px; margin-left: 50px;">
+    <div class="card-body p-4">
+        <h1>달력</h1>
+    </div>
+</div>
+<!-- 달력 -->

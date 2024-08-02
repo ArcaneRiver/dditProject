@@ -1,0 +1,17 @@
+package com.homecat.sweethome.controller.publicFacilities;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/public")
+public class PublicReservationController {
+
+	
+	@GetMapping("/reservation")
+	public String reservation() {
+		
+		return "resident/publicFacilities/profile";
+	}
+}

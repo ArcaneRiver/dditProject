@@ -1,0 +1,20 @@
+package com.homecat.sweethome.controller.contract;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/contract")
+@Controller
+public class ContractController {
+
+	@GetMapping("/list")
+	public String list() {
+		log.info("list에 왔다");
+		
+		return "resident/contract/list";
+	}
+}

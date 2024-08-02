@@ -1,0 +1,21 @@
+package com.homecat.sweethome.service.bidnotice;
+
+import java.util.List;
+import java.util.Map;
+
+import com.homecat.sweethome.vo.bidnotice.BidNoticeVO;
+
+public interface BidNoticeService {
+
+	public List<BidNoticeVO> getList();
+
+	public List<BidNoticeVO> getList(int num);
+
+	public BidNoticeVO getDetail(String bidSeq);
+
+	public int updatePost(BidNoticeVO bidnoticeVO);
+
+	public int createPost(Map<String, Object> data);
+
+	public int deletePost(BidNoticeVO bidnoticeVO);
+}

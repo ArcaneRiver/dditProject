@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.homecat.sweethome.mapper.publicFacilities.FacilityMapper">
+
+	<select id="tennisMain" resultType="facilityVO">
+		SELECT
+		    fac_code
+		  , danji_code
+		  , fac_nm
+		  , fac_loc
+		  , fac_telno
+		  , fac_com
+		FROM
+		    facility
+		where danji_code = 'D001'
+		and fac_code = 'facility01'
+	</select>
+	
+	<select id="reserveList" resultType="reserveVO">
+		SELECT
+		    reserve_seq,
+		    mem_id,
+		    fac_code,
+		    TO_char(reg_dt, 'YYYY-MM-DD') reg_dt,
+		    TO_char(BEGIN_TM, 'HH24:MI') BEGIN_TM, 
+		    TO_char(END_TM, 'HH24:MI') END_TM, 
+		    seat,
+		    nop,
+		    cancle_yn,
+		    TO_char(cancle_dt, 'YYYY-MM-DD HH24:MI') cancle_dt
+		FROM
+		    reserve
+		WHERE
+		    fac_code = 'facility01'
+		    AND mem_id = 'b00k'
+		    AND TO_CHAR(reg_dt, 'MM') = TO_CHAR(SYSDATE, 'MM')
+	</select>
+
+	<insert id="reservation" parameterType="reserveVO">
+				INSERT INTO reserve (
+			    reserve_seq,
+			    mem_id,
+			    fac_code,
+			    reg_dt,
+			    begin_tm,
+			    end_tm,
+			    seat,
+			    nop
+			) VALUES (
+			    (SELECT TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(NVL(MAX(TO_NUMBER(SUBSTR(reserve_seq, 9))), 0) + 1, 4, '0') FROM reserve),
+			    'b00k', 
+			    'facility01', 
+			    #{regDt}, 
+			    TO_DATE(#{beginTm}, 'HH24:MI'), 
+			    TO_DATE(#{endTm}, 'HH24:MI'), 
+			    #{seat}, 
+			    #{nop}
+			)
+ 	</insert>
+ 	
+ 	
+ 	<update id="cancleRe" parameterType="reserveVO">
+ 		update reserve
+		set CANCLE_YN = 'Y'
+		,CANCLE_DT = sysdate
+		where reserve_seq = #{reserveSeq}
+ 	</update>
+ 	
+ 	
+</mapper>

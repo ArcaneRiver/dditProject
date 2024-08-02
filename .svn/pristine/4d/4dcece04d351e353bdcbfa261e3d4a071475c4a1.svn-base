@@ -1,0 +1,14 @@
+package com.homecat.sweethome.mapper.publicFacilities;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.publicFacilities.FacilityVO;
+import com.homecat.sweethome.vo.publicFacilities.ReserveVO;
+
+public interface FacilityMapper {
+
+	List<FacilityVO> tennisMain();
+
+	List<ReserveVO> reserveList();
+
+}

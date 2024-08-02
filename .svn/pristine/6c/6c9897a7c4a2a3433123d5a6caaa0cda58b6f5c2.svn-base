@@ -1,0 +1,56 @@
+package com.homecat.sweethome.controller.complain;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.homecat.sweethome.service.complain.ComplainService;
+import com.homecat.sweethome.vo.complain.ComplainVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequestMapping("/complain")
+@Controller
+public class ComplainController {
+
+	@Autowired
+	ComplainService complainService;
+	
+	@GetMapping("/create")
+	public String create() {
+		log.info("create에 왔다");
+		return "resident/complain/create";
+	}
+
+	@PostMapping("/create")
+	public String createPost(ComplainVO complainVO) {
+		log.info("createPost->complainVO: " + complainVO);
+		
+		// 민원 등록
+		int cnt = this.complainService.create(complainVO);
+		log.info("cnt: " + cnt);
+		
+		return "redirect:/resident/complain/list";
+	}
+	
+	@GetMapping("/list")
+	public String list(Model model) {
+		log.info("list에 왔다");
+		
+		String memId = "aaaaa";
+		
+//		List<ComplainVO> complainVOList = this.complainService.getList(memId);
+		List<ComplainVO> complainVOList = null;
+		log.info("complainVOList: " + complainVOList);
+		
+		model.addAttribute("complainVOList", complainVOList);
+		
+		return "resident/complain/list";
+	}
+}

@@ -1,0 +1,13 @@
+package com.homecat.sweethome.service.visitCar;
+
+import java.util.List;
+
+import com.homecat.sweethome.vo.visitCar.VisitCarVO;
+
+public interface VisitCarService {
+
+	public List<VisitCarVO> getVisitCarList(String memId);
+
+	public int createPost(VisitCarVO visitCarVO);
+
+}
